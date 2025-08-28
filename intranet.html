@@ -797,7 +797,7 @@
                     });
             } else {
                 // Usuário não está logado, redirecionar para login
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         });
 
@@ -805,7 +805,7 @@
         document.getElementById('logoutBtn').addEventListener('click', () => {
             auth.signOut()
                 .then(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 })
                 .catch((error) => {
                     console.error('Erro ao fazer logout:', error);
