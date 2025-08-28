@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Intranet Prompt - Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Padrão de triângulos sobre o gradiente */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/img/triangles.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 420px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            padding: 30px 40px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, 
+                        rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            backdrop-filter: blur(10px);
+            z-index: 1;
+            position: relative;
+        }
+
+        .container h1 {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #c2e9fb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .input-box {
+            position: relative;
+            width: 100%;
+            margin: 30px 0;
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 50px; 
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            outline: none;
+            font-size: 16px;
+            color: #fff;
+            padding: 0 45px 0 20px; 
+        }
+
+        .input-box input::placeholder {
+            color: #fff;
+            opacity: 0.7;
+        }
+
+        .input-box input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -15px 0 15px;
+            font-size: 14px;
+        }
+
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .remember-forgot label input {
+            accent-color: #fff;
+        }
+
+        .remember-forgot a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .login {
+            width: 100%;
+            height: 45px;
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login:hover {
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+            color: #fff;
+        }
+
+        .register-link {
+            font-size: 14px;
+            text-align: center;
+            margin: 20px 0 15px;
+        }
+
+        .register-link a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal para recuperação de senha */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 30px;
+            width: 400px;
+            backdrop-filter: blur(10px);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            position: relative;
+        }
+
+        .modal-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/triangles.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            pointer-events: none;
+            border-radius: 10px;
+            z-index: -1;
+        }
+
+        .close {
+            color: #fff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #ccc;
+        }
+
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+                margin: 0 10px;
+            }
+
+            .container h1 {
+                font-size: 28px;
+            }
+
+            .input-box {
+                margin: 20px 0;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            .input-box input {
+                height: 45px;
+                font-size: 14px;
+            }
+
+            .login {
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+
+        /* Mensagens de alerta */
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .alert-error {
+            background-color: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            color: #fff;
+        }
+
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #fff;
+        }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <main class="container">
+        <form id="loginForm">
+            <h1>Intranet Prompt</h1>
+            <div id="alertBox"></div>
+            
+            <div class="input-box">
+                <label for="email" class="sr-only">E-mail</label>
+                <input id="email" placeholder="E-mail corporativo" type="email" required>
+                <i class="bx bxs-user"></i>
+            </div>
+            
+            <div class="input-box">
+                <label for="senha" class="sr-only">Senha</label>
+                <input id="senha" placeholder="Senha" type="password" required>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" id="rememberMe">
+                    Lembrar senha
+                </label>
+                <a href="#" id="forgotPasswordLink">Esqueci a senha</a>
+            </div>
+
+            <button type="submit" class="login">Acessar Intranet</button>
+
+            <div class="register-link">
+                <p>Problemas para acessar? <a href="mailto:suporte@empresa.com">Contate o suporte</a></p>
+            </div>
+        </form>
+    </main>
+
+    <!-- Modal para recuperação de senha -->
+    <div id="passwordResetModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Recuperar Senha</h2>
+            <p>Informe seu e-mail corporativo para receber instruções de redefinição de senha.</p>
+            <div class="input-box">
+                <input type="email" id="resetEmail" placeholder="Seu e-mail corporativo">
+            </div>
+            <button id="sendResetEmail" class="login">Enviar instruções</button>
+            <div id="resetAlertBox"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+              apiKey: "AIzaSyDrm6aDZ054tggEYFZIhpKbYmZCQYONq4I",
+              authDomain: "intra-9a38d.firebaseapp.com",
+              projectId: "intra-9a38d",
+              storageBucket: "intra-9a38d.firebasestorage.app",
+              messagingSenderId: "729542143030",
+              appId: "1:729542143030:web:8ecb6aa4b989ebc217bc97",
+              measurementId: "G-GX36SFKVR6"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Verificar se há credenciais salvas para "Lembrar senha"
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            const rememberedPassword = localStorage.getItem('rememberedPassword');
+            const rememberMe = document.getElementById('rememberMe');
+            
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                rememberMe.checked = true;
+            }
+            
+            if (rememberedPassword && rememberMe.checked) {
+                document.getElementById('senha').value = rememberedPassword;
+            }
+        });
+
+        // Manipular envio do formulário de login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Mostrar estado de carregamento
+            const loginBtn = document.querySelector('.login');
+            loginBtn.textContent = 'Entrando...';
+            loginBtn.disabled = true;
+            
+            auth.signInWithEmailAndPassword(email, senha)
+                .then(async (userCredential) => {
+                    // Salvar credenciais se "Lembrar senha" estiver marcado
+                    if (rememberMe) {
+                        localStorage.setItem('rememberedEmail', email);
+                        localStorage.setItem('rememberedPassword', senha);
+                    } else {
+                        localStorage.removeItem('rememberedEmail');
+                        localStorage.removeItem('rememberedPassword');
+                    }
+                    
+                    // Verificar se o usuário tem perfil completo
+                    const userDoc = await db.collection('usuarios').doc(userCredential.user.uid).get();
+                    
+                    if (!userDoc.exists) {
+                        // Se não existe documento do usuário, redirecionar para completar perfil
+                        window.location.href = 'intranet.html';
+                    } else {
+                        // Login bem-sucedido, redirecionar para a intranet
+                        window.location.href = 'intranet.html';
+                    }
+                })
+                .catch((error) => {
+                    // Restaurar botão de login
+                    loginBtn.textContent = 'Acessar Intranet';
+                    loginBtn.disabled = false;
+                    
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    
+                    let alertMessage = '';
+                    
+                    if (errorCode === 'auth/user-not-found') {
+                        alertMessage = 'Usuário não encontrado. Verifique seu e-mail.';
+                    } else if (errorCode === 'auth/wrong-password') {
+                        alertMessage = 'Senha incorreta. Tente novamente.';
+                    } else if (errorCode === 'auth/invalid-email') {
+                        alertMessage = 'E-mail inválido.';
+                    } else if (errorCode === 'auth/too-many-requests') {
+                        alertMessage = 'Muitas tentativas malsucedidas. Tente novamente mais tarde ou redefina sua senha.';
+                    } else {
+                        alertMessage = 'Erro ao fazer login: ' + errorMessage;
+                    }
+                    
+                    showAlert(alertMessage, 'error');
+                });
+        });
+
+        // Modal de recuperação de senha
+        const modal = document.getElementById('passwordResetModal');
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        const closeBtn = document.querySelector('.close');
+        const sendResetBtn = document.getElementById('sendResetEmail');
+
+        forgotPasswordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'flex';
+            document.getElementById('resetAlertBox').innerHTML = '';
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Enviar e-mail de redefinição de senha
+        sendResetBtn.addEventListener('click', function() {
+            const email = document.getElementById('resetEmail').value;
+            
+            if (!email) {
+                showResetAlert('Por favor, informe seu e-mail.', 'error');
+                return;
+            }
+            
+            sendResetBtn.textContent = 'Enviando...';
+            sendResetBtn.disabled = true;
+            
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    showResetAlert('E-mail de redefinição enviado! Verifique sua caixa de entrada.', 'success');
+                    sendResetBtn.textContent = 'E-mail enviado!';
+                    
+                    // Fechar modal após 3 segundos
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        sendResetBtn.textContent = 'Enviar instruções';
+                        sendResetBtn.disabled = false;
+                    }, 3000);
+                })
+                .catch((error) => {
+                    sendResetBtn.textContent = 'Enviar instruções';
+                    sendResetBtn.disabled = false;
+                    
+                    const errorCode = error.code;
+                    let errorMessage = '';
+                    
+                    if (errorCode === 'auth/user-not-found') {
+                        errorMessage = 'Não há usuário correspondente a este e-mail.';
+                    } else if (errorCode === 'auth/invalid-email') {
+                        errorMessage = 'E-mail inválido.';
+                    } else {
+                        errorMessage = 'Erro ao enviar e-mail de redefinição: ' + error.message;
+                    }
+                    
+                    showResetAlert(errorMessage, 'error');
+                });
+        });
+
+        // Funções auxiliares para exibir alertas
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            // Remover alerta após 5 segundos
+            setTimeout(() => {
+                alertBox.innerHTML = '';
+            }, 5000);
+        }
+
+        function showResetAlert(message, type) {
+            const alertBox = document.getElementById('resetAlertBox');
+            alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+    </script>
+</body>
+
+</html>

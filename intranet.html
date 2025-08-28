@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intranet Prompt</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap">
+    <style>
+        :root {
+            --primary-color: #C10404;
+            --secondary-color: #8B0000;
+            --accent-color: #fdbb2d;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, var(--primary-color), #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* Padrão de triângulos sobre o gradiente */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><polygon points="0,0 100,0 50,100" fill="white"/></svg>');
+            background-size: 200px;
+            background-position: center;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Navigation - FIXED POSITION */
+        .main-nav {
+            background-color: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 88px; /* Altura do header */
+            z-index: 999;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu li {
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+            box-shadow: var(--card-shadow);
+            border-radius: 5px;
+            z-index: 1;
+            padding: 0.5rem 0;
+            top: 100%;
+            left: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-content a {
+            padding: 0.8rem 1rem;
+            display: block;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 20px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-message p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px 0 0 30px;
+            outline: none;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-bar button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .quick-access, .news-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .section-title i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1.2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+            width: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card i {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            color: white;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            line-height: 1.2;
+        }
+
+        .card button {
+            margin-top: 8px;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .card button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* News Carousel - 16:10 proportion */
+        .news-carousel {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px; /* 16:10 proportion (800/500 = 1.6) */
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+            height: 100%;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .carousel-caption h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .carousel-caption p {
+            display: none;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .carousel-item.active .carousel-caption p {
+            display: block;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 1rem;
+        }
+
+        .carousel-control {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+        }
+
+        .carousel-indicator.active {
+            background-color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.2rem;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        .footer-section p, .footer-section a {
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .main-nav {
+                top: 140px; /* Ajuste para mobile */
+            }
+            
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                padding-left: 1rem;
+                background-color: transparent;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .carousel-caption h3 {
+                font-size: 1.1rem;
+            }
+
+            .carousel-caption p {
+                font-size: 0.9rem;
+            }
+            
+            .news-carousel {
+                height: 350px;
+            }
+            
+            .card {
+                width: 160px;
+                padding: 1rem;
+            }
+            
+            .card h3 {
+                font-size: 0.9rem;
+            }
+            
+            .card p {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Utilitários */
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <img src="img/logo1.png" alt="Logo Prompt">
+                <h1>Intranet Prompt</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">LS</div>
+                <div>
+                    <p id="userName">Luca de Souazi</p>
+                    <small id="userRole">Analista</small>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class='bx bx-log-out'></i> Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation - STICKY MENU -->
+    <nav class="main-nav">
+        <ul class="nav-menu">
+            <li class="dropdown">
+                <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
+                <div class="dropdown-content">
+                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-gift'></i> Benefícios</a>
+                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-file'></i> Holerite</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#"><i class='bx bx-cog'></i> TI <i class='bx bx-chevron-down'></i></a>
+                <div class="dropdown-content">
+                    <a href="#"><i class='bx bx-support'></i> Suporte Técnico</a>
+                    <a href="#"><i class='bx bx-edit-alt'></i> Abertura de Chamados</a>
+                </div>
+            </li>
+            <li><a href="#"><i class='bx bx-folder'></i> Documentos Internos</a></li>
+            <li><a href="#"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-message">
+                <h2 id="welcomeText">Bem-vindo, Luca de Souazi!</h2>
+                <p>quinta-feira, 28 de agosto de 2025</p>
+            </div>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar documentos, notícias, pessoas...">
+            <button><i class='bx bx-search'></i> Pesquisar</button>
+        </div>
+
+        <!-- Quick Access -->
+        <section class="quick-access">
+            <div class="section-title">
+                <i class='bx bx-rocket'></i>
+                <h2>Atalhos Rápidos</h2>
+            </div>
+            <div class="cards-container">
+                <div class="card">
+                    <i class='bx bxl-microsoft-teams'></i>
+                    <h3>Teams</h3>
+                    <p>Acesso ao Microsoft Teams</p>
+                    <button onclick="window.open('https://teams.live.com/l/community/FAAe-Mo_6N4xCQ4rgI', '_blank')">Acessar</button>
+                </div>
+                <div class="card">
+                    <i class='bx bx-calendar'></i>
+                    <h3>Calendário</h3>
+                    <p>Calendário corporativo</p>
+                    <button onclick="window.open('https://calendar.google.com/calendar/u/0?cid=ZWM0MzBlM2QwOTM0ODk5MDM3MmVjM2U3ZTU4ZDZiMTNjNzRkNmNlNjk0YjRlZDljNTBmYzMxZTIyMjc0ODZiYUBncm91pC5jYWxlbmRhci5nb29nbGUuY29t', '_blank')">Acessar</button>
+                </div>
+                <div class="card">
+                    <i class='bx bx-file'></i>
+                    <h3>Holerite</h3>
+                    <p>Consulta de holerites</p>
+                    <button onclick="window.open('https://gibi.folhafacil.com.br/rh/prompt/', '_blank')">Acessar</button>
+                </div>
+                <div class="card">
+                    <i class='bx bx-phone-call'></i>
+                    <h3>Ramais e E-mails</h3>
+                    <p>Lista de contatos internos</p>
+                    <button onclick="window.location.href='contatos.html'">Acessar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section class="news-section">
+            <div class="section-title">
+                <i class='bx bx-news'></i>
+                <h2>Notícias e Comunicados</h2>
+            </div>
+            
+            <div class="news-carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500' width='800' height='500'><rect width='800' height='500' fill='%23C10404'/><text x='400' y='250' font-family='Arial' font-size='30' fill='white' text-anchor='middle'>Novo Sistema de Ponto Eletrônico</text></svg>" alt="Novo sistema de ponto">
+                        <div class="carousel-caption">
+                            <h3>Novo sistema de ponto eletrônico</h3>
+                            <p>A partir do próximo mês, estaremos implementando um novo sistema de registro de ponto. Todos os colaboradores deverão participar do treinamento.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500' width='800' height='500'><rect width='800' height='500' fill='%238B0000'/><text x='400' y='250' font-family='Arial' font-size='30' fill='white' text-anchor='middle'>Aniversariantes do Mês</text></svg>" alt="Aniversariantes">
+                        <div class="carousel-caption">
+                            <h3>Aniversariantes do mês</h3>
+                            <p>Confira a lista de aniversariantes de junho e participe das comemorações!</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500' width='800' height='500'><rect width='800' height='500' fill='%231a2a6c'/><text x='400' y='250' font-family='Arial' font-size='30' fill='white' text-anchor='middle'>Lançamento do Novo Produto</text></svg>" alt="Novo produto">
+                        <div class="carousel-caption">
+                            <h3>Lançamento do novo produto</h3>
+                            <p>Estamos orgulhosos de anunciar o lançamento do nosso novo produto no próximo trimestre.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-controls">
+                    <button class="carousel-control prev" onclick="moveCarousel(-1)">
+                        <i class='bx bx-chevron-left'></i>
+                    </button>
+                    <button class="carousel-control next" onclick="moveCarousel(1)">
+                        <i class='bx bx-chevron-right'></i>
+                    </button>
+                </div>
+                
+                <div class="carousel-indicators">
+                    <button class="carousel-indicator active" onclick="showSlide(0)"></button>
+                    <button class="carousel-indicator" onclick="showSlide(1)"></button>
+                    <button class="carousel-indicator" onclick="showSlide(2)"></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <p><i class='bx bx-phone'></i> Ramal: 207</p>
+                <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Normas de Uso</a>
+                <a href="#">FAQ</a>
+                <a href="#">Manuais</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Intranet Prompt v0.1</p>
+            <p>©2025 Todos os direitos reservados</p>
+            <p>Desenvolvido por departamento de Marketing</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrm6aDZ054tggEYFZIhpKbYmZCQYONq4I",
+            authDomain: "intra-9a38d.firebaseapp.com",
+            projectId: "intra-9a38d",
+            storageBucket: "intra-9a38d.firebasestorage.app",
+            messagingSenderId: "729542143030",
+            appId: "1:729542143030:web:8ecb6aa4b989ebc217bc97",
+            measurementId: "G-GX36SFKVR6"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Verificar autenticação
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Usuário está logado, buscar informações adicionais
+                db.collection('usuarios').doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            // Atualizar interface com dados do usuário
+                            document.getElementById('userName').textContent = userData.nome;
+                            document.getElementById('userRole').textContent = userData.cargo;
+                            document.getElementById('welcomeText').textContent = `Bem-vindo, ${userData.nome}!`;
+                            
+                            // Atualizar avatar com iniciais
+                            const names = userData.nome.split(' ');
+                            const initials = names[0].charAt(0) + (names.length > 1 ? names[names.length - 1].charAt(0) : '');
+                            document.getElementById('userAvatar').textContent = initials;
+                        } else {
+                            console.log("Documento do usuário não encontrado!");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log("Erro ao buscar dados do usuário:", error);
+                    });
+            } else {
+                // Usuário não está logado, redirecionar para login
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    window.location.href = 'login.html';
+                })
+                .catch((error) => {
+                    console.error('Erro ao fazer logout:', error);
+                });
+        });
+
+        // Atualizar data atual
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('pt-BR', options);
+            document.querySelector('.welcome-message p').textContent = dateString;
+        }
+
+        updateDate();
+
+        // Carrossel de notícias
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        
+        function showSlide(n) {
+            // Esconder slide atual
+            slides[currentSlide].classList.remove('active');
+            indicators[currentSlide].classList.remove('active');
+            
+            // Atualizar índice do slide atual
+            currentSlide = (n + slides.length) % slides.length;
+            
+            // Mostrar novo slide
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+            
+            // Mover carrossel
+            document.querySelector('.carousel-inner').style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        
+        function moveCarousel(direction) {
+            showSlide(currentSlide + direction);
+        }
+        
+        // Avançar slides automaticamente a cada 5 segundos
+        setInterval(() => {
+            moveCarousel(1);
+        }, 5000);
+        
+        // Expandir descrição ao clicar no slide
+        slides.forEach(slide => {
+            slide.addEventListener('click', () => {
+                const caption = slide.querySelector('.carousel-caption');
+                const paragraph = caption.querySelector('p');
+                
+                if (paragraph.style.display === 'none' || !paragraph.style.display) {
+                    paragraph.style.display = 'block';
+                } else {
+                    paragraph.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

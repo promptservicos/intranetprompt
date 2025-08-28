@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatos - Intranet Prompt</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap">
+    <style>
+        :root {
+            --primary-color: #C10404;
+            --secondary-color: #8B0000;
+            --accent-color: #fdbb2d;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, var(--primary-color), #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* Padrão de triângulos sobre o gradiente */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><polygon points="0,0 100,0 50,100" fill="white"/></svg>');
+            background-size: 200px;
+            background-position: center;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Navigation - FIXED POSITION */
+        .main-nav {
+            background-color: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 88px; /* Altura do header */
+            z-index: 999;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu li {
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+            box-shadow: var(--card-shadow);
+            border-radius: 5px;
+            z-index: 1;
+            padding: 0.5rem 0;
+            top: 100%;
+            left: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-content a {
+            padding: 0.8rem 1rem;
+            display: block;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 20px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-message p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px 0 0 30px;
+            outline: none;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-bar button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Contacts Table */
+        .contacts-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contacts-table-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .contacts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .contacts-table th {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contacts-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .contacts-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .contacts-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .department-header {
+            background-color: rgba(0, 0, 0, 0.3) !important;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.2rem;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        .footer-section p, .footer-section a {
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .logo {
+                position: static;
+                transform: none;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+            
+            .user-info {
+                margin-left: 0;
+                justify-content: center;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .main-nav {
+                top: 140px; /* Ajuste para mobile */
+            }
+            
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                padding-left: 1rem;
+                background-color: transparent;
+            }
+            
+            .contacts-table-container {
+                overflow-x: auto;
+            }
+            
+            .contacts-table {
+                min-width: 600px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Utilitários */
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <img src="img/logo1.png" alt="Logo Prompt">
+                <h1>Intranet Prompt</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">LS</div>
+                <div>
+                    <p id="userName">Luca de Souazi</p>
+                    <small id="userRole">Analista</small>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class='bx bx-log-out'></i> Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation - STICKY MENU -->
+    <nav class="main-nav">
+        <ul class="nav-menu">
+            <li class="dropdown">
+                <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
+                <div class="dropdown-content">
+                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-gift'></i> Benefícios</a>
+                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-file'></i> Holerite</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#"><i class='bx bx-cog'></i> TI <i class='bx bx-chevron-down'></i></a>
+                <div class="dropdown-content">
+                    <a href="#"><i class='bx bx-support'></i> Suporte Técnico</a>
+                    <a href="#"><i class='bx bx-edit-alt'></i> Abertura de Chamados</a>
+                </div>
+            </li>
+            <li><a href="#"><i class='bx bx-folder'></i> Documentos Internos</a></li>
+            <li><a href="#"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+            <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-message">
+                <h2 id="welcomeText">Ramais e Contatos</h2>
+                <p>Lista completa de colaboradores e seus contatos</p>
+            </div>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar por nome, departamento ou ramal...">
+            <button><i class='bx bx-search'></i> Pesquisar</button>
+        </div>
+
+        <!-- Contacts Section -->
+        <section class="contacts-section">
+            <div class="section-title">
+                <i class='bx bx-phone-call'></i>
+                <h2>Lista de Contatos</h2>
+            </div>
+            
+            <div class="contacts-table-container">
+                <table class="contacts-table">
+                    <thead>
+                        <tr>
+                            <th>Departamento</th>
+                            <th>Ramal</th>
+                            <th>Contato</th>
+                            <th>E-mail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="department-header">
+                            <td colspan="4">PABX</td>
+                        </tr>
+                        <tr>
+                            <td>PABX</td>
+                            <td>200</td>
+                            <td>Kelle</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Recrutamento e Seleção</td>
+                        </tr>
+                        <tr>
+                            <td>Analista Recrutamento e Seleção</td>
+                            <td>222</td>
+                            <td>Ismar</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Recrutamento e Seleção</td>
+                            <td>201</td>
+                            <td>Taira</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Recrutamento e Seleção</td>
+                            <td>202</td>
+                            <td>Kevin</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Recrutamento e Seleção</td>
+                            <td>238</td>
+                            <td>Williams</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Auxiliar</td>
+                            <td>213</td>
+                            <td>Fabio Santiago</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Comercial</td>
+                        </tr>
+                        <tr>
+                            <td>Diretor Comercial</td>
+                            <td>209</td>
+                            <td>Fabio Henrique</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Vendedor</td>
+                            <td>232</td>
+                            <td>Ricardo</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Vendedora</td>
+                            <td>233</td>
+                            <td>Leila</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Comercial</td>
+                            <td>211</td>
+                            <td>Moriela</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Marketing</td>
+                        </tr>
+                        <tr>
+                            <td>Marketing</td>
+                            <td>207</td>
+                            <td>Luca</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">TI</td>
+                        </tr>
+                        <tr>
+                            <td>TI</td>
+                            <td>215</td>
+                            <td>Vanderlei</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Departamento Pessoal</td>
+                        </tr>
+                        <tr>
+                            <td>Encarregada DP</td>
+                            <td>219</td>
+                            <td>Luana</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Analista de Faturamento</td>
+                            <td>204</td>
+                            <td>Fabiene</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Arquivista</td>
+                            <td>216</td>
+                            <td>Aline</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Analista Departamento Pessoal</td>
+                            <td>217</td>
+                            <td>Carla</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Analista Departamento Pessoal</td>
+                            <td>221</td>
+                            <td>Izilda</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Departamento Pessoal</td>
+                            <td>226</td>
+                            <td>Mhellyssa</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Departamento Pessoal</td>
+                            <td>228</td>
+                            <td>Lucinalva</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Auxiliar Departamento Pessoal</td>
+                            <td>236</td>
+                            <td>Michelle</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Departamento Pessoal</td>
+                            <td>239</td>
+                            <td>Gleice</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Jurídico</td>
+                        </tr>
+                        <tr>
+                            <td>Jurídico</td>
+                            <td>235</td>
+                            <td>Thayna</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Financeiro</td>
+                        </tr>
+                        <tr>
+                            <td>Encarregada Financeiro</td>
+                            <td>224</td>
+                            <td>Marcia</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Auxiliar Financeiro</td>
+                            <td>223</td>
+                            <td>Thais</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Assistente Financeiro</td>
+                            <td>225</td>
+                            <td>Fabiana</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Administrativo</td>
+                        </tr>
+                        <tr>
+                            <td>Diretor Administrativo</td>
+                            <td>210</td>
+                            <td>Fabio Mansur</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Atendimento ADM/RESC</td>
+                            <td>230</td>
+                            <td>**</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Sala de Reunião</td>
+                            <td>237</td>
+                            <td>**</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="department-header">
+                            <td colspan="4">Filial GRU</td>
+                        </tr>
+                        <tr>
+                            <td>Filial GRU</td>
+                            <td>2481-4697</td>
+                            <td>2412-7879</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <p><i class='bx bx-phone'></i> Ramal: 207</p>
+                <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="intranet.html">Página Inicial</a>
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Normas de Uso</a>
+                <a href="#">FAQ</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Intranet Prompt v0.1</p>
+            <p>©2025 Todos os direitos reservados</p>
+            <p>Desenvolvido por departamento de Marketing</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrm6aDZ054tggEYFZIhpKbYmZCQYONq4I",
+            authDomain: "intra-9a38d.firebaseapp.com",
+            projectId: "intra-9a38d",
+            storageBucket: "intra-9a38d.firebasestorage.app",
+            messagingSenderId: "729542143030",
+            appId: "1:729542143030:web:8ecb6aa4b989ebc217bc97",
+            measurementId: "G-GX36SFKVR6"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Verificar autenticação
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Usuário está logado, buscar informações adicionais
+                db.collection('usuarios').doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            // Atualizar interface com dados do usuário
+                            document.getElementById('userName').textContent = userData.nome;
+                            document.getElementById('userRole').textContent = userData.cargo;
+                            
+                            // Atualizar avatar com iniciais
+                            const names = userData.nome.split(' ');
+                            const initials = names[0].charAt(0) + (names.length > 1 ? names[names.length - 1].charAt(0) : '');
+                            document.getElementById('userAvatar').textContent = initials;
+                        } else {
+                            console.log("Documento do usuário não encontrado!");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log("Erro ao buscar dados do usuário:", error);
+                    });
+            } else {
+                // Usuário não está logado, redirecionar para login
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    window.location.href = 'login.html';
+                })
+                .catch((error) => {
+                    console.error('Erro ao fazer logout:', error);
+                });
+        });
+
+        // Funcionalidade de busca
+        const searchInput = document.querySelector('.search-bar input');
+        const searchButton = document.querySelector('.search-bar button');
+        const tableRows = document.querySelectorAll('.contacts-table tbody tr');
+
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', performSearch);
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                if (row.classList.contains('department-header')) {
+                    return; // Não ocultar cabeçalhos de departamento
+                }
+                
+                const cells = row.querySelectorAll('td');
+                let found = false;
+                
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                        found = true;
+                    }
+                });
+                
+                if (found) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
