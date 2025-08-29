@@ -86,6 +86,7 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            cursor: pointer;
         }
 
         .logo img {
@@ -276,6 +277,11 @@
             gap: 1rem;
         }
 
+        .section-title {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
         .contacts-table-container {
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -437,7 +443,7 @@
     <!-- Header -->
     <header>
         <div class="header-top">
-            <div class="logo">
+            <div class="logo" onclick="window.location.href='intranet.html'">
                 <img src="img/logo1.png" alt="Logo Prompt">
                 <h1>Intranet Prompt</h1>
             </div>
@@ -511,218 +517,202 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="PABX">
                             <td colspan="4">PABX</td>
                         </tr>
-                        <tr>
+                        <tr data-department="PABX">
                             <td>PABX</td>
                             <td>200</td>
                             <td>Kelle</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Recrutamento e Seleção">
                             <td colspan="4">Recrutamento e Seleção</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Recrutamento e Seleção">
                             <td>Analista Recrutamento e Seleção</td>
                             <td>222</td>
                             <td>Ismar</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Recrutamento e Seleção">
                             <td>Assistente Recrutamento e Seleção</td>
                             <td>201</td>
                             <td>Taira</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
-                            <td>Assistente Recrutamento e Seleção</td>
-                            <td>202</td>
-                            <td>Kevin</td>
-                            <td></td>
-                        </tr>
-                        <tr>
+                        <tr data-department="Recrutamento e Seleção">
                             <td>Assistente Recrutamento e Seleção</td>
                             <td>238</td>
                             <td>Williams</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Recrutamento e Seleção">
                             <td>Auxiliar</td>
                             <td>213</td>
                             <td>Fabio Santiago</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Comercial">
                             <td colspan="4">Comercial</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Comercial">
                             <td>Diretor Comercial</td>
                             <td>209</td>
                             <td>Fabio Henrique</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Comercial">
                             <td>Vendedor</td>
                             <td>232</td>
                             <td>Ricardo</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Comercial">
                             <td>Vendedora</td>
                             <td>233</td>
                             <td>Leila</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Comercial">
                             <td>Assistente Comercial</td>
                             <td>211</td>
                             <td>Moriela</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Marketing">
                             <td colspan="4">Marketing</td>
                         </tr>
-                        <tr>
-                            <td>Marketing</td>
+                        <tr data-department="Marketing">
+                            <td>Assistente de Marketing</td>
                             <td>207</td>
                             <td>Luca</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
-                            <td colspan="4">TI</td>
-                        </tr>
-                        <tr>
-                            <td>TI</td>
-                            <td>215</td>
-                            <td>Vanderlei</td>
-                            <td></td>
-                        </tr>
-
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Departamento Pessoal">
                             <td colspan="4">Departamento Pessoal</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Encarregada DP</td>
                             <td>219</td>
                             <td>Luana</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Analista de Faturamento</td>
                             <td>204</td>
                             <td>Fabiene</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Arquivista</td>
                             <td>216</td>
                             <td>Aline</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Analista Departamento Pessoal</td>
                             <td>217</td>
                             <td>Carla</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Analista Departamento Pessoal</td>
                             <td>221</td>
                             <td>Izilda</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Assistente Departamento Pessoal</td>
                             <td>226</td>
                             <td>Mhellyssa</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Assistente Departamento Pessoal</td>
                             <td>228</td>
                             <td>Lucinalva</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Auxiliar Departamento Pessoal</td>
                             <td>236</td>
                             <td>Michelle</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Departamento Pessoal">
                             <td>Assistente Departamento Pessoal</td>
                             <td>239</td>
                             <td>Gleice</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Jurídico">
                             <td colspan="4">Jurídico</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Jurídico">
                             <td>Jurídico</td>
                             <td>235</td>
                             <td>Thayna</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Financeiro">
                             <td colspan="4">Financeiro</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Financeiro">
                             <td>Encarregada Financeiro</td>
                             <td>224</td>
                             <td>Marcia</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Financeiro">
                             <td>Auxiliar Financeiro</td>
                             <td>223</td>
                             <td>Thais</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Financeiro">
                             <td>Assistente Financeiro</td>
                             <td>225</td>
                             <td>Fabiana</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Administrativo">
                             <td colspan="4">Administrativo</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Administrativo">
                             <td>Diretor Administrativo</td>
                             <td>210</td>
                             <td>Fabio Mansur</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Administrativo">
                             <td>Atendimento ADM/RESC</td>
                             <td>230</td>
                             <td>**</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Administrativo">
                             <td>Sala de Reunião</td>
                             <td>237</td>
                             <td>**</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
 
-                        <tr class="department-header">
+                        <tr class="department-header" data-department="Filial GRU">
                             <td colspan="4">Filial GRU</td>
                         </tr>
-                        <tr>
+                        <tr data-department="Filial GRU">
                             <td>Filial GRU</td>
                             <td>2481-4697</td>
                             <td>2412-7879</td>
-                            <td></td>
+                            <td>padrão@promptservicos.com.br</td>
                         </tr>
                     </tbody>
                 </table>
@@ -801,7 +791,7 @@
                     });
             } else {
                 // Usuário não está logado, redirecionar para login
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         });
 
@@ -809,7 +799,7 @@
         document.getElementById('logoutBtn').addEventListener('click', () => {
             auth.signOut()
                 .then(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 })
                 .catch((error) => {
                     console.error('Erro ao fazer logout:', error);
@@ -820,34 +810,65 @@
         const searchInput = document.querySelector('.search-bar input');
         const searchButton = document.querySelector('.search-bar button');
         const tableRows = document.querySelectorAll('.contacts-table tbody tr');
+        const departmentHeaders = document.querySelectorAll('.department-header');
 
         searchButton.addEventListener('click', performSearch);
         searchInput.addEventListener('keyup', performSearch);
 
         function performSearch() {
-            const searchTerm = searchInput.value.toLowerCase();
+            const searchTerm = searchInput.value.toLowerCase().trim();
             
-            tableRows.forEach(row => {
-                if (row.classList.contains('department-header')) {
-                    return; // Não ocultar cabeçalhos de departamento
-                }
-                
-                const cells = row.querySelectorAll('td');
-                let found = false;
-                
-                cells.forEach(cell => {
-                    if (cell.textContent.toLowerCase().includes(searchTerm)) {
-                        found = true;
-                    }
-                });
-                
-                if (found) {
+            // Se a busca estiver vazia, mostrar tudo
+            if (searchTerm === '') {
+                tableRows.forEach(row => {
                     row.style.display = '';
+                });
+                return;
+            }
+            
+            // Primeiro, ocultar todos os registros
+            tableRows.forEach(row => {
+                row.style.display = 'none';
+            });
+            
+            // Encontrar departamentos que têm correspondências
+            const matchingDepartments = new Set();
+            
+            // Verificar correspondências nas linhas normais
+            tableRows.forEach(row => {
+                if (!row.classList.contains('department-header')) {
+                    const cells = row.querySelectorAll('td');
+                    let found = false;
+                    
+                    cells.forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                            found = true;
+                        }
+                    });
+                    
+                    if (found) {
+                        const department = row.getAttribute('data-department');
+                        matchingDepartments.add(department);
+                        row.style.display = '';
+                    }
+                }
+            });
+            
+            // Mostrar os cabeçalhos dos departamentos que têm correspondências
+            departmentHeaders.forEach(header => {
+                const department = header.getAttribute('data-department');
+                if (matchingDepartments.has(department)) {
+                    header.style.display = '';
                 } else {
-                    row.style.display = 'none';
+                    header.style.display = 'none';
                 }
             });
         }
+
+        // Adicionar evento de clique no logo para voltar à página inicial
+        document.querySelector('.logo').addEventListener('click', function() {
+            window.location.href = 'intranet.html';
+        });
     </script>
 </body>
 </html>
