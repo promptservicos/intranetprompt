@@ -31,7 +31,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a2a6c, var(--primary-color), #fdbb2d);
+            /* Gradiente modificado para preto e vermelho escuro */
+            background: linear-gradient(135deg, #000000, #200000, #400000, #700000, #990000);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             position: relative;
@@ -50,19 +51,20 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><polygon points="0,0 100,0 50,100" fill="white"/></svg>');
             background-size: 200px;
             background-position: center;
-            opacity: 0.15;
+            opacity: 0.1; /* Reduzi a opacidade para combinar com o novo gradiente */
             pointer-events: none;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
+        /* Header Styles - MODIFICADO */
         /* Header Styles */
         header {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
             color: white;
             padding: 1rem 2rem;
@@ -83,6 +85,10 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
         }
 
         .logo img {
@@ -98,6 +104,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            margin-left: auto;
         }
 
         .user-avatar {
@@ -130,8 +137,9 @@
         }
 
         /* Main Navigation - FIXED POSITION */
+        /* Main Navigation - FIXED POSITION */
         .main-nav {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             padding: 0.8rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -211,6 +219,10 @@
             flex-direction: column;
             gap: 2rem;
             margin-top: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
         }
 
         .welcome-section {
@@ -229,41 +241,7 @@
             opacity: 0.9;
         }
 
-        .search-bar {
-            display: flex;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 0.8rem 1.2rem;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px 0 0 30px;
-            outline: none;
-            font-size: 1rem;
-            color: white;
-        }
-
-        .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .search-bar button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0 30px 30px 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .search-bar button:hover {
-            background-color: var(--secondary-color);
-        }
+        /* Removido a barra de pesquisa */
 
         .quick-access, .news-section {
             display: flex;
@@ -355,6 +333,60 @@
 
         .card button:hover {
             background-color: var(--secondary-color);
+        }
+
+        /* Power BI Dropdown */
+        .powerbi-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .powerbi-dropbtn {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .powerbi-dropbtn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .powerbi-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.9);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+            left: 0;
+            right: 0;
+        }
+
+        .powerbi-dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .powerbi-dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .powerbi-dropdown:hover .powerbi-dropdown-content {
+            display: block;
         }
 
         /* News Carousel - 16:10 proportion */
@@ -469,6 +501,11 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .footer-content {
             display: flex;
             justify-content: space-between;
@@ -514,6 +551,11 @@
             .header-top {
                 flex-direction: column;
                 gap: 1rem;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                text-align: center;
             }
             
             .nav-menu {
@@ -585,44 +627,48 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="header-top">
-            <div class="logo">
-                <img src="img/logo1.png" alt="Logo Prompt">
-                <h1>Intranet Prompt</h1>
-            </div>
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">LS</div>
-                <div>
-                    <p id="userName">Luca de Souazi</p>
-                    <small id="userRole">Analista</small>
+        <div class="header-container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="img/logo1.png" alt="Logo Prompt">
+                    <h1>Intranet Prompt</h1>
                 </div>
-                <button id="logoutBtn" class="logout-btn">
-                    <i class='bx bx-log-out'></i> Sair
-                </button>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">US</div>
+                    <div>
+                        <p id="userName">Usuário</p>
+                        <small id="userRole">Analista</small>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class='bx bx-log-out'></i> Sair
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Navigation - STICKY MENU -->
     <nav class="main-nav">
-        <ul class="nav-menu">
-            <li class="dropdown">
-                <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
-                <div class="dropdown-content">
-                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-gift'></i> Benefícios</a>
-                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-file'></i> Holerite</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <a href="#"><i class='bx bx-cog'></i> TI <i class='bx bx-chevron-down'></i></a>
-                <div class="dropdown-content">
-                    <a href="#"><i class='bx bx-support'></i> Suporte Técnico</a>
-                    <a href="#"><i class='bx bx-edit-alt'></i> Abertura de Chamados</a>
-                </div>
-            </li>
-            <li><a href="#"><i class='bx bx-folder'></i> Documentos Internos</a></li>
-            <li><a href="#"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
-        </ul>
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-gift'></i> Benefícios</a>
+                        <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-file'></i> Holerite</a>
+                    </div>
+                </li>
+                <!-- ITEM TI REMOVIDO -->
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-file'></i> Planilhas e Formulários <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="planilhas.html"><i class='bx bx-table'></i> Planilhas</a>
+                        <a href="forms.html"><i class='bx bx-edit-alt'></i> Formulários</a>
+                    </div>
+                </li>
+                <li><a href="contatos.html"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+            </ul>
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -634,12 +680,6 @@
                 <p>quinta-feira, 28 de agosto de 2025</p>
             </div>
         </section>
-
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" placeholder="Buscar documentos, notícias, pessoas...">
-            <button><i class='bx bx-search'></i> Pesquisar</button>
-        </div>
 
         <!-- Quick Access -->
         <section class="quick-access">
@@ -655,10 +695,16 @@
                     <button onclick="window.open('https://teams.live.com/l/community/FAAe-Mo_6N4xCQ4rgI', '_blank')">Acessar</button>
                 </div>
                 <div class="card">
-                    <i class='bx bx-calendar'></i>
-                    <h3>Calendário</h3>
-                    <p>Calendário corporativo</p>
-                    <button onclick="window.open('https://calendar.google.com/calendar/u/0?cid=ZWM0MzBlM2QwOTM0ODk5MDM3MmVjM2U3ZTU4ZDZiMTNjNzRkNmNlNjk0YjRlZDljNTBmYzMxZTIyMjc0ODZiYUBncm91pC5jYWxlbmRhci5nb29nbGUuY29t', '_blank')">Acessar</button>
+                    <i class='bx bx-bar-chart-alt'></i>
+                    <h3>Power BI</h3>
+                    <p>Relatórios e Dashboards</p>
+                    <div class="powerbi-dropdown">
+                        <button class="powerbi-dropbtn">Acessar</button>
+                        <div class="powerbi-dropdown-content">
+                            <a href="https://app.powerbi.com/view?r=eyJrIjoiOWJmMTIzMDItZjUyMy00Nzk3LWIxNTQtMzM2YWU1MzcyZmJmIiwidCI6IjNhN2JiOWFlLTg1YzYtNGI4OC04NzQwLTIzNTUxMzAyYTNiOSJ9" target="_blank">SP</a>
+                            <a href="https://app.powerbi.com/view?r=eyJrIjoiNzFiYzI1YTEtNDA1OC00NTUwLTgzMWEtYmVjM2JhYWQ1MTJkIiwidCI6IjNhN2JiOWFlLTg1YzYtNGI4OC04NzQwLTIzNTUxMzAyYTNiOSJ9" target="_blank">GRU</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card">
                     <i class='bx bx-file'></i>
@@ -727,25 +773,27 @@
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Suporte</h3>
-                <p><i class='bx bx-phone'></i> Ramal: 207</p>
-                <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
-                <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <p><i class='bx bx-phone'></i> Ramal: 207</p>
+                    <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                    <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Normas de Uso</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Manuais</a>
+                </div>
             </div>
-            <div class="footer-section">
-                <h3>Links Rápidos</h3>
-                <a href="#">Política de Privacidade</a>
-                <a href="#">Normas de Uso</a>
-                <a href="#">FAQ</a>
-                <a href="#">Manuais</a>
+            <div class="footer-bottom">
+                <p>Intranet Prompt v0.1</p>
+                <p>©2025 Todos os direitos reservados</p>
+                <p>Desenvolvido por departamento de Marketing</p>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>Intranet Prompt v0.1</p>
-            <p>©2025 Todos os direitos reservados</p>
-            <p>Desenvolvido por departamento de Marketing</p>
         </div>
     </footer>
 
@@ -847,10 +895,10 @@
             showSlide(currentSlide + direction);
         }
         
-        // Avançar slides automaticamente a cada 5 segundos
+        // Avançar slides automaticamente a cada 8 segundos
         setInterval(() => {
             moveCarousel(1);
-        }, 5000);
+        }, 8000);
         
         // Expandir descrição ao clicar no slide
         slides.forEach(slide => {

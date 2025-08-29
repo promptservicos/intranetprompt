@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Suspenso Exemplo</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        :root {
+            --primary-color: #C10404;
+            --secondary-color: #8B0000;
+            --accent-color: #fdbb2d;
+            --dark-color: #333;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000, #200000, #400000, #700000);
+            min-height: 100vh;
+            color: white;
+            padding-top: 120px;
+        }
+
+        /* Main Navigation - FIXED POSITION */
+        .main-nav {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu li {
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+            box-shadow: var(--card-shadow);
+            border-radius: 5px;
+            z-index: 1;
+            padding: 0.5rem 0;
+            top: 100%;
+            left: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-content a {
+            padding: 0.8rem 1rem;
+            display: block;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation - STICKY MENU -->
+    <nav class="main-nav">
+        <ul class="nav-menu">
+            <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
+            <li class="dropdown">
+                <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
+                <div class="dropdown-content">
+                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-gift'></i> Benefícios</a>
+                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-file'></i> Holerite</a>
+                </div>
+            </li>
+            <li><a href="forms.html"><i class='bx bx-table'></i> Planilhas e Formulários</a></li>
+            <li><a href="#"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h1>Exemplo de Menu Suspenso</h1>
+        <p>Este é um exemplo isolado do menu suspenso com os itens solicitados:</p>
+        <ul>
+            <li>Início em primeiro lugar</li>
+            <li>Recursos Humanos com submenu</li>
+            <li>Planilhas e Formulários (substituindo Documentos Internos)</li>
+            <li>Colaboradores</li>
+            <li>Item de TI removido</li>
+        </ul>
+        <p>Passe o mouse sobre o item "Recursos Humanos" para ver o menu suspenso funcionando.</p>
+    </div>
+</body>
+</html>

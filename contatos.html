@@ -31,7 +31,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a2a6c, var(--primary-color), #fdbb2d);
+            /* Gradiente modificado para preto e vermelho escuro */
+            background: linear-gradient(135deg, #000000, #200000, #400000, #700000, #990000);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             position: relative;
@@ -50,7 +51,7 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><polygon points="0,0 100,0 50,100" fill="white"/></svg>');
             background-size: 200px;
             background-position: center;
-            opacity: 0.15;
+            opacity: 0.1; /* Reduzi a opacidade para combinar com o novo gradiente */
             pointer-events: none;
         }
 
@@ -62,7 +63,7 @@
 
         /* Header Styles */
         header {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.4); /* Aumentei a opacidade para melhor contraste */
             backdrop-filter: blur(10px);
             color: white;
             padding: 1rem 2rem;
@@ -136,7 +137,7 @@
 
         /* Main Navigation - FIXED POSITION */
         .main-nav {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.3); /* Aumentei a opacidade para melhor contraste */
             backdrop-filter: blur(10px);
             padding: 0.8rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -461,8 +462,10 @@
     </header>
 
     <!-- Navigation - STICKY MENU -->
+    <!-- Navigation - STICKY MENU -->
     <nav class="main-nav">
         <ul class="nav-menu">
+            <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
             <li class="dropdown">
                 <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
                 <div class="dropdown-content">
@@ -471,15 +474,13 @@
                 </div>
             </li>
             <li class="dropdown">
-                <a href="#"><i class='bx bx-cog'></i> TI <i class='bx bx-chevron-down'></i></a>
+                <a href="#"><i class='bx bx-table'></i> Planilhas e Formulários <i class='bx bx-chevron-down'></i></a>
                 <div class="dropdown-content">
-                    <a href="#"><i class='bx bx-support'></i> Suporte Técnico</a>
-                    <a href="#"><i class='bx bx-edit-alt'></i> Abertura de Chamados</a>
+                    <a href="planilhas.html"><i class='bx bx-spreadsheet'></i> Planilhas</a>
+                    <a href="forms.html"><i class='bx bx-clipboard'></i> Formulários</a>
                 </div>
             </li>
-            <li><a href="#"><i class='bx bx-folder'></i> Documentos Internos</a></li>
             <li><a href="#"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
-            <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
         </ul>
     </nav>
 
@@ -778,7 +779,7 @@
                             document.getElementById('userName').textContent = userData.nome;
                             document.getElementById('userRole').textContent = userData.cargo;
                             
-                            // Atualizar avatar com iniciais
+                            // Atualizar avatar dengan iniciais
                             const names = userData.nome.split(' ');
                             const initials = names[0].charAt(0) + (names.length > 1 ? names[names.length - 1].charAt(0) : '');
                             document.getElementById('userAvatar').textContent = initials;
