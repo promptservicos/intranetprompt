@@ -137,7 +137,7 @@
 
         /* Main Navigation - FIXED POSITION */
         .main-nav {
-            background-color: rgba(0, 0, 0, 0.3); /* Aumentei a opacidade para melhor contraste */
+            background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             padding: 0.8rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -209,6 +209,24 @@
             display: block;
         }
 
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .main-nav {
+                top: 140px; /* Ajuste para mobile */
+            }
+            
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                padding-left: 1rem;
+                background-color: transparent;
+            }
+        }
         /* Main Content */
         main {
             flex: 1;
@@ -464,24 +482,21 @@
     <!-- Navigation - STICKY MENU -->
     <!-- Navigation - STICKY MENU -->
     <nav class="main-nav">
-        <ul class="nav-menu">
-            <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
-            <li class="dropdown">
-                <a href="#"><i class='bx bx-group'></i> Recursos Humanos <i class='bx bx-chevron-down'></i></a>
-                <div class="dropdown-content">
-                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-gift'></i> Benefícios</a>
-                    <a href="https://gibi.folhafacil.com.br/rh/prompt/" target="_blank"><i class='bx bx-file'></i> Holerite</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <a href="#"><i class='bx bx-table'></i> Planilhas e Formulários <i class='bx bx-chevron-down'></i></a>
-                <div class="dropdown-content">
-                    <a href="planilhas.html"><i class='bx bx-spreadsheet'></i> Planilhas</a>
-                    <a href="forms.html"><i class='bx bx-clipboard'></i> Formulários</a>
-                </div>
-            </li>
-            <li><a href="#"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
-        </ul>
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-building'></i> Departamentos <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="financeiro.html"><i class='bx bx-money'></i> Financeiro</a>
+                        <a href="comercial.html"><i class='bx bx-store'></i> Comercial</a>
+                        <a href="recrutamento.html"><i class='bx bx-user-plus'></i> Recrutamento</a>
+                        <a href="dp.html"><i class='bx bx-group'></i> Departamento Pessoal</a>
+                    </div>
+                </li>
+                <li><a href="powerbi.html"><i class='bx bx-bar-chart-alt'></i> Power BI</a></li>
+                <li><a href="contatos.html"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+            </ul>
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -525,7 +540,7 @@
                             <td>PABX</td>
                             <td>200</td>
                             <td>Kelle</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>recepcao.sp@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Recrutamento e Seleção">
@@ -535,25 +550,25 @@
                             <td>Analista Recrutamento e Seleção</td>
                             <td>222</td>
                             <td>Ismar</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>recrutamento5@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Recrutamento e Seleção">
                             <td>Assistente Recrutamento e Seleção</td>
                             <td>201</td>
                             <td>Taira</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>recrutamento6@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Recrutamento e Seleção">
                             <td>Assistente Recrutamento e Seleção</td>
                             <td>238</td>
-                            <td>Williams</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>Wiliana</td>
+                            <td>recrutamento2@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Recrutamento e Seleção">
                             <td>Auxiliar</td>
                             <td>213</td>
                             <td>Fabio Santiago</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>recrutamento7@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Comercial">
@@ -563,25 +578,25 @@
                             <td>Diretor Comercial</td>
                             <td>209</td>
                             <td>Fabio Henrique</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>fabiomansur@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Comercial">
                             <td>Vendedor</td>
                             <td>232</td>
                             <td>Ricardo</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>comercial3@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Comercial">
                             <td>Vendedora</td>
                             <td>233</td>
                             <td>Leila</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>comercial1@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Comercial">
                             <td>Assistente Comercial</td>
                             <td>211</td>
                             <td>Moriela</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>ass.comercial4sp@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Marketing">
@@ -591,7 +606,7 @@
                             <td>Assistente de Marketing</td>
                             <td>207</td>
                             <td>Luca</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>marketing@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Departamento Pessoal">
@@ -601,13 +616,13 @@
                             <td>Encarregada DP</td>
                             <td>219</td>
                             <td>Luana</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>luana@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Analista de Faturamento</td>
                             <td>204</td>
                             <td>Fabiene</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>adm1.sp@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Arquivista</td>
@@ -619,37 +634,37 @@
                             <td>Analista Departamento Pessoal</td>
                             <td>217</td>
                             <td>Carla</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>adm7.sp@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Analista Departamento Pessoal</td>
                             <td>221</td>
                             <td>Izilda</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>izilda@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Assistente Departamento Pessoal</td>
                             <td>226</td>
                             <td>Mhellyssa</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>adm3.sp@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Assistente Departamento Pessoal</td>
                             <td>228</td>
                             <td>Lucinalva</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>adm2.sp@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Auxiliar Departamento Pessoal</td>
                             <td>236</td>
                             <td>Michelle</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>adm5.sp@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Departamento Pessoal">
                             <td>Assistente Departamento Pessoal</td>
                             <td>239</td>
                             <td>Gleice</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>adm4.sp@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Jurídico">
@@ -659,7 +674,7 @@
                             <td>Jurídico</td>
                             <td>235</td>
                             <td>Thayna</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>juridico@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Financeiro">
@@ -669,19 +684,19 @@
                             <td>Encarregada Financeiro</td>
                             <td>224</td>
                             <td>Marcia</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>marcia@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Financeiro">
                             <td>Auxiliar Financeiro</td>
                             <td>223</td>
                             <td>Thais</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>financeiro3@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Financeiro">
                             <td>Assistente Financeiro</td>
                             <td>225</td>
                             <td>Fabiana</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>financeiro2@promptservicos.com.br</td>
                         </tr>
 
                         <tr class="department-header" data-department="Administrativo">
@@ -691,19 +706,19 @@
                             <td>Diretor Administrativo</td>
                             <td>210</td>
                             <td>Fabio Mansur</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>fabio@promptservicos.com.br</td>
                         </tr>
                         <tr data-department="Administrativo">
                             <td>Atendimento ADM/RESC</td>
                             <td>230</td>
                             <td>**</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>**</td>
                         </tr>
                         <tr data-department="Administrativo">
                             <td>Sala de Reunião</td>
                             <td>237</td>
                             <td>**</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>**</td>
                         </tr>
 
                         <tr class="department-header" data-department="Filial GRU">
@@ -713,7 +728,7 @@
                             <td>Filial GRU</td>
                             <td>2481-4697</td>
                             <td>2412-7879</td>
-                            <td>padrão@promptservicos.com.br</td>
+                            <td>**</td>
                         </tr>
                     </tbody>
                 </table>
