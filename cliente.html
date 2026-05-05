@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colaboradores - Intranet Prompt</title>
+    <title>Ficha do Cliente - Intranet Prompt</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/icon1.png">
@@ -12,7 +12,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <!-- CSS principal -->
-    <link rel="stylesheet" href="colaboradores.css">
+    <link rel="stylesheet" href="cliente.css">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
@@ -69,50 +69,95 @@
 
     <!-- Main Content -->
     <main>
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-            <div class="welcome-message">
-                <h2>Ramais e Contatos</h2>
-                <p>Lista completa de colaboradores e seus contatos</p>
-            </div>
-        </section>
-
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Buscar por nome, departamento ou ramal...">
-            <button id="searchButton"><i class='bx bx-search'></i> Pesquisar</button>
-        </div>
-
         <!-- Loading Indicator -->
         <div id="loadingIndicator" class="loading-indicator">
-            <i class='bx bx-loader-alt bx-spin'></i> Carregando colaboradores...
+            <i class='bx bx-loader-alt bx-spin'></i> Carregando dados do cliente...
         </div>
 
-        <!-- Contacts Section -->
-        <section class="contacts-section">
-            <div class="section-title">
-                <i class='bx bx-phone-call'></i>
-                <h2>Lista de Contatos</h2>
+        <!-- Cliente Content (inicialmente oculto) -->
+        <div id="clienteContent" class="cliente-content" style="display: none;">
+            <!-- Header da ficha -->
+            <div class="cliente-header">
+                <div class="cliente-avatar-large">
+                    <i class='bx bx-building'></i>
+                </div>
+                <div class="cliente-header-info">
+                    <h1 id="clienteNome">Carregando...</h1>
+                    <p id="clienteCNPJ">CNPJ: --</p>
+                </div>
             </div>
-            
-            <div class="contacts-table-container">
-                <table class="contacts-table" id="contactsTable">
-                    <thead>
-                        <tr>
-                            <th>Departamento</th>
-                            <th>Ramal</th>
-                            <th>Contato</th>
-                            <th>E-mail</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr>
-                            <td colspan="4" style="text-align: center;">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <!-- Grid de informações -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class='bx bx-id-card'></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Razão Social</span>
+                        <span class="info-value" id="clienteRazaoSocial">--</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class='bx bx-user'></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Contato / Responsável</span>
+                        <span class="info-value" id="clienteContato">--</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class='bx bx-envelope'></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">E-mail</span>
+                        <span class="info-value" id="clienteEmail">--</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class='bx bx-phone'></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Telefone</span>
+                        <span class="info-value" id="clienteTelefone">--</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class='bx bx-map'></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Endereço</span>
+                        <span class="info-value" id="clienteEndereco">--</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class='bx bx-receipt'></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Inscrição Estadual</span>
+                        <span class="info-value" id="clienteInscricaoEstadual">--</span>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+
+        <!-- Mensagem de erro -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <i class='bx bx-error-circle'></i>
+            <h3>Erro ao carregar cliente</h3>
+            <p>Cliente não encontrado ou ocorreu um erro ao carregar os dados.</p>
+            <button onclick="window.location.href='clientes.html'" class="btn-voltar">Voltar para lista de clientes</button>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -135,6 +180,6 @@
     </footer>
 
     <!-- JavaScript principal -->
-    <script src="colaboradores.js"></script>
+    <script src="cliente.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colaboradores - Intranet Prompt</title>
+    <title>Clientes - Intranet Prompt</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/icon1.png">
@@ -12,7 +12,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <!-- CSS principal -->
-    <link rel="stylesheet" href="colaboradores.css">
+    <link rel="stylesheet" href="clientes.css">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
@@ -47,7 +47,7 @@
         </div>
     </header>
 
-    <!-- Navigation -->
+    <!-- Navigation (SEM Power BI) -->
     <nav class="main-nav">
         <div class="nav-container">
             <ul class="nav-menu">
@@ -72,45 +72,31 @@
         <!-- Welcome Section -->
         <section class="welcome-section">
             <div class="welcome-message">
-                <h2>Ramais e Contatos</h2>
-                <p>Lista completa de colaboradores e seus contatos</p>
+                <h2>Clientes</h2>
+                <p>Lista completa de clientes da Prompt</p>
             </div>
         </section>
 
         <!-- Search Bar -->
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Buscar por nome, departamento ou ramal...">
+            <input type="text" id="searchInput" placeholder="Buscar por nome do cliente...">
             <button id="searchButton"><i class='bx bx-search'></i> Pesquisar</button>
         </div>
 
         <!-- Loading Indicator -->
         <div id="loadingIndicator" class="loading-indicator">
-            <i class='bx bx-loader-alt bx-spin'></i> Carregando colaboradores...
+            <i class='bx bx-loader-alt bx-spin'></i> Carregando clientes...
         </div>
 
-        <!-- Contacts Section -->
-        <section class="contacts-section">
+        <!-- Clientes Section -->
+        <section class="clientes-section">
             <div class="section-title">
-                <i class='bx bx-phone-call'></i>
-                <h2>Lista de Contatos</h2>
+                <i class='bx bx-briefcase'></i>
+                <h2>Lista de Clientes</h2>
             </div>
             
-            <div class="contacts-table-container">
-                <table class="contacts-table" id="contactsTable">
-                    <thead>
-                        <tr>
-                            <th>Departamento</th>
-                            <th>Ramal</th>
-                            <th>Contato</th>
-                            <th>E-mail</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr>
-                            <td colspan="4" style="text-align: center;">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="clientes-grid" id="clientesGrid">
+                <div class="no-results">Carregando...</div>
             </div>
         </section>
     </main>
@@ -135,6 +121,6 @@
     </footer>
 
     <!-- JavaScript principal -->
-    <script src="colaboradores.js"></script>
+    <script src="clientes.js"></script>
 </body>
 </html>
