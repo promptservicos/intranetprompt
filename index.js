@@ -83,7 +83,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             }
             
             // Redireciona para a intranet
-            window.location.href = 'intranet/intranet.html';
+            window.location.href = 'intranet.html';
         })
         .catch((error) => {
             loginBtn.textContent = 'Acessar Intranet';
