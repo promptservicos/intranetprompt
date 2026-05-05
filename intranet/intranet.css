@@ -1,0 +1,444 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* ===== VARIÁVEIS (tema claro - padrão) ===== */
+:root {
+    --bg-color: #f4f6fa;
+    --bg-pattern: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 8px);
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --nav-bg: rgba(255, 255, 255, 0.9);
+    --container-bg: rgba(255, 255, 255, 0.95);
+    --container-border: rgba(0, 0, 0, 0.08);
+    --text-color: #1e2a3e;
+    --text-light: #4a627a;
+    --text-muted: #6c757d;
+    --input-border: rgba(0, 0, 0, 0.15);
+    --input-focus: #C10404;
+    --button-bg: #C10404;
+    --button-hover: #9e0303;
+    --button-text: #ffffff;
+    --link-color: #C10404;
+    --card-bg: rgba(0, 0, 0, 0.02);
+    --card-border: rgba(0, 0, 0, 0.05);
+    --footer-bg: rgba(255, 255, 255, 0.9);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    --accent-color: #C10404;
+}
+
+/* ===== TEMA ESCURO ===== */
+body.dark {
+    --bg-color: #0c0c10;
+    --bg-pattern: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
+    --header-bg: rgba(20, 20, 28, 0.95);
+    --nav-bg: rgba(20, 20, 28, 0.92);
+    --container-bg: rgba(20, 20, 28, 0.92);
+    --container-border: rgba(193, 4, 4, 0.3);
+    --text-color: #eef2ff;
+    --text-light: #b9c7d9;
+    --text-muted: #8a99b0;
+    --input-border: rgba(255, 255, 255, 0.2);
+    --input-focus: #C10404;
+    --button-bg: #C10404;
+    --button-hover: #a00000;
+    --button-text: #ffffff;
+    --link-color: #ff6b6b;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --footer-bg: rgba(20, 20, 28, 0.95);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    background-image: var(--bg-pattern);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+/* Botão de alternar tema (mesmo do login) */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    color: var(--text-color);
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    transition: 0.2s;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+    border-color: var(--input-focus);
+}
+
+/* Header */
+header {
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--container-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--text-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.logout-btn {
+    background-color: rgba(193, 4, 4, 0.15);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: rgba(193, 4, 4, 0.3);
+    border-color: var(--input-focus);
+}
+
+/* Navegação */
+.main-nav {
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--container-border);
+    position: sticky;
+    top: 80px;
+    z-index: 99;
+    padding: 0.8rem 2rem;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.2s;
+}
+
+.nav-menu a:hover {
+    color: var(--link-color);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: var(--container-bg);
+    backdrop-filter: blur(10px);
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--container-border);
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    padding: 0.5rem 0;
+}
+
+.dropdown-content a {
+    padding: 0.8rem 1rem;
+    display: block;
+    color: var(--text-color);
+}
+
+.dropdown-content a:hover {
+    background-color: rgba(193, 4, 4, 0.1);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Main */
+main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-message h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-message p {
+    color: var(--text-light);
+}
+
+/* Seção de aniversariantes */
+.birthdays-section {
+    background: var(--container-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 1.5rem;
+    border: 1px solid var(--container-border);
+    box-shadow: var(--shadow);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.section-title i {
+    font-size: 2rem;
+    color: var(--accent-color);
+}
+
+.section-title h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.birthdays-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.birthday-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1rem;
+    transition: 0.2s;
+}
+
+.birthday-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--input-focus);
+    box-shadow: var(--shadow);
+}
+
+.birthday-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+}
+
+.birthday-info {
+    flex: 1;
+}
+
+.birthday-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.birthday-department {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-bottom: 4px;
+}
+
+.birthday-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--accent-color);
+}
+
+/* Footer */
+footer {
+    background: var(--footer-bg);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--container-border);
+    padding: 1.5rem 2rem;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+}
+
+.footer-section h3 {
+    color: var(--accent-color);
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.footer-section p, .footer-section a {
+    color: var(--text-light);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.footer-section a:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--container-border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .header-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .user-info {
+        flex-direction: column;
+    }
+    .main-nav {
+        top: 130px;
+    }
+    .nav-menu {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    .dropdown-content {
+        position: static;
+        box-shadow: none;
+        background: transparent;
+        padding-left: 1rem;
+    }
+    .birthdays-container {
+        grid-template-columns: 1fr;
+    }
+    .theme-toggle {
+        top: 16px;
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 1rem;
+    }
+    .birthdays-section {
+        padding: 1rem;
+    }
+}

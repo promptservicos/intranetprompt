@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intranet Prompt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/icon1.png">
+    
+    <!-- Boxicons CDN -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="intranet.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Botão de alternar tema (lua/sol) -->
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
+        <i class='bx bx-moon'></i>
+    </button>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="img/logo1.png" alt="Logo Prompt">
+                    <h1>Intranet Prompt</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">US</div>
+                    <div>
+                        <p id="userName">Usuário</p>
+                        <small id="userRole">Analista</small>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class='bx bx-log-out'></i> Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-building'></i> Departamentos <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="departamentos/financeiro.html"><i class='bx bx-money'></i> Financeiro</a>
+                        <a href="departamentos/comercial.html"><i class='bx bx-store'></i> Comercial</a>
+                        <a href="departamentos/recrutamento.html"><i class='bx bx-user-plus'></i> Recrutamento</a>
+                        <a href="departamentos/dp.html"><i class='bx bx-group'></i> Departamento Pessoal</a>
+                    </div>
+                </li>
+                <li><a href="powerbi.html"><i class='bx bx-bar-chart-alt'></i> Power BI</a></li>
+                <li><a href="contatos.html"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-message">
+                <h2 id="welcomeText">Bem-vindo, Usuário!</h2>
+                <p id="currentDate"></p>
+            </div>
+        </section>
+
+        <!-- Apenas a seção de aniversariantes (sem notícias e atalhos) -->
+        <section class="birthdays-section">
+            <div class="section-title">
+                <i class='bx bx-gift'></i>
+                <h2>Próximos Aniversariantes</h2>
+            </div>
+            <div class="birthdays-container" id="birthdaysContainer">
+                <!-- Os cards serão preenchidos via JavaScript, mas mantemos os exemplos estáticos também -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <p><i class='bx bx-phone'></i> Ramal: 207</p>
+                    <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                    <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Normas de Uso</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Manuais</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Intranet Prompt v0.2</p>
+                <p>©2025 Todos os direitos reservados</p>
+                <p>Desenvolvido por departamento de Marketing</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript principal -->
+    <script src="intranet.js"></script>
+</body>
+</html>
