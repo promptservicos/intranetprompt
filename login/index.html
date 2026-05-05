@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intranet Prompt - Login</title>
+
+    <!-- Boxicons CDN -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- CSS principal separado -->
+    <link rel="stylesheet" href="index.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <main class="container">
+        <form id="loginForm">
+            <h1>Intranet Prompt</h1>
+            <div id="alertBox"></div>
+
+            <div class="input-box">
+                <label for="email" class="sr-only">E-mail</label>
+                <input id="email" placeholder="E-mail corporativo" type="email" required>
+                <i class="bx bxs-user"></i>
+            </div>
+
+            <div class="input-box">
+                <label for="senha" class="sr-only">Senha</label>
+                <input id="senha" placeholder="Senha" type="password" required>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" id="rememberMe">
+                    Lembrar senha
+                </label>
+                <a href="#" id="forgotPasswordLink">Esqueci a senha</a>
+            </div>
+
+            <button type="submit" class="login">Acessar Intranet</button>
+
+            <div class="register-link">
+                <p>Problemas para acessar? <a href="mailto:suporte@empresa.com">Contate o suporte</a></p>
+            </div>
+        </form>
+    </main>
+
+    <!-- Modal para recuperação de senha -->
+    <div id="passwordResetModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Recuperar Senha</h2>
+            <p>Informe seu e-mail corporativo para receber instruções de redefinição de senha.</p>
+            <div class="input-box">
+                <input type="email" id="resetEmail" placeholder="Seu e-mail corporativo">
+            </div>
+            <button id="sendResetEmail" class="login">Enviar instruções</button>
+            <div id="resetAlertBox"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript principal separado -->
+    <script src="index.js"></script>
+</body>
+
+</html>
