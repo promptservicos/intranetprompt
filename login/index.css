@@ -1,10 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+/* ===== VARIÁVEIS (tema claro - padrão) ===== */
+:root {
+    --bg-color: #f4f6fa;
+    --bg-pattern: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 8px);
+    --container-bg: rgba(255, 255, 255, 0.95);
+    --container-border: rgba(0, 0, 0, 0.08);
+    --text-color: #1e2a3e;
+    --text-light: #4a627a;
+    --input-border: rgba(0, 0, 0, 0.15);
+    --input-focus: #C10404;
+    --button-bg: #C10404;
+    --button-hover: #9e0303;
+    --button-text: #ffffff;
+    --link-color: #C10404;
+    --placeholder-color: rgba(0, 0, 0, 0.5);
+    --modal-bg: rgba(30, 30, 40, 0.85);
+    --modal-content-bg: rgba(255, 255, 255, 0.95);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+}
+
+/* ===== TEMA ESCURO ===== */
+body.dark {
+    --bg-color: #0c0c10;
+    --bg-pattern: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
+    --container-bg: rgba(20, 20, 28, 0.92);
+    --container-border: rgba(193, 4, 4, 0.3);
+    --text-color: #eef2ff;
+    --text-light: #b9c7d9;
+    --input-border: rgba(255, 255, 255, 0.2);
+    --input-focus: #C10404;
+    --button-bg: #C10404;
+    --button-hover: #a00000;
+    --button-text: #ffffff;
+    --link-color: #ff6b6b;
+    --placeholder-color: rgba(255, 255, 255, 0.5);
+    --modal-bg: rgba(0, 0, 0, 0.7);
+    --modal-content-bg: rgba(25, 25, 35, 0.95);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .sr-only {
@@ -24,83 +65,90 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background-color: var(--bg-color);
+    background-image: var(--bg-pattern);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('img/triangles.png');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.15;
-    pointer-events: none;
+/* Botão de alternar tema */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    color: var(--text-color);
+    box-shadow: var(--shadow);
+    z-index: 100;
+    transition: 0.2s;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.theme-toggle:hover {
+    transform: scale(1.05);
+    border-color: var(--input-focus);
 }
 
+/* Container do formulário */
 .container {
     width: 420px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    color: #fff;
-    padding: 30px 40px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-                rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    color: var(--text-color);
+    padding: 40px 35px;
+    box-shadow: var(--shadow);
     backdrop-filter: blur(10px);
     z-index: 1;
     position: relative;
 }
 
 .container h1 {
-    font-size: 36px;
+    font-size: 32px;
     text-align: center;
     margin-bottom: 20px;
-    background: linear-gradient(to right, #fff, #c2e9fb);
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--text-color), var(--link-color));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-weight: 700;
 }
 
+/* Campos de input */
 .input-box {
     position: relative;
     width: 100%;
-    margin: 30px 0;
+    margin: 28px 0;
 }
 
 .input-box input {
     width: 100%;
     height: 50px;
     background-color: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 40px;
+    border: 1px solid var(--input-border);
+    border-radius: 30px;
     outline: none;
     font-size: 16px;
-    color: #fff;
+    color: var(--text-color);
     padding: 0 45px 0 20px;
 }
 
 .input-box input::placeholder {
-    color: #fff;
-    opacity: 0.7;
+    color: var(--placeholder-color);
 }
 
 .input-box input:focus {
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 2px rgba(193, 4, 4, 0.2);
 }
 
 .input-box i {
@@ -109,74 +157,115 @@ body::before {
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
-    color: #fff;
+    color: var(--text-light);
 }
 
+/* Checkbox personalizado */
 .remember-forgot {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: -15px 0 15px;
+    margin: -5px 0 20px;
     font-size: 14px;
 }
 
-.remember-forgot label {
+.custom-checkbox {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     cursor: pointer;
+    position: relative;
+    user-select: none;
 }
 
-.remember-forgot label input {
-    accent-color: #fff;
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    background-color: transparent;
+    border: 1.5px solid var(--input-border);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transition: 0.2s;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+}
+
+.custom-checkbox input:checked ~ .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.custom-checkbox:hover .checkmark {
+    border-color: var(--input-focus);
 }
 
 .remember-forgot a {
     text-decoration: none;
-    color: #fff;
+    color: var(--link-color);
+    font-weight: 500;
 }
 
 .remember-forgot a:hover {
     text-decoration: underline;
 }
 
+/* Botão login */
 .login {
     width: 100%;
-    height: 45px;
+    height: 48px;
     border: none;
     outline: none;
-    border-radius: 40px;
-    background-color: #fff;
-    color: #333;
+    border-radius: 30px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .login:hover {
-    background-color: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
 }
 
 .register-link {
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
-    margin: 20px 0 15px;
+    margin: 20px 0 5px;
 }
 
 .register-link a {
     text-decoration: none;
-    color: #fff;
-    font-weight: 600;
+    color: var(--link-color);
+    font-weight: 500;
 }
 
 .register-link a:hover {
     text-decoration: underline;
 }
 
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -185,105 +274,93 @@ body::before {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--modal-bg);
     backdrop-filter: blur(5px);
     align-items: center;
     justify-content: center;
 }
 
 .modal-content {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+    background: var(--modal-content-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
     padding: 30px;
     width: 400px;
-    backdrop-filter: blur(10px);
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    z-index: 2;
+    color: var(--text-color);
+    box-shadow: var(--shadow);
     position: relative;
 }
 
-.modal-content::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('img/triangles.png');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.1;
-    pointer-events: none;
-    border-radius: 10px;
-    z-index: -1;
-}
-
 .close {
-    color: #fff;
+    color: var(--text-light);
     float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    line-height: 20px;
 }
 
 .close:hover {
-    color: #ccc;
+    color: var(--link-color);
 }
 
+/* Alertas */
+.alert {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.alert-error {
+    background-color: rgba(193, 4, 4, 0.15);
+    border-left: 4px solid #C10404;
+    color: var(--text-color);
+}
+
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.15);
+    border-left: 4px solid #2ecc71;
+    color: var(--text-color);
+}
+
+/* Responsivo */
 @media (max-width: 768px) {
     .container {
         width: 90%;
-        padding: 20px;
-        margin: 0 10px;
+        padding: 30px 20px;
     }
     .container h1 {
         font-size: 28px;
     }
-    .input-box {
-        margin: 20px 0;
-    }
     .remember-forgot {
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         align-items: flex-start;
     }
     .modal-content {
         width: 90%;
         padding: 20px;
     }
+    .theme-toggle {
+        top: 16px;
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 15px;
+        padding: 20px 18px;
     }
     .input-box input {
         height: 45px;
         font-size: 14px;
     }
     .login {
-        height: 40px;
-        font-size: 14px;
+        height: 45px;
     }
-}
-
-.alert {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    text-align: center;
-}
-
-.alert-error {
-    background-color: rgba(244, 67, 54, 0.2);
-    border: 1px solid rgba(244, 67, 54, 0.5);
-    color: #fff;
-}
-
-.alert-success {
-    background-color: rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(76, 175, 80, 0.5);
-    color: #fff;
 }
