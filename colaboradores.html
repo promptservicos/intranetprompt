@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intranet Prompt</title>
+    <title>Colaboradores - Intranet Prompt</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/icon1.png">
@@ -12,7 +12,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <!-- CSS principal -->
-    <link rel="stylesheet" href="intranet.css">
+    <link rel="stylesheet" href="colaboradores.css">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
@@ -29,7 +29,7 @@
     <header>
         <div class="header-container">
             <div class="header-top">
-                <div class="logo">
+                <div class="logo" id="logoHome">
                     <img id="logoImg" src="img/logo1b.png" alt="Logo Prompt">
                     <h1>Intranet Prompt</h1>
                 </div>
@@ -51,6 +51,7 @@
     <nav class="main-nav">
         <div class="nav-container">
             <ul class="nav-menu">
+                <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
                 <li class="dropdown">
                     <a href="#"><i class='bx bx-building'></i> Departamentos <i class='bx bx-chevron-down'></i></a>
                     <div class="dropdown-content">
@@ -69,45 +70,53 @@
 
     <!-- Main Content -->
     <main>
-        <!-- Welcome Section (centralizado) -->
+        <!-- Welcome Section -->
         <section class="welcome-section">
             <div class="welcome-message">
-                <h2 id="welcomeText">Bem-vindo, Usuário!</h2>
-                <p id="currentDate"></p>
+                <h2>Ramais e Contatos</h2>
+                <p>Lista completa de colaboradores e seus contatos</p>
             </div>
         </section>
 
-        <!-- Espaço central vazio (será usado depois) -->
-        <div class="center-space"></div>
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Buscar por nome, departamento ou ramal...">
+            <button id="searchButton"><i class='bx bx-search'></i> Pesquisar</button>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator">
+            <i class='bx bx-loader-alt bx-spin'></i> Carregando colaboradores...
+        </div>
+
+        <!-- Contacts Section -->
+        <section class="contacts-section">
+            <div class="section-title">
+                <i class='bx bx-phone-call'></i>
+                <h2>Lista de Contatos</h2>
+            </div>
+            
+            <div class="contacts-table-container">
+                <table class="contacts-table" id="contactsTable">
+                    <thead>
+                        <tr>
+                            <th>Departamento</th>
+                            <th>Ramal</th>
+                            <th>Contato</th>
+                            <th>E-mail</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
-    <!-- Carrossel de aniversariantes (um por vez) -->
-    <div class="birthdays-carousel-container">
-        <div class="carousel-title">
-            <i class='bx bx-gift'></i>
-            <span>Próximos Aniversariantes</span>
-        </div>
-        <div class="carousel-wrapper">
-            <button class="carousel-prev" id="carouselPrev"><i class='bx bx-chevron-left'></i></button>
-            <div class="carousel-single" id="carouselSingle">
-                <div class="birthday-card-single">
-                    <div class="birthday-avatar-single">
-                        <i class='bx bx-user'></i>
-                    </div>
-                    <div class="birthday-info-single">
-                        <div class="birthday-name-single" id="birthdayName">Carregando...</div>
-                        <div class="birthday-dept-single" id="birthdayDept">Departamento</div>
-                        <div class="birthday-date-single" id="birthdayDate">
-                            <i class='bx bx-calendar'></i> Data
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-next" id="carouselNext"><i class='bx bx-chevron-right'></i></button>
-        </div>
-    </div>
-
-    <!-- Footer simplificado (Suporte alinhado à esquerda) -->
+    <!-- Footer -->
     <footer>
         <div class="footer-container">
             <div class="footer-main">
@@ -127,6 +136,6 @@
     </footer>
 
     <!-- JavaScript principal -->
-    <script src="intranet.js"></script>
+    <script src="colaboradores.js"></script>
 </body>
 </html>

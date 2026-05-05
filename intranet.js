@@ -1,6 +1,16 @@
 // ========== TEMA (CLARO/ESCURO) ==========
 const themeToggle = document.getElementById('themeToggle');
 const themeIcon = themeToggle.querySelector('i');
+const logoImg = document.getElementById('logoImg');
+
+function updateLogo() {
+    const isDark = document.body.classList.contains('dark');
+    if (isDark) {
+        logoImg.src = 'img/logo1b.png';
+    } else {
+        logoImg.src = 'img/logo1v.png';
+    }
+}
 
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
@@ -12,6 +22,7 @@ if (savedTheme === 'dark') {
     themeIcon.classList.remove('bx-sun');
     themeIcon.classList.add('bx-moon');
 }
+updateLogo();
 
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark');
@@ -25,6 +36,7 @@ themeToggle.addEventListener('click', () => {
         themeIcon.classList.add('bx-moon');
         localStorage.setItem('theme', 'light');
     }
+    updateLogo();
 });
 
 // ========== FIREBASE CONFIG ==========
@@ -43,17 +55,19 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // ========== AUTENTICAÇÃO E DADOS DO USUÁRIO ==========
+let currentUserData = {};
+
 auth.onAuthStateChanged((user) => {
     if (user) {
         db.collection('usuarios').doc(user.uid).get()
             .then((doc) => {
                 if (doc.exists) {
-                    const userData = doc.data();
-                    document.getElementById('userName').textContent = userData.nome;
-                    document.getElementById('userRole').textContent = userData.cargo;
-                    document.getElementById('welcomeText').textContent = `Bem-vindo, ${userData.nome}!`;
+                    currentUserData = doc.data();
+                    document.getElementById('userName').textContent = currentUserData.nome;
+                    document.getElementById('userRole').textContent = currentUserData.cargo;
+                    document.getElementById('welcomeText').textContent = `Bem-vindo, ${currentUserData.nome}!`;
                     
-                    const names = userData.nome.split(' ');
+                    const names = currentUserData.nome.split(' ');
                     const initials = names[0].charAt(0) + (names.length > 1 ? names[names.length-1].charAt(0) : '');
                     document.getElementById('userAvatar').textContent = initials;
                 }
@@ -65,44 +79,185 @@ auth.onAuthStateChanged((user) => {
 });
 
 // ========== LOGOUT ==========
-document.getElementById('logoutBtn').addEventListener('click', () => {
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
     auth.signOut().then(() => {
         window.location.href = 'index.html';
     }).catch(error => console.error("Erro no logout:", error));
 });
 
-// ========== DATA ATUAL ==========
+// ========== PAINEL DO USUÁRIO CLICÁVEL (com hover e cursor) ==========
+const userInfoPanel = document.getElementById('userInfoPanel');
+userInfoPanel.addEventListener('click', () => {
+    window.location.href = 'perfil.html';
+});
+
+// ========== DATA ATUAL COM PRIMEIRA LETRA MAIÚSCULA ==========
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function updateDate() {
     const now = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('currentDate').textContent = now.toLocaleDateString('pt-BR', options);
+    let dateString = now.toLocaleDateString('pt-BR', options);
+    dateString = dateString.replace(/^\w/, (c) => c.toUpperCase());
+    document.getElementById('currentDate').textContent = dateString;
 }
 updateDate();
 
-// ========== CARREGAR ANIVERSARIANTES (exemplo estático, mas pode vir do Firestore) ==========
-// Aqui você pode substituir por uma consulta ao Firestore futuramente.
-const birthdays = [
-    { name: "Gil", department: "Filial", date: "07 de Novembro" },
-    { name: "Nakewellyn", department: "Departamento Pessoal (GRU)", date: "19 de Dezembro" },
-    { name: "Felipe", department: "Supervisão (GRU)", date: "19 de Dezembro" },
-    { name: "Tatiane", department: "Comercial (GRU)", date: "27 de Dezembro" }
-];
+// ========== FUNÇÕES PARA MESES ==========
+const meses = {
+    '01': 'Janeiro', '02': 'Fevereiro', '03': 'Março', '04': 'Abril',
+    '05': 'Maio', '06': 'Junho', '07': 'Julho', '08': 'Agosto',
+    '09': 'Setembro', '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
+};
 
-const container = document.getElementById('birthdaysContainer');
-birthdays.forEach(b => {
-    const card = document.createElement('div');
-    card.className = 'birthday-card';
-    card.innerHTML = `
-        <div class="birthday-avatar">
-            <i class='bx bx-user'></i>
-        </div>
-        <div class="birthday-info">
-            <div class="birthday-name">${b.name}</div>
-            <div class="birthday-department">${b.department}</div>
-            <div class="birthday-date">
-                <i class='bx bx-calendar'></i> ${b.date}
-            </div>
-        </div>
-    `;
-    container.appendChild(card);
+function formatarDataAniversario(dataStr) {
+    // dataStr vem como "dd/mm"
+    const [dia, mes] = dataStr.split('/');
+    return `${parseInt(dia)} de ${meses[mes]}`;
+}
+
+function calcularProximosAniversariantes(aniversarios) {
+    const hoje = new Date();
+    const mesAtual = hoje.getMonth() + 1;
+    const diaAtual = hoje.getDate();
+    
+    // Calcular data do próximo aniversário em dias (considerando até 2 meses = 60 dias)
+    const aniversariosProximos = aniversarios.filter(item => {
+        const [dia, mes] = item.aniversario.split('/').map(Number);
+        
+        // Criar data do aniversário neste ano
+        let dataAniversario = new Date(hoje.getFullYear(), mes - 1, dia);
+        
+        // Se já passou este ano, considerar ano que vem
+        if (dataAniversario < hoje) {
+            dataAniversario = new Date(hoje.getFullYear() + 1, mes - 1, dia);
+        }
+        
+        // Calcular diferença em dias
+        const diffTime = dataAniversario - hoje;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Filtrar aniversários nos próximos 60 dias (2 meses)
+        return diffDays <= 60 && diffDays >= 0;
+    });
+    
+    // Ordenar por data mais próxima
+    aniversariosProximos.sort((a, b) => {
+        const [diaA, mesA] = a.aniversario.split('/').map(Number);
+        const [diaB, mesB] = b.aniversario.split('/').map(Number);
+        
+        let dataA = new Date(hoje.getFullYear(), mesA - 1, diaA);
+        let dataB = new Date(hoje.getFullYear(), mesB - 1, diaB);
+        
+        if (dataA < hoje) dataA = new Date(hoje.getFullYear() + 1, mesA - 1, diaA);
+        if (dataB < hoje) dataB = new Date(hoje.getFullYear() + 1, mesB - 1, diaB);
+        
+        return dataA - dataB;
+    });
+    
+    return aniversariosProximos;
+}
+
+// ========== CARREGAR ANIVERSARIANTES DO FIRESTORE ==========
+let aniversariantesList = [];
+let currentIndexCarousel = 0;
+let carouselInterval = null;
+
+async function carregarAniversariantes() {
+    try {
+        const snapshot = await db.collection('usuarios').get();
+        const aniversarios = [];
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.aniversario) {
+                aniversarios.push({
+                    nome: data.nome,
+                    departamento: data.cargo || data.departamento || 'Funcionário',
+                    aniversario: data.aniversario // formato "dd/mm"
+                });
+            }
+        });
+        
+        aniversariantesList = calcularProximosAniversariantes(aniversarios);
+        
+        if (aniversariantesList.length === 0) {
+            // Nenhum aniversariante nos próximos 2 meses
+            document.getElementById('birthdayName').textContent = 'Nenhum aniversariante';
+            document.getElementById('birthdayDept').textContent = 'nos próximos 2 meses';
+            document.getElementById('birthdayDate').innerHTML = '<i class="bx bx-calendar"></i> Em breve';
+            return;
+        }
+        
+        currentIndexCarousel = 0;
+        exibirAniversariante(currentIndexCarousel);
+        iniciarCarrosselAutomatico();
+        
+    } catch (error) {
+        console.error("Erro ao carregar aniversariantes:", error);
+        document.getElementById('birthdayName').textContent = 'Erro ao carregar';
+        document.getElementById('birthdayDept').textContent = 'Tente novamente mais tarde';
+    }
+}
+
+function exibirAniversariante(index) {
+    if (aniversariantesList.length === 0) return;
+    
+    const item = aniversariantesList[index];
+    const card = document.querySelector('.birthday-card-single');
+    
+    // Adicionar animação fade
+    card.style.animation = 'none';
+    setTimeout(() => {
+        card.style.animation = 'fadeIn 0.5s ease';
+    }, 10);
+    
+    document.getElementById('birthdayName').textContent = item.nome;
+    document.getElementById('birthdayDept').textContent = item.departamento;
+    document.getElementById('birthdayDate').innerHTML = `<i class='bx bx-calendar'></i> ${formatarDataAniversario(item.aniversario)}`;
+}
+
+function iniciarCarrosselAutomatico() {
+    if (carouselInterval) clearInterval(carouselInterval);
+    
+    if (aniversariantesList.length > 1) {
+        carouselInterval = setInterval(() => {
+            proximoAniversariante();
+        }, 4000);
+    }
+}
+
+function proximoAniversariante() {
+    if (aniversariantesList.length === 0) return;
+    currentIndexCarousel = (currentIndexCarousel + 1) % aniversariantesList.length;
+    exibirAniversariante(currentIndexCarousel);
+}
+
+function anteriorAniversariante() {
+    if (aniversariantesList.length === 0) return;
+    currentIndexCarousel = (currentIndexCarousel - 1 + aniversariantesList.length) % aniversariantesList.length;
+    exibirAniversariante(currentIndexCarousel);
+    
+    // Resetar o intervalo automático
+    if (carouselInterval) {
+        clearInterval(carouselInterval);
+        iniciarCarrosselAutomatico();
+    }
+}
+
+// ========== CONTROLES DO CARROSSEL ==========
+document.getElementById('carouselPrev').addEventListener('click', anteriorAniversariante);
+document.getElementById('carouselNext').addEventListener('click', () => {
+    proximoAniversariante();
+    // Resetar o intervalo automático
+    if (carouselInterval) {
+        clearInterval(carouselInterval);
+        iniciarCarrosselAutomatico();
+    }
 });
+
+// Inicializar carregamento
+carregarAniversariantes();
