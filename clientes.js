@@ -72,9 +72,9 @@ async function carregarClientes() {
             todosClientes.push({
                 id: doc.id,
                 nome: data.nome || doc.id,
-                cnpj: data.cnpj || '',
                 email: data.email || '',
                 telefone: data.telefone || '',
+                documento: data.documento || '',
                 endereco: data.endereco || ''
             });
         });

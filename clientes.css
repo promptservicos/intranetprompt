@@ -416,10 +416,10 @@ main {
     color: var(--text-color);
 }
 
-.cliente-cnpj {
+.cliente-email {
     font-size: 0.75rem;
     color: var(--text-light);
-    font-family: monospace;
+    word-break: break-all;
 }
 
 .no-results {

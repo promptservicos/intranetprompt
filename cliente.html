@@ -76,14 +76,22 @@
 
         <!-- Cliente Content (inicialmente oculto) -->
         <div id="clienteContent" class="cliente-content" style="display: none;">
-            <!-- Header da ficha -->
+            <!-- Header da ficha com botão de voltar -->
             <div class="cliente-header">
-                <div class="cliente-avatar-large">
-                    <i class='bx bx-building'></i>
+                <div class="cliente-header-left">
+                    <div class="cliente-avatar-large">
+                        <i class='bx bx-building'></i>
+                    </div>
+                    <div class="cliente-header-info">
+                        <h1 id="clienteNome">Carregando...</h1>
+                        <p id="clienteCNPJ">CNPJ: --</p>
+                        <p id="clienteCodigoGI" class="cliente-codigo-gi">Código GI: --</p>
+                    </div>
                 </div>
-                <div class="cliente-header-info">
-                    <h1 id="clienteNome">Carregando...</h1>
-                    <p id="clienteCNPJ">CNPJ: --</p>
+                <div class="cliente-header-right">
+                    <button id="btnVoltar" class="btn-voltar-cliente">
+                        <i class='bx bx-arrow-back'></i> Voltar
+                    </button>
                 </div>
             </div>
 
@@ -149,6 +157,38 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Seção dividida: Fotos e Cargos -->
+            <div class="dual-section">
+                <!-- Metade Esquerda: Galeria de Fotos -->
+                <div class="fotos-section">
+                    <div class="section-header">
+                        <i class='bx bx-images'></i>
+                        <h3>Fotos de Uniforme</h3>
+                        <button id="btnAdicionarFoto" class="btn-add-foto" title="Adicionar foto">
+                            <i class='bx bx-plus'></i> Adicionar
+                        </button>
+                    </div>
+                    <div id="fotosGrid" class="fotos-grid">
+                        <div class="no-fotos">Nenhuma imagem cadastrada</div>
+                    </div>
+                    <input type="file" id="uploadFoto" accept="image/jpeg,image/png,image/jpg" style="display: none;">
+                </div>
+
+                <!-- Metade Direita: Lista de Cargos -->
+                <div class="cargos-section">
+                    <div class="section-header">
+                        <i class='bx bx-briefcase-alt-2'></i>
+                        <h3>Cargos Atendidos</h3>
+                        <button id="btnAbrirAddCargo" class="btn-add-cargo">
+                            <i class='bx bx-plus'></i> Adicionar Cargo
+                        </button>
+                    </div>
+                    <div id="cargosList" class="cargos-list">
+                        <div class="no-cargos">Nenhum cargo cadastrado</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Mensagem de erro -->
@@ -158,7 +198,88 @@
             <p>Cliente não encontrado ou ocorreu um erro ao carregar os dados.</p>
             <button onclick="window.location.href='clientes.html'" class="btn-voltar">Voltar para lista de clientes</button>
         </div>
+
+        <!-- Mensagem de acesso negado -->
+        <div id="acessoNegado" class="acesso-negado" style="display: none;">
+            <i class='bx bx-lock-alt'></i>
+            <h3>Acesso não autorizado</h3>
+            <p>Você não tem permissão para acessar os dados dos clientes.</p>
+            <p>Esta página é restrita aos departamentos <strong>DP</strong> e <strong>Financeiro</strong>, 
+            bem como aos usuários autorizados.</p>
+            <button onclick="window.location.href='clientes.html'" class="btn-voltar">Voltar para lista de clientes</button>
+        </div>
     </main>
+
+    <!-- Modal para visualização de fotos -->
+    <div id="fotoModal" class="foto-modal" style="display: none;">
+        <div class="modal-content-foto">
+            <span class="modal-close" id="modalClose">&times;</span>
+            <div class="modal-foto-container">
+                <button class="modal-prev" id="modalPrev"><i class='bx bx-chevron-left'></i></button>
+                <img id="modalFoto" src="" alt="Foto ampliada">
+                <button class="modal-next" id="modalNext"><i class='bx bx-chevron-right'></i></button>
+            </div>
+            <div class="modal-footer">
+                <button id="modalRemover" class="modal-remover"><i class='bx bx-trash'></i> Remover foto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ficha detalhada do cargo -->
+    <div id="fichaCargoModal" class="ficha-cargo-modal" style="display: none;">
+        <div class="modal-content-ficha">
+            <div class="modal-header-ficha">
+                <h3>Detalhes do Cargo</h3>
+                <button id="btnEditarCargo" class="btn-editar-cargo-modal" style="display: none;">
+                    <i class='bx bx-edit'></i> Editar
+                </button>
+                <span class="modal-close-ficha">&times;</span>
+            </div>
+            
+            <div class="ficha-cargo-form">
+                <!-- Os campos ficarão readonly quando não estiver em modo edição -->
+                <div class="form-group">
+                    <label>Nome do Cargo *</label>
+                    <input type="text" id="fichaCargoNome" placeholder="Ex: Analista de Sistemas" class="input-ficha" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Escala de Trabalho</label>
+                    <div id="escalaSelecaoContainer" class="escala-container" style="display: none;">
+                        <div class="dias-semana">
+                            <button type="button" class="dia-btn" data-dia="seg">Seg</button>
+                            <button type="button" class="dia-btn" data-dia="ter">Ter</button>
+                            <button type="button" class="dia-btn" data-dia="qua">Qua</button>
+                            <button type="button" class="dia-btn" data-dia="qui">Qui</button>
+                            <button type="button" class="dia-btn" data-dia="sex">Sex</button>
+                            <button type="button" class="dia-btn" data-dia="sab">Sáb</button>
+                            <button type="button" class="dia-btn" data-dia="dom">Dom</button>
+                        </div>
+                        <div class="escala-info">
+                            <span id="escalaPreview" class="escala-preview">Nenhum dia selecionado</span>
+                            <button type="button" id="btnAdicionarEscala" class="btn-add-escala" style="display: none;">
+                                <i class='bx bx-plus'></i> Adicionar outra escala
+                            </button>
+                        </div>
+                    </div>
+                    <div id="escalasList" class="escalas-list"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Jornadas de Trabalho</label>
+                    <div id="jornadasContainer" class="jornadas-container"></div>
+                    <button type="button" id="btnAdicionarJornada" class="btn-add-jornada" style="display: none;">
+                        <i class='bx bx-plus'></i> Adicionar jornada
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-buttons-ficha">
+                <button id="btnCancelarFicha" class="btn-cancelar">Fechar</button>
+                <button id="btnSalvarFicha" class="btn-salvar" style="display: none;">Salvar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>

@@ -256,7 +256,7 @@ header {
 main {
     flex: 1;
     padding: 2rem;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     width: 100%;
 }
@@ -290,10 +290,11 @@ main {
     }
 }
 
-/* Header da ficha */
+/* Header da ficha com botão de voltar */
 .cliente-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1.5rem;
     margin-bottom: 2rem;
     padding: 1.5rem;
@@ -301,6 +302,41 @@ main {
     border: 1px solid var(--container-border);
     border-radius: 24px;
     box-shadow: var(--shadow);
+    flex-wrap: wrap;
+}
+
+.cliente-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.cliente-header-right {
+    display: flex;
+    align-items: center;
+}
+
+.btn-voltar-cliente {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.7rem 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    font-weight: 500;
+}
+
+.btn-voltar-cliente:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    transform: scale(1.02);
 }
 
 .cliente-avatar-large {
@@ -331,6 +367,7 @@ main {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .info-card {
@@ -383,29 +420,273 @@ main {
     word-break: break-word;
 }
 
-/* Mensagem de erro */
-.error-message {
+/* Seção dupla (fotos e cargos) */
+.dual-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 0;
+}
+
+/* Fotos Section */
+.fotos-section {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 1.2rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--container-border);
+    flex-wrap: wrap;
+}
+
+.section-header i {
+    font-size: 1.3rem;
+    color: var(--accent-color);
+}
+
+.section-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+.btn-add-foto, .btn-add-cargo {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    transition: 0.2s;
+}
+
+.btn-add-foto:hover, .btn-add-cargo:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas fixas */
+    gap: 1rem;
+    min-height: 280px;
+    max-height: 450px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+/* Scroll personalizado para o grid de fotos */
+.fotos-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fotos-grid::-webkit-scrollbar-track {
+    background: var(--card-border);
+    border-radius: 3px;
+}
+
+.fotos-grid::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+}
+
+.fotos-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--button-hover);
+}
+
+/* Ajuste do item de foto para manter proporção */
+.foto-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid var(--container-border);
+    transition: 0.2s;
+}
+
+.foto-item:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-color);
+}
+
+.foto-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-remover-foto {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+    opacity: 0;
+}
+
+.foto-item:hover .btn-remover-foto {
+    opacity: 1;
+}
+
+.btn-remover-foto:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.no-fotos {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+    grid-column: 1 / -1;
+}
+
+/* Cargos Section */
+.cargos-section {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 1.2rem;
+}
+
+.cargo-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-cargo {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--input-border);
+    border-radius: 20px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.8rem;
+    outline: none;
+}
+
+.input-cargo:focus {
+    border-color: var(--input-focus);
+}
+
+.cargos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px; /* Aproximadamente 5 cargos (5 x 64px) */
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.cargos-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cargos-list::-webkit-scrollbar-track {
+    background: var(--card-border);
+    border-radius: 3px;
+}
+
+.cargos-list::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+}
+
+.cargos-list::-webkit-scrollbar-thumb:hover {
+    background: var(--button-hover);
+}
+
+.cargo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    transition: 0.2s;
+}
+
+.cargo-item:hover {
+    border-color: var(--accent-color);
+}
+
+.cargo-nome {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.btn-remover-cargo {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: none;
+    border-radius: 20px;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: 0.2s;
+}
+
+.btn-remover-cargo:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.no-cargos {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+}
+
+/* Mensagem de erro e acesso negado */
+.error-message, .acesso-negado {
     text-align: center;
     padding: 3rem;
     background: var(--container-bg);
     border: 1px solid var(--container-border);
     border-radius: 24px;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
-.error-message i {
+.error-message i, .acesso-negado i {
     font-size: 3rem;
     color: var(--accent-color);
     margin-bottom: 1rem;
 }
 
-.error-message h3 {
+.error-message h3, .acesso-negado h3 {
     font-size: 1.3rem;
     margin-bottom: 0.5rem;
 }
 
-.error-message p {
+.error-message p, .acesso-negado p {
     color: var(--text-light);
     margin-bottom: 1.5rem;
+}
+
+.acesso-negado strong {
+    color: var(--accent-color);
 }
 
 .btn-voltar {
@@ -512,8 +793,22 @@ footer {
         flex-direction: column;
         text-align: center;
     }
+    .cliente-header-left {
+        flex-direction: column;
+        text-align: center;
+    }
+    .btn-voltar-cliente {
+        margin-top: 0.5rem;
+    }
     .info-grid {
         grid-template-columns: 1fr;
+    }
+    .dual-section {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .fotos-grid {
+        grid-template-columns: repeat(2, 1fr); /* No mobile, 2 colunas */
     }
     .theme-toggle {
         bottom: 16px;
@@ -548,4 +843,666 @@ footer {
     .info-card {
         padding: 1rem;
     }
+}
+
+/* Modal para fotos */
+.foto-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeInModal 0.3s ease;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content-foto {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    background: transparent;
+}
+
+.modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+    z-index: 2001;
+}
+
+.modal-close:hover {
+    color: var(--accent-color);
+}
+
+.modal-foto-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-foto-container img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.modal-prev, .modal-next {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    transition: 0.2s;
+}
+
+.modal-prev {
+    left: -60px;
+}
+
+.modal-next {
+    right: -60px;
+}
+
+.modal-prev:hover, .modal-next:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.modal-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.modal-remover {
+    background-color: rgba(193, 4, 4, 0.8);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.modal-remover:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+/* Modais para cargos */
+.cargo-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content-cargo {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 2rem;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: var(--shadow);
+}
+
+.modal-content-cargo h3 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.input-cargo-modal {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    outline: none;
+}
+
+.input-cargo-modal:focus {
+    border-color: var(--input-focus);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-cancelar, .btn-salvar {
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.btn-cancelar {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+}
+
+.btn-cancelar:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-salvar {
+    background-color: var(--button-bg);
+    color: white;
+}
+
+.btn-salvar:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+}
+
+.modal-close-cargo, .modal-close-editar {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.modal-close-cargo:hover, .modal-close-editar:hover {
+    color: var(--accent-color);
+}
+
+/* Botão de editar cargo */
+.btn-editar-cargo {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: none;
+    border-radius: 20px;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: 0.2s;
+    margin-right: 8px;
+}
+
+.btn-editar-cargo:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+/* Responsivo para modais */
+@media (max-width: 768px) {
+    .modal-prev {
+        left: -40px;
+    }
+    
+    .modal-next {
+        right: -40px;
+    }
+    
+    .modal-prev, .modal-next {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    .modal-content-cargo {
+        padding: 1.5rem;
+    }
+}
+
+/* Código GI no header */
+.cliente-codigo-gi {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+/* Modal da ficha do cargo */
+.ficha-cargo-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content-ficha {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 2rem;
+    width: 500px;
+    max-width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+}
+
+.modal-content-ficha h3 {
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.modal-close-ficha {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.modal-close-ficha:hover {
+    color: var(--accent-color);
+}
+
+.ficha-cargo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.input-ficha, .select-ficha {
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.input-ficha:focus, .select-ficha:focus {
+    border-color: var(--input-focus);
+}
+
+/* Jornadas */
+.jornadas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.jornada-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+}
+
+.input-horario {
+    flex: 1;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.jornada-item span {
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+
+.btn-remover-jornada {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: none;
+    border-radius: 20px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remover-jornada:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-add-jornada {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    transition: 0.2s;
+    width: fit-content;
+}
+
+.btn-add-jornada:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.modal-buttons-ficha {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--container-border);
+}
+
+/* Ajuste no item de cargo para indicar que é clicável */
+.cargo-item {
+    cursor: pointer;
+}
+
+.cargo-item:hover {
+    border-color: var(--accent-color);
+    background-color: var(--client-card-hover);
+}
+
+.cargo-nome {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    flex: 1;
+}
+
+.cargo-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+    .modal-content-ficha {
+        padding: 1.5rem;
+    }
+    
+    .jornada-item {
+        flex-wrap: wrap;
+    }
+    
+    .input-horario {
+        min-width: 80px;
+    }
+}
+
+/* Escala de Trabalho */
+.escala-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dias-semana {
+    display: flex;
+    gap: 0.83rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.dia-btn {
+    background-color: var(--card-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 30px;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: 0.2s;
+    white-space: nowrap;
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+}
+
+.dia-btn:hover {
+    border-color: var(--accent-color);
+}
+
+.dia-btn.selected {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.escala-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    padding: 0.8rem;
+    border-radius: 12px;
+}
+
+.escala-preview {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.btn-add-escala {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    transition: 0.2s;
+}
+
+.btn-add-escala:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.escalas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.escala-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 0.5rem 0.8rem;
+}
+
+.escala-item-text {
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.btn-remover-escala-item {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: none;
+    border-radius: 20px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remover-escala-item:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.cargo-info {
+    flex: 1;
+}
+
+.cargo-escala-preview {
+    font-size: 0.7rem;
+    color: var(--accent-color);
+    margin-top: 4px;
+}
+
+/* Header do modal da ficha do cargo */
+.modal-header-ficha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--container-border);
+    padding-bottom: 0.8rem;
+}
+
+.modal-header-ficha h3 {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.btn-editar-cargo-modal {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    transition: 0.2s;
+    margin-right: 0.5rem;
+}
+
+.btn-editar-cargo-modal:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* Estado readonly */
+.input-ficha[readonly],
+.input-horario[readonly] {
+    background-color: var(--card-bg);
+    cursor: default;
+    opacity: 0.8;
+}
+
+.dia-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-add-escala:disabled,
+.btn-add-jornada:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Container de seleção de escala (modo edição) */
+.escala-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Container de visualização (modo não edição) */
+.escala-visualizacao {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.escala-visualizacao-item {
+    padding: 0.3rem 0;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+/* Jornada em modo visualização */
+.jornada-visualizacao {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    margin-bottom: 0.5rem;
+}
+
+.jornada-visualizacao-texto {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    flex: 1;
+}
+
+.jornada-visualizacao i {
+    color: var(--accent-color);
+    font-size: 1rem;
 }
