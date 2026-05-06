@@ -86,8 +86,7 @@ body {
     color: var(--text-color);
     box-shadow: var(--shadow);
     z-index: 1000;
-    transition: 0.2s;
-    transition: bottom 0.1s ease;
+    transition: all 0.2s ease;
 }
 
 .theme-toggle:hover {
@@ -101,8 +100,6 @@ body {
         width: 42px;
         height: 42px;
         font-size: 20px;
-        bottom: 16px;
-        right: 16px;
     }
 }
 
@@ -111,8 +108,6 @@ body {
         width: 38px;
         height: 38px;
         font-size: 18px;
-        bottom: 16px;
-        right: 16px;
     }
 }
 

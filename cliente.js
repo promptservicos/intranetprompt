@@ -1480,3 +1480,46 @@ if (fichaModal) {
         if (e.target === fichaModal) fecharModalFicha();
     });
 }
+
+// ========== BOTÃO DE TEMA STICKY (PARA NO RODAPÉ) ==========
+function ajustarBotaoTema() {
+    const themeBtn = document.getElementById('themeToggle');
+    const footer = document.querySelector('footer');
+    
+    if (!themeBtn || !footer) return;
+    
+    const footerRect = footer.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const themeBtnHeight = themeBtn.offsetHeight;
+    
+    // Se o topo do footer está visível ou próximo do viewport
+    if (footerRect.top <= windowHeight - 50) {
+        // Botão fica absoluto em relação ao body
+        const scrollY = window.scrollY;
+        const footerOffsetTop = footer.offsetTop;
+        const newTop = footerOffsetTop - themeBtnHeight - 20;
+        
+        themeBtn.style.position = 'absolute';
+        themeBtn.style.bottom = 'auto';
+        themeBtn.style.top = newTop + 'px';
+        themeBtn.style.right = '20px';
+    } else {
+        // Botão volta para posição fixa
+        themeBtn.style.position = 'fixed';
+        themeBtn.style.bottom = '20px';
+        themeBtn.style.top = 'auto';
+        themeBtn.style.right = '20px';
+    }
+}
+
+// Garantir que o body tem position relative para o absolute funcionar
+document.body.style.position = 'relative';
+document.body.style.minHeight = '100vh';
+
+// Adicionar event listeners
+window.addEventListener('scroll', ajustarBotaoTema);
+window.addEventListener('resize', ajustarBotaoTema);
+window.addEventListener('load', ajustarBotaoTema);
+
+// Chamar uma vez para inicializar
+setTimeout(ajustarBotaoTema, 100);
