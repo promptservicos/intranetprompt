@@ -264,6 +264,43 @@ document.getElementById('logoHome').addEventListener('click', () => {
     window.location.href = 'intranet.html';
 });
 
+// ========== BOTÃO DE TEMA STICKY (PARA NO RODAPÉ) ==========
+function ajustarBotaoTema() {
+    const themeBtn = document.getElementById('themeToggle');
+    const footer = document.querySelector('footer');
+    
+    if (!themeBtn || !footer) return;
+    
+    const footerTop = footer.getBoundingClientRect().top;
+    const windowHeight = window.innerHeight;
+    const themeBtnHeight = themeBtn.offsetHeight;
+    
+    // Se o rodapé está visível ou próximo
+    if (footerTop < windowHeight - 50) {
+        // Calcula a posição para o botão parar acima do rodapé
+        const stopPosition = footerTop - themeBtnHeight - 20;
+        if (stopPosition < windowHeight - themeBtnHeight - 20) {
+            themeBtn.style.position = 'absolute';
+            themeBtn.style.bottom = 'auto';
+            themeBtn.style.top = `${footer.offsetTop - themeBtnHeight - 20}px`;
+            themeBtn.style.right = '20px';
+        }
+    } else {
+        // Volta para posição fixa
+        themeBtn.style.position = 'fixed';
+        themeBtn.style.bottom = '20px';
+        themeBtn.style.top = 'auto';
+        themeBtn.style.right = '20px';
+    }
+}
+
+// Adicionar event listeners para scroll e resize
+window.addEventListener('scroll', ajustarBotaoTema);
+window.addEventListener('resize', ajustarBotaoTema);
+
+// Chamar uma vez para inicializar
+setTimeout(ajustarBotaoTema, 100);
+
 // ========== EVENTOS DE BUSCA ==========
 document.getElementById('searchButton').addEventListener('click', performSearch);
 document.getElementById('searchInput').addEventListener('keyup', (e) => {

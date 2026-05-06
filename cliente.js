@@ -84,6 +84,7 @@ let escalasTemp = [];
 let modoEdicaoCargo = false;
 let uniformesTemp = [];
 let examesTemp = [];
+let contratosTemp = [];
 
 // ========== CONSTANTES PARA DIAS ==========
 const diasMap = {
@@ -239,6 +240,12 @@ function habilitarEdicaoCargo(habilitar) {
     if (btnAddJornada) {
         btnAddJornada.style.display = habilitar ? 'inline-flex' : 'none';
     }
+
+    // Dentro de habilitarEdicaoCargo, adicione:
+    const contratoSelecao = document.getElementById('contratoSelecaoContainer');
+    if (contratoSelecao) {
+        contratoSelecao.style.display = habilitar ? 'flex' : 'none';
+    }
     
     // Botões do modal
     const btnEditar = document.getElementById('btnEditarCargo');
@@ -280,6 +287,9 @@ function carregarDadosCargoNoModal(cargo) {
     
     examesTemp = cargo.exames ? [...cargo.exames] : [];
     renderizarExames();
+    
+    contratosTemp = cargo.contratos ? [...cargo.contratos] : [];
+    renderizarContratos();
     
     renderizarJornadas();
 }
@@ -574,7 +584,8 @@ function coletarDadosCargo() {
         escalas: escalasTemp,
         jornadas: jornadas,
         uniformes: uniformesTemp,
-        exames: examesTemp
+        exames: examesTemp,
+        contratos: contratosTemp
     };
 }
 
@@ -823,6 +834,59 @@ function adicionarExame() {
     select.value = '';
 }
 
+// ========== FUNÇÕES PARA CONTRATOS ==========
+function renderizarContratos() {
+    const container = document.getElementById('contratoList');
+    if (!container) return;
+    
+    if (!contratosTemp || contratosTemp.length === 0) {
+        container.innerHTML = '<div class="no-item">Nenhum contrato cadastrado</div>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    contratosTemp.forEach((contrato, index) => {
+        const contratoDiv = document.createElement('div');
+        contratoDiv.className = 'contrato-item';
+        contratoDiv.innerHTML = `
+            <span class="contrato-nome">${escapeHtml(contrato)}</span>
+            ${modoEdicaoCargo ? `<button class="btn-remover-contrato" data-index="${index}">
+                <i class='bx bx-x'></i>
+            </button>` : ''}
+        `;
+        container.appendChild(contratoDiv);
+    });
+    
+    if (modoEdicaoCargo) {
+        document.querySelectorAll('.btn-remover-contrato').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(btn.dataset.index);
+                contratosTemp.splice(index, 1);
+                renderizarContratos();
+            });
+        });
+    }
+}
+
+function adicionarContrato() {
+    const select = document.getElementById('contratoSelect');
+    const nome = select.value;
+    
+    if (!nome) {
+        alert('Selecione um tipo de contrato.');
+        return;
+    }
+    
+    if (contratosTemp.includes(nome)) {
+        alert('Este tipo de contrato já foi adicionado.');
+        return;
+    }
+    
+    contratosTemp.push(nome);
+    renderizarContratos();
+    select.value = '';
+}
+
 // ========== FUNÇÕES PARA FOTOS ==========
 async function compactarImagem(file, maxSizeKB = 200) {
     return new Promise((resolve, reject) => {
@@ -1016,6 +1080,19 @@ async function carregarCliente() {
         document.getElementById('clienteEndereco').textContent = data.endereco || 'Não informado';
         document.getElementById('clienteInscricaoEstadual').textContent = data.iestadual || data.inscricao_estadual || 'Não informado';
         document.getElementById('clienteCodigoGI').innerHTML = `<i class='bx bx-barcode'></i> Código GI: ${data.codigogi || 'Não informado'}`;
+        // Informações adicionais
+        document.getElementById('clienteSupervisor').textContent = data.supervisor || 'Não informado';
+        document.getElementById('clientePonto').textContent = data.ponto || 'Não informado';
+        document.getElementById('clienteFechFolha').textContent = data.fechfolha || 'Não informado';
+        document.getElementById('clienteIntManha').textContent = data.intmanha || 'Não informado';
+        document.getElementById('clienteIntTarde').textContent = data.inttarde || 'Não informado';
+        document.getElementById('clienteIntNoite').textContent = data.intnoite || 'Não informado';
+        document.getElementById('clienteEmiFat').textContent = data.emifat || 'Não informado';
+        document.getElementById('clienteVencFat').textContent = data.vencfat || 'Não informado';
+        document.getElementById('clienteAdiantData').textContent = data.adiantdata || 'Não informado';
+        document.getElementById('clientePagData').textContent = data.pagdata || 'Não informado';
+        document.getElementById('clienteBenAdiant').textContent = data.beneadiant || 'Não informado';
+        document.getElementById('clienteBenPag').textContent = data.benepag || 'Não informado';
         
         loadingIndicator.style.display = 'none';
         clienteContent.style.display = 'block';
@@ -1217,6 +1294,12 @@ if (btnCancelarFicha) {
     });
 }
 
+// Eventos para contratos
+const btnAdicionarContrato = document.getElementById('btnAdicionarContrato');
+if (btnAdicionarContrato) {
+    btnAdicionarContrato.addEventListener('click', adicionarContrato);
+}
+
 // Eventos para uniformes
 const btnAdicionarUniforme = document.getElementById('btnAdicionarUniforme');
 if (btnAdicionarUniforme) {
@@ -1228,6 +1311,43 @@ const btnAdicionarExame = document.getElementById('btnAdicionarExame');
 if (btnAdicionarExame) {
     btnAdicionarExame.addEventListener('click', adicionarExame);
 }
+
+// ========== BOTÃO DE TEMA STICKY (PARA NO RODAPÉ) ==========
+function ajustarBotaoTema() {
+    const themeBtn = document.getElementById('themeToggle');
+    const footer = document.querySelector('footer');
+    
+    if (!themeBtn || !footer) return;
+    
+    const footerTop = footer.getBoundingClientRect().top;
+    const windowHeight = window.innerHeight;
+    const themeBtnHeight = themeBtn.offsetHeight;
+    
+    // Se o rodapé está visível ou próximo
+    if (footerTop < windowHeight - 50) {
+        // Calcula a posição para o botão parar acima do rodapé
+        const stopPosition = footerTop - themeBtnHeight - 20;
+        if (stopPosition < windowHeight - themeBtnHeight - 20) {
+            themeBtn.style.position = 'absolute';
+            themeBtn.style.bottom = 'auto';
+            themeBtn.style.top = `${footer.offsetTop - themeBtnHeight - 20}px`;
+            themeBtn.style.right = '20px';
+        }
+    } else {
+        // Volta para posição fixa
+        themeBtn.style.position = 'fixed';
+        themeBtn.style.bottom = '20px';
+        themeBtn.style.top = 'auto';
+        themeBtn.style.right = '20px';
+    }
+}
+
+// Adicionar event listeners para scroll e resize
+window.addEventListener('scroll', ajustarBotaoTema);
+window.addEventListener('resize', ajustarBotaoTema);
+
+// Chamar uma vez para inicializar
+setTimeout(ajustarBotaoTema, 100);
 
 // Eventos do modal da ficha do cargo
 const fichaModal = document.getElementById('fichaCargoModal');

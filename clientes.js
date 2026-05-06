@@ -54,9 +54,61 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// ========== USUÁRIOS AUTORIZADOS PARA EDITAR CLIENTES ==========
+const USUARIOS_AUTORIZADOS_IDS = [
+    "AYcRWgTIRndQWnb5oyTHxLPNAtv2",
+    "rDPXgiatpDUCL3dJ7NyAPL0mLtD3",
+    "LptL8Wg2heSJKwPHowBxujIsR0E2"
+];
+
+const USUARIOS_AUTORIZADOS_EMAILS = [
+    "fabiomansur@promptservicos.com.br",
+    "fabio@promptservicos.com.br",
+    "marketing@promptservicos.com.br"
+];
+
+const DEPARTAMENTOS_AUTORIZADOS = [
+    "DP",
+    "Departamento Pessoal"
+];
+
 // ========== VARIÁVEIS GLOBAIS ==========
 let todosClientes = [];
 let currentFilter = '';
+let podeEditarClientes = false;
+
+// ========== FUNÇÃO PARA VERIFICAR PERMISSÃO DE EDIÇÃO ==========
+async function verificarPermissaoEdicao(user) {
+    if (USUARIOS_AUTORIZADOS_IDS.includes(user.uid)) {
+        podeEditarClientes = true;
+        return true;
+    }
+    
+    if (user.email && USUARIOS_AUTORIZADOS_EMAILS.includes(user.email)) {
+        podeEditarClientes = true;
+        return true;
+    }
+    
+    try {
+        const doc = await db.collection('usuarios').doc(user.uid).get();
+        if (doc.exists) {
+            const userData = doc.data();
+            const departamento = userData.departamento || userData.cargo || '';
+            const acessoPorDepartamento = DEPARTAMENTOS_AUTORIZADOS.some(
+                dept => departamento.toLowerCase().includes(dept.toLowerCase())
+            );
+            if (acessoPorDepartamento) {
+                podeEditarClientes = true;
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao verificar departamento:", error);
+    }
+    
+    podeEditarClientes = false;
+    return false;
+}
 
 // ========== CARREGAR CLIENTES DO FIRESTORE ==========
 async function carregarClientes() {
@@ -72,20 +124,24 @@ async function carregarClientes() {
             todosClientes.push({
                 id: doc.id,
                 nome: data.nome || doc.id,
-                cnpj: data.cnpj || '',  // ← ADICIONAR ESTA LINHA
+                cnpj: data.cnpj || '',
+                codigogi: data.codigogi || '',
+                rsocial: data.rsocial || data.razao_social || '',
+                contato: data.contato || '',
                 email: data.email || '',
                 telefone: data.telefone || '',
-                documento: data.documento || '',
-                endereco: data.endereco || ''
+                endereco: data.endereco || '',
+                iestadual: data.iestadual || ''
             });
         });
         
-        // Ordenar clientes por nome
-        todosClientes.sort((a, b) => {
-            return a.nome.localeCompare(b.nome);
-        });
+        todosClientes.sort((a, b) => a.nome.localeCompare(b.nome));
         
-        // Renderizar grid
+        const btnNovoCliente = document.getElementById('btnNovoCliente');
+        if (btnNovoCliente) {
+            btnNovoCliente.style.display = podeEditarClientes ? 'flex' : 'none';
+        }
+        
         renderizarGrid();
         
     } catch (error) {
@@ -138,21 +194,26 @@ function renderizarGrid() {
     });
 }
 
-// ========== FUNÇÃO PARA FORMATAR CNPJ ==========
+// ========== FUNÇÕES DE FORMATAÇÃO ==========
 function formatarCNPJ(cnpj) {
-    // Remove tudo que não é número
     const numeros = cnpj.replace(/\D/g, '');
-    
-    // Verifica se tem 14 dígitos
     if (numeros.length === 14) {
         return numeros.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
     }
-    
-    // Se não tiver 14 dígitos, retorna o original
     return cnpj;
 }
 
-// ========== FUNÇÃO PARA ESCAPAR HTML ==========
+function formatarTelefone(telefone) {
+    const numeros = telefone.replace(/\D/g, '');
+    if (numeros.length === 10) {
+        return numeros.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
+    }
+    if (numeros.length === 11) {
+        return numeros.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    }
+    return telefone;
+}
+
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -167,15 +228,76 @@ function performSearch() {
     renderizarGrid();
 }
 
-// ========== EXIBIR ERRO ==========
 function showError(message) {
     const grid = document.getElementById('clientesGrid');
     grid.innerHTML = `<div class="no-results" style="color: var(--accent-color);">${message}</div>`;
 }
 
-// ========== AUTENTICAÇÃO E DADOS DO USUÁRIO ==========
-auth.onAuthStateChanged((user) => {
+// ========== FUNÇÕES DO MODAL DE CLIENTE ==========
+function abrirModalNovoCliente() {
+    if (!podeEditarClientes) {
+        alert('Você não tem permissão para cadastrar clientes.');
+        return;
+    }
+    
+    document.getElementById('modalTitle').textContent = 'Novo Cliente';
+    document.getElementById('clienteForm').reset();
+    document.getElementById('clienteModal').style.display = 'flex';
+    window.editandoClienteId = null;
+}
+
+function fecharModalCliente() {
+    document.getElementById('clienteModal').style.display = 'none';
+    document.getElementById('clienteForm').reset();
+    window.editandoClienteId = null;
+}
+
+async function salvarCliente(event) {
+    event.preventDefault();
+    
+    if (!podeEditarClientes) {
+        alert('Você não tem permissão para cadastrar/editar clientes.');
+        return;
+    }
+    
+    const clienteData = {
+        nome: document.getElementById('clienteNome').value.trim(),
+        cnpj: document.getElementById('clienteCNPJ').value.trim(),
+        codigogi: document.getElementById('clienteCodigoGI').value.trim(),
+        rsocial: document.getElementById('clienteRazaoSocial').value.trim(),
+        contato: document.getElementById('clienteContato').value.trim(),
+        email: document.getElementById('clienteEmail').value.trim(),
+        telefone: document.getElementById('clienteTelefone').value.trim(),
+        endereco: document.getElementById('clienteEndereco').value.trim(),
+        iestadual: document.getElementById('clienteInscricaoEstadual').value.trim()
+    };
+    
+    if (!clienteData.nome) {
+        alert('O nome do cliente é obrigatório.');
+        return;
+    }
+    
+    try {
+        if (window.editandoClienteId) {
+            await db.collection('clientes').doc(window.editandoClienteId).update(clienteData);
+        } else {
+            await db.collection('clientes').add(clienteData);
+        }
+        
+        fecharModalCliente();
+        await carregarClientes();
+        
+    } catch (error) {
+        console.error("Erro ao salvar cliente:", error);
+        alert('Erro ao salvar cliente. Verifique suas permissões.');
+    }
+}
+
+// ========== AUTENTICAÇÃO ==========
+auth.onAuthStateChanged(async (user) => {
     if (user) {
+        await verificarPermissaoEdicao(user);
+        
         db.collection('usuarios').doc(user.uid).get()
             .then((doc) => {
                 if (doc.exists) {
@@ -190,8 +312,7 @@ auth.onAuthStateChanged((user) => {
             })
             .catch(error => console.error("Erro ao buscar usuário:", error));
         
-        // Carregar clientes após autenticação
-        carregarClientes();
+        await carregarClientes();
     } else {
         window.location.href = 'index.html';
     }
@@ -207,9 +328,11 @@ document.getElementById('logoutBtn').addEventListener('click', (e) => {
 
 // ========== PAINEL DO USUÁRIO CLICÁVEL ==========
 const userInfoPanel = document.getElementById('userInfoPanel');
-userInfoPanel.addEventListener('click', () => {
-    window.location.href = 'perfil.html';
-});
+if (userInfoPanel) {
+    userInfoPanel.addEventListener('click', () => {
+        window.location.href = 'perfil.html';
+    });
+}
 
 // ========== LOGO CLICÁVEL ==========
 document.getElementById('logoHome').addEventListener('click', () => {
@@ -223,3 +346,109 @@ document.getElementById('searchInput').addEventListener('keyup', (e) => {
         performSearch();
     }
 });
+
+// ========== EVENTOS DO MODAL DE CLIENTE ==========
+const btnNovoCliente = document.getElementById('btnNovoCliente');
+if (btnNovoCliente) {
+    btnNovoCliente.addEventListener('click', abrirModalNovoCliente);
+}
+
+const modalCloseCliente = document.querySelector('.modal-close-cliente');
+if (modalCloseCliente) {
+    modalCloseCliente.addEventListener('click', fecharModalCliente);
+}
+
+const btnCancelarCliente = document.getElementById('btnCancelarCliente');
+if (btnCancelarCliente) {
+    btnCancelarCliente.addEventListener('click', fecharModalCliente);
+}
+
+const clienteForm = document.getElementById('clienteForm');
+if (clienteForm) {
+    clienteForm.addEventListener('submit', salvarCliente);
+}
+
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('clienteModal');
+    if (e.target === modal) {
+        fecharModalCliente();
+    }
+});
+
+// ========== FORMATAÇÃO AUTOMÁTICA (com verificação de existência) ==========
+const cnpjInput = document.getElementById('clienteCNPJ');
+if (cnpjInput) {
+    cnpjInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 14) value = value.slice(0, 14);
+        if (value.length === 14) {
+            value = value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+        }
+        e.target.value = value;
+    });
+}
+
+const telefoneInput = document.getElementById('clienteTelefone');
+if (telefoneInput) {
+    telefoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length === 10) {
+            value = value.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
+        } else if (value.length === 11) {
+            value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+        }
+        e.target.value = value;
+    });
+}
+
+// ========== BOTÃO DE TEMA STICKY (PARA NO RODAPÉ) ==========
+function ajustarBotaoTema() {
+    const themeBtn = document.getElementById('themeToggle');
+    const footer = document.querySelector('footer');
+    
+    if (!themeBtn || !footer) return;
+    
+    const footerTop = footer.getBoundingClientRect().top;
+    const windowHeight = window.innerHeight;
+    const themeBtnHeight = themeBtn.offsetHeight;
+    
+    // Se o rodapé está visível ou próximo
+    if (footerTop < windowHeight - 50) {
+        // Calcula a posição para o botão parar acima do rodapé
+        const stopPosition = footerTop - themeBtnHeight - 20;
+        if (stopPosition < windowHeight - themeBtnHeight - 20) {
+            themeBtn.style.position = 'absolute';
+            themeBtn.style.bottom = 'auto';
+            themeBtn.style.top = `${footer.offsetTop - themeBtnHeight - 20}px`;
+            themeBtn.style.right = '20px';
+        }
+    } else {
+        // Volta para posição fixa
+        themeBtn.style.position = 'fixed';
+        themeBtn.style.bottom = '20px';
+        themeBtn.style.top = 'auto';
+        themeBtn.style.right = '20px';
+    }
+}
+
+// Adicionar event listeners para scroll e resize
+window.addEventListener('scroll', ajustarBotaoTema);
+window.addEventListener('resize', ajustarBotaoTema);
+
+// Chamar uma vez para inicializar
+setTimeout(ajustarBotaoTema, 100);
+
+const telefoneInput = document.getElementById('clienteTelefone');
+if (telefoneInput) {
+    telefoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length === 10) {
+            value = value.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
+        } else if (value.length === 11) {
+            value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+        }
+        e.target.value = value;
+    });
+}

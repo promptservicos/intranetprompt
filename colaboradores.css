@@ -69,7 +69,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Botão de alternar tema (canto inferior direito) */
+/* Botão de alternar tema - controlado por JS */
 .theme-toggle {
     position: fixed;
     bottom: 20px;
@@ -89,11 +89,33 @@ body {
     box-shadow: var(--shadow);
     z-index: 1000;
     transition: 0.2s;
+    transition: bottom 0.1s ease;
 }
 
 .theme-toggle:hover {
     transform: scale(1.05);
     border-color: var(--input-focus);
+}
+
+/* Ajuste para mobile */
+@media (max-width: 768px) {
+    .theme-toggle {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+        bottom: 16px;
+        right: 16px;
+    }
 }
 
 /* Header */
@@ -400,7 +422,7 @@ main {
     border-top: none;
 }
 
-/* Footer - Suporte à esquerda e Copyright centralizado */
+/* Footer - Suporte à ESQUERDA e Copyright à DIREITA */
 footer {
     background: var(--footer-bg);
     backdrop-filter: blur(10px);
@@ -412,48 +434,60 @@ footer {
 
 .footer-container {
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem;
     margin: 0;
     padding: 0;
 }
 
-.footer-main {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 1.5rem;
-    width: 100%;
-    padding-left: 0;
-}
-
 .footer-section {
     text-align: left;
-    margin-left: 0;
-    padding-left: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .footer-section h3 {
     color: var(--accent-color);
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem;
     font-size: 1rem;
 }
 
 .footer-section p {
     color: var(--text-light);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.3rem;
     font-size: 0.85rem;
 }
 
 .footer-bottom {
-    text-align: center;
-    padding-top: 1rem;
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--container-border);
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    width: 100%;
+    text-align: right;
+    margin: 0;
+    padding: 0;
 }
 
 .footer-bottom p {
+    color: var(--text-muted);
+    font-size: 0.8rem;
     margin-bottom: 0.2rem;
+}
+
+/* Responsivo para mobile */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .footer-section {
+        text-align: center;
+    }
+    
+    .footer-bottom {
+        text-align: center;
+    }
 }
 
 /* Responsivo */

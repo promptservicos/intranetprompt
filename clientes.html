@@ -77,10 +77,17 @@
             </div>
         </section>
 
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Buscar por nome do cliente...">
-            <button id="searchButton"><i class='bx bx-search'></i> Pesquisar</button>
+        <!-- Search Bar e Botão Novo Cliente Centralizados -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <div class="search-bar">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="searchInput" placeholder="Buscar por nome do cliente...">
+                </div>
+                <button id="btnNovoCliente" class="btn-novo-cliente" style="display: none;">
+                    <i class='bx bx-plus'></i>
+                </button>
+            </div>
         </div>
 
         <!-- Loading Indicator -->
@@ -100,6 +107,74 @@
             </div>
         </section>
     </main>
+
+    <!-- Modal para cadastro/edição de cliente -->
+    <div id="clienteModal" class="cliente-modal" style="display: none;">
+        <div class="modal-content-cliente">
+            <div class="modal-header-cliente">
+                <h3 id="modalTitle">Novo Cliente</h3>
+                <span class="modal-close-cliente">&times;</span>
+            </div>
+            
+            <form id="clienteForm">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Nome do Cliente *</label>
+                        <input type="text" id="clienteNome" placeholder="Digite o nome do cliente..." required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>CNPJ</label>
+                        <input type="text" id="clienteCNPJ" placeholder="00.000.000/0000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Código GI</label>
+                        <input type="text" id="clienteCodigoGI" placeholder="Código GI">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Razão Social</label>
+                        <input type="text" id="clienteRazaoSocial" placeholder="Razão Social">
+                    </div>
+                    <div class="form-group">
+                        <label>Contato / Responsável</label>
+                        <input type="text" id="clienteContato" placeholder="Nome do responsável">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="clienteEmail" placeholder="email@dominio.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="clienteTelefone" placeholder="(00) 00000-0000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Inscrição Estadual</label>
+                        <input type="text" id="clienteInscricaoEstadual" placeholder="Inscrição Estadual">
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" id="clienteEndereco" placeholder="Endereço completo">
+                    </div>
+                </div>
+
+                <div class="modal-buttons-cliente">
+                    <button type="button" id="btnCancelarCliente" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" id="btnSalvarCliente" class="btn-salvar">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>

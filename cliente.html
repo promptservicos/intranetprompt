@@ -188,6 +188,156 @@
                         <div class="no-cargos">Nenhum cargo cadastrado</div>
                     </div>
                 </div>
+
+                    <!-- Informações Adicionais do Cliente -->
+                    <div class="info-adicionais">
+                        <div class="section-header-adicionais">
+                            <i class='bx bx-info-circle'></i>
+                            <h3>Informações Complementares</h3>
+                        </div>
+                        <div class="info-adicionais-duas-colunas">
+                            <!-- COLUNA 1 -->
+                            <div class="info-adicionais-coluna">
+                                <!-- Supervisor e Ponto -->
+                                <div class="info-adicional-card">
+                                    <div class="info-adicional-icon">
+                                        <i class='bx bx-user-check'></i>
+                                    </div>
+                                    <div class="info-adicional-content">
+                                        <span class="info-adicional-label">Supervisor</span>
+                                        <span class="info-adicional-value" id="clienteSupervisor">--</span>
+                                    </div>
+                                </div>
+                                <div class="info-adicional-card">
+                                    <div class="info-adicional-icon">
+                                        <i class='bx bx-map-pin'></i>
+                                    </div>
+                                    <div class="info-adicional-content">
+                                        <span class="info-adicional-label">Ponto</span>
+                                        <span class="info-adicional-value" id="clientePonto">--</span>
+                                    </div>
+                                </div>
+                                <div class="info-adicional-card">
+                                    <div class="info-adicional-icon">
+                                        <i class='bx bx-file'></i>
+                                    </div>
+                                    <div class="info-adicional-content">
+                                        <span class="info-adicional-label">Fechamento de Folha</span>
+                                        <span class="info-adicional-value" id="clienteFechFolha">--</span>
+                                    </div>
+                                </div>
+
+                                <!-- Integrações -->
+                                <div class="info-subsection">
+                                    <div class="subsection-title">
+                                        <i class='bx bx-transfer'></i>
+                                        <span>Integrações</span>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-sun'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Manhã</span>
+                                            <span class="info-adicional-value" id="clienteIntManha">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-time'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Tarde</span>
+                                            <span class="info-adicional-value" id="clienteIntTarde">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-moon'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Noite</span>
+                                            <span class="info-adicional-value" id="clienteIntNoite">--</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- COLUNA 2 -->
+                            <div class="info-adicionais-coluna">
+                                <!-- Faturamento -->
+                                <div class="info-subsection">
+                                    <div class="subsection-title">
+                                        <i class='bx bx-line-chart'></i>
+                                        <span>Faturamento</span>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-calendar-plus'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Data de Emissão</span>
+                                            <span class="info-adicional-value" id="clienteEmiFat">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-calendar-check'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Data de Vencimento</span>
+                                            <span class="info-adicional-value" id="clienteVencFat">--</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pagamentos (incluindo benefícios) -->
+                                <div class="info-subsection">
+                                    <div class="subsection-title">
+                                        <i class='bx bx-credit-card'></i>
+                                        <span>Pagamentos</span>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-money'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Adiantamento de Salário</span>
+                                            <span class="info-adicional-value" id="clienteAdiantData">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-dollar-circle'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Pagamento de Salário</span>
+                                            <span class="info-adicional-value" id="clientePagData">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-calendar'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Adiantamento de Benefícios</span>
+                                            <span class="info-adicional-value" id="clienteBenAdiant">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="info-adicional-card">
+                                        <div class="info-adicional-icon">
+                                            <i class='bx bx-calendar-star'></i>
+                                        </div>
+                                        <div class="info-adicional-content">
+                                            <span class="info-adicional-label">Pagamento de Benefícios</span>
+                                            <span class="info-adicional-value" id="clienteBenPag">--</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -323,7 +473,28 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Tipo de Contrato -->
+                    <div class="form-group">
+                        <label>Tipo de Contrato</label>
+                        <div id="contratoContainer">
+                            <div id="contratoList" class="contrato-list"></div>
+                            <div id="contratoSelecaoContainer" class="contrato-selecao" style="display: none;">
+                                <select id="contratoSelect" class="select-contrato">
+                                    <option value="">Selecione um tipo...</option>
+                                    <option value="Efetivo">Efetivo</option>
+                                    <option value="Temporário">Temporário</option>
+                                    <option value="Terceirizado">Terceirizado</option>
+                                </select>
+                                <button type="button" id="btnAdicionarContrato" class="btn-add-contrato">
+                                    <i class='bx bx-plus'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+                
             </div>
 
             <div class="modal-buttons-ficha">
@@ -336,13 +507,11 @@
     <!-- Footer -->
     <footer>
         <div class="footer-container">
-            <div class="footer-main">
-                <div class="footer-section">
-                    <h3>Suporte</h3>
-                    <p><i class='bx bx-phone'></i> Ramal: indisponível</p>
-                    <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
-                    <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
-                </div>
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <p><i class='bx bx-phone'></i> Ramal: indisponível</p>
+                <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
             </div>
             <div class="footer-bottom">
                 <p>Intranet Prompt v0.2</p>
