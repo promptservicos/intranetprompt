@@ -82,6 +82,8 @@ let cargoEditandoIndex = null;
 let diasSelecionadosTemp = [];
 let escalasTemp = [];
 let modoEdicaoCargo = false;
+let uniformesTemp = [];
+let examesTemp = [];
 
 // ========== CONSTANTES PARA DIAS ==========
 const diasMap = {
@@ -196,6 +198,18 @@ function habilitarEdicaoCargo(habilitar) {
         escalaSelecaoContainer.style.display = habilitar ? 'flex' : 'none';
     }
     
+    // Container de seleção de uniformes
+    const uniformesSelecao = document.getElementById('uniformesSelecaoContainer');
+    if (uniformesSelecao) {
+        uniformesSelecao.style.display = habilitar ? 'flex' : 'none';
+    }
+    
+    // Container de seleção de exames
+    const examesSelecao = document.getElementById('examesSelecaoContainer');
+    if (examesSelecao) {
+        examesSelecao.style.display = habilitar ? 'flex' : 'none';
+    }
+    
     // Botões de dias da semana
     document.querySelectorAll('.dia-btn').forEach(btn => {
         if (habilitar) {
@@ -235,8 +249,10 @@ function habilitarEdicaoCargo(habilitar) {
     if (btnSalvar) btnSalvar.style.display = habilitar ? 'flex' : 'none';
     if (btnCancelar) btnCancelar.textContent = habilitar ? 'Cancelar' : 'Fechar';
     
-    // Renderizar jornadas no modo apropriado
+    // Renderizar listas no modo apropriado
     renderizarJornadas();
+    renderizarUniformes();
+    renderizarExames();
 }
 
 function entrarModoEdicao() {
@@ -259,12 +275,11 @@ function carregarDadosCargoNoModal(cargo) {
     renderizarEscalasLista();
     limparSelecaoDias();
     
-    // Renderizar jornadas (será chamada novamente pelo habilitarEdicaoCargo)
-    // Mas precisamos garantir que os dados estejam disponíveis
-    if (cargo.jornadas) {
-        // Salvar temporariamente para uso no modo edição
-        window.jornadasTemp = [...cargo.jornadas];
-    }
+    uniformesTemp = cargo.uniformes ? [...cargo.uniformes] : [];
+    renderizarUniformes();
+    
+    examesTemp = cargo.exames ? [...cargo.exames] : [];
+    renderizarExames();
     
     renderizarJornadas();
 }
@@ -557,7 +572,9 @@ function coletarDadosCargo() {
     return {
         nome: nome,
         escalas: escalasTemp,
-        jornadas: jornadas
+        jornadas: jornadas,
+        uniformes: uniformesTemp,
+        exames: examesTemp
     };
 }
 
@@ -679,6 +696,131 @@ async function carregarCargos() {
         cargosList = [];
         renderizarCargos();
     }
+}
+
+// ========== FUNÇÕES PARA UNIFORMES ==========
+function renderizarUniformes() {
+    const container = document.getElementById('uniformesList');
+    if (!container) return;
+    
+    if (!uniformesTemp || uniformesTemp.length === 0) {
+        container.innerHTML = '<div class="no-item">Nenhum uniforme cadastrado</div>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    uniformesTemp.forEach((uniforme, index) => {
+        const uniformeDiv = document.createElement('div');
+        uniformeDiv.className = 'uniforme-item';
+        uniformeDiv.innerHTML = `
+            <div class="uniforme-info">
+                <span class="uniforme-nome">${escapeHtml(uniforme.nome)}</span>
+                <span class="uniforme-quantidade">${uniforme.quantidade} unidade(s)</span>
+            </div>
+            ${modoEdicaoCargo ? `<button class="btn-remover-uniforme" data-index="${index}">
+                <i class='bx bx-trash'></i>
+            </button>` : ''}
+        `;
+        container.appendChild(uniformeDiv);
+    });
+    
+    if (modoEdicaoCargo) {
+        document.querySelectorAll('.btn-remover-uniforme').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(btn.dataset.index);
+                uniformesTemp.splice(index, 1);
+                renderizarUniformes();
+            });
+        });
+    }
+}
+
+function adicionarUniforme() {
+    const select = document.getElementById('uniformesSelect');
+    const quantidade = document.getElementById('uniformeQuantidade');
+    
+    const nome = select.value;
+    const qtd = parseInt(quantidade.value);
+    
+    if (!nome) {
+        alert('Selecione um uniforme.');
+        return;
+    }
+    
+    if (!qtd || qtd < 1) {
+        alert('Informe uma quantidade válida (mínimo 1).');
+        return;
+    }
+    
+    // Verificar se já existe
+    const existe = uniformesTemp.some(u => u.nome === nome);
+    if (existe) {
+        alert('Este uniforme já foi adicionado.');
+        return;
+    }
+    
+    uniformesTemp.push({ nome, quantidade: qtd });
+    renderizarUniformes();
+    
+    // Resetar campos
+    select.value = '';
+    quantidade.value = '';
+}
+
+// ========== FUNÇÕES PARA EXAMES ==========
+function renderizarExames() {
+    const container = document.getElementById('examesList');
+    if (!container) return;
+    
+    if (!examesTemp || examesTemp.length === 0) {
+        container.innerHTML = '<div class="no-item">Nenhum exame cadastrado</div>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    examesTemp.forEach((exame, index) => {
+        const exameDiv = document.createElement('div');
+        exameDiv.className = 'exame-item';
+        exameDiv.innerHTML = `
+            <span class="exame-nome">${escapeHtml(exame)}</span>
+            ${modoEdicaoCargo ? `<button class="btn-remover-exame" data-index="${index}">
+                <i class='bx bx-trash'></i>
+            </button>` : ''}
+        `;
+        container.appendChild(exameDiv);
+    });
+    
+    if (modoEdicaoCargo) {
+        document.querySelectorAll('.btn-remover-exame').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(btn.dataset.index);
+                examesTemp.splice(index, 1);
+                renderizarExames();
+            });
+        });
+    }
+}
+
+function adicionarExame() {
+    const select = document.getElementById('examesSelect');
+    const nome = select.value;
+    
+    if (!nome) {
+        alert('Selecione um exame.');
+        return;
+    }
+    
+    // Verificar se já existe
+    if (examesTemp.includes(nome)) {
+        alert('Este exame já foi adicionado.');
+        return;
+    }
+    
+    examesTemp.push(nome);
+    renderizarExames();
+    
+    // Resetar campo
+    select.value = '';
 }
 
 // ========== FUNÇÕES PARA FOTOS ==========
@@ -1073,6 +1215,18 @@ if (btnCancelarFicha) {
             fecharModalFicha();
         }
     });
+}
+
+// Eventos para uniformes
+const btnAdicionarUniforme = document.getElementById('btnAdicionarUniforme');
+if (btnAdicionarUniforme) {
+    btnAdicionarUniforme.addEventListener('click', adicionarUniforme);
+}
+
+// Eventos para exames
+const btnAdicionarExame = document.getElementById('btnAdicionarExame');
+if (btnAdicionarExame) {
+    btnAdicionarExame.addEventListener('click', adicionarExame);
 }
 
 // Eventos do modal da ficha do cargo

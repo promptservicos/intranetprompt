@@ -236,41 +236,93 @@
                 <span class="modal-close-ficha">&times;</span>
             </div>
             
-            <div class="ficha-cargo-form">
-                <!-- Os campos ficarão readonly quando não estiver em modo edição -->
-                <div class="form-group">
-                    <label>Nome do Cargo *</label>
-                    <input type="text" id="fichaCargoNome" placeholder="Ex: Analista de Sistemas" class="input-ficha" readonly>
+            <div class="ficha-cargo-grid">
+                <!-- Coluna Esquerda -->
+                <div class="ficha-coluna">
+                    <!-- Nome do Cargo -->
+                    <div class="form-group">
+                        <label>Nome do Cargo *</label>
+                        <input type="text" id="fichaCargoNome" placeholder="Ex: Analista de Sistemas" class="input-ficha" readonly>
+                    </div>
+
+                    <!-- Escala de Trabalho -->
+                    <div class="form-group">
+                        <label>Escala de Trabalho</label>
+                        <div id="escalaSelecaoContainer" class="escala-container" style="display: none;">
+                            <div class="dias-semana">
+                                <button type="button" class="dia-btn" data-dia="seg">Seg</button>
+                                <button type="button" class="dia-btn" data-dia="ter">Ter</button>
+                                <button type="button" class="dia-btn" data-dia="qua">Qua</button>
+                                <button type="button" class="dia-btn" data-dia="qui">Qui</button>
+                                <button type="button" class="dia-btn" data-dia="sex">Sex</button>
+                                <button type="button" class="dia-btn" data-dia="sab">Sáb</button>
+                                <button type="button" class="dia-btn" data-dia="dom">Dom</button>
+                            </div>
+                            <div class="escala-info">
+                                <span id="escalaPreview" class="escala-preview">Nenhum dia selecionado</span>
+                                <button type="button" id="btnAdicionarEscala" class="btn-add-escala" style="display: none;">
+                                    <i class='bx bx-plus'></i> Adicionar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="escalasList" class="escalas-list"></div>
+                    </div>
+
+                    <!-- Jornadas de Trabalho -->
+                    <div class="form-group">
+                        <label>Jornadas de Trabalho</label>
+                        <div id="jornadasContainer" class="jornadas-container"></div>
+                        <button type="button" id="btnAdicionarJornada" class="btn-add-jornada" style="display: none;">
+                            <i class='bx bx-plus'></i> Adicionar jornada
+                        </button>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Escala de Trabalho</label>
-                    <div id="escalaSelecaoContainer" class="escala-container" style="display: none;">
-                        <div class="dias-semana">
-                            <button type="button" class="dia-btn" data-dia="seg">Seg</button>
-                            <button type="button" class="dia-btn" data-dia="ter">Ter</button>
-                            <button type="button" class="dia-btn" data-dia="qua">Qua</button>
-                            <button type="button" class="dia-btn" data-dia="qui">Qui</button>
-                            <button type="button" class="dia-btn" data-dia="sex">Sex</button>
-                            <button type="button" class="dia-btn" data-dia="sab">Sáb</button>
-                            <button type="button" class="dia-btn" data-dia="dom">Dom</button>
-                        </div>
-                        <div class="escala-info">
-                            <span id="escalaPreview" class="escala-preview">Nenhum dia selecionado</span>
-                            <button type="button" id="btnAdicionarEscala" class="btn-add-escala" style="display: none;">
-                                <i class='bx bx-plus'></i> Adicionar outra escala
-                            </button>
+                <!-- Coluna Direita -->
+                <div class="ficha-coluna">
+                    <!-- Uniformes -->
+                    <div class="form-group">
+                        <label>Uniformes</label>
+                        <div id="uniformesContainer">
+                            <div id="uniformesList" class="uniformes-list"></div>
+                            <div id="uniformesSelecaoContainer" class="uniformes-selecao" style="display: none;">
+                                <select id="uniformesSelect" class="select-uniformes">
+                                    <option value="">Selecione um uniforme...</option>
+                                    <option value="Camisa">Camisa</option>
+                                    <option value="Calça">Calça</option>
+                                    <option value="Bota Biqueira de Aço">Bota Biqueira de Aço</option>
+                                    <option value="Bota Biqueira de PVC">Bota Biqueira de PVC</option>
+                                    <option value="Luvas">Luvas</option>
+                                    <option value="Protetor Auricular">Protetor Auricular</option>
+                                </select>
+                                <input type="number" id="uniformeQuantidade" placeholder="Qtd" class="input-quantidade" min="1">
+                                <button type="button" id="btnAdicionarUniforme" class="btn-add-uniforme">
+                                    <i class='bx bx-plus'></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div id="escalasList" class="escalas-list"></div>
-                </div>
 
-                <div class="form-group">
-                    <label>Jornadas de Trabalho</label>
-                    <div id="jornadasContainer" class="jornadas-container"></div>
-                    <button type="button" id="btnAdicionarJornada" class="btn-add-jornada" style="display: none;">
-                        <i class='bx bx-plus'></i> Adicionar jornada
-                    </button>
+                    <!-- Exames -->
+                    <div class="form-group">
+                        <label>Exames</label>
+                        <div id="examesContainer">
+                            <div id="examesList" class="exames-list"></div>
+                            <div id="examesSelecaoContainer" class="exames-selecao" style="display: none;">
+                                <select id="examesSelect" class="select-exames">
+                                    <option value="">Selecione um exame...</option>
+                                    <option value="Clínico">Clínico</option>
+                                    <option value="Audiometria">Audiometria</option>
+                                    <option value="Acuidade Visual">Acuidade Visual</option>
+                                    <option value="Coprocultura">Coprocultura</option>
+                                    <option value="Hemograma">Hemograma</option>
+                                </select>
+                                <button type="button" id="btnAdicionarExame" class="btn-add-exame">
+                                    <i class='bx bx-plus'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
