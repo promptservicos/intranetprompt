@@ -85,6 +85,7 @@ let modoEdicaoCargo = false;
 let uniformesTemp = [];
 let examesTemp = [];
 let contratosTemp = [];
+let podeEditarCliente = false;
 
 // ========== CONSTANTES PARA DIAS ==========
 const diasMap = {
@@ -110,6 +111,39 @@ function verificarAcesso(usuario) {
     return null;
 }
 
+// ========== VERIFICAR PERMISSÃO PARA EDITAR CLIENTE ==========
+async function verificarPermissaoEdicaoCliente(user) {
+    if (USUARIOS_AUTORIZADOS_IDS.includes(user.uid)) {
+        podeEditarCliente = true;
+        return true;
+    }
+    
+    if (user.email && USUARIOS_AUTORIZADOS_EMAILS.includes(user.email)) {
+        podeEditarCliente = true;
+        return true;
+    }
+    
+    try {
+        const doc = await db.collection('usuarios').doc(user.uid).get();
+        if (doc.exists) {
+            const userData = doc.data();
+            const departamento = userData.departamento || userData.cargo || '';
+            const acessoPorDepartamento = DEPARTAMENTOS_AUTORIZADOS.some(
+                dept => departamento.toLowerCase().includes(dept.toLowerCase())
+            );
+            if (acessoPorDepartamento) {
+                podeEditarCliente = true;
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao verificar departamento:", error);
+    }
+    
+    podeEditarCliente = false;
+    return false;
+}
+
 // ========== MOSTRAR TELA DE ACESSO NEGADO ==========
 function mostrarAcessoNegado() {
     const loadingIndicator = document.getElementById('loadingIndicator');
@@ -124,6 +158,17 @@ function mostrarAcessoNegado() {
     if (acessoNegadoDiv) {
         acessoNegadoDiv.style.display = 'block';
     }
+}
+
+// ========== MOSTRAR MENSAGEM DE ERRO ==========
+function mostrarErro() {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const clienteContent = document.getElementById('clienteContent');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    loadingIndicator.style.display = 'none';
+    clienteContent.style.display = 'none';
+    errorMessage.style.display = 'block';
 }
 
 // ========== PEGAR ID DO CLIENTE DA URL ==========
@@ -185,13 +230,106 @@ function formatarEscala(dias) {
     return diasExtenso.join(', ');
 }
 
+// ========== FUNÇÕES PARA EDITAR CLIENTE ==========
+function abrirModalEditarCliente() {
+    if (!podeEditarCliente) {
+        alert('Você não tem permissão para editar este cliente.');
+        return;
+    }
+    
+    // Preencher o modal com os dados atuais
+    document.getElementById('editClienteNome').value = document.getElementById('clienteNome').textContent;
+    document.getElementById('editClienteCNPJ').value = document.getElementById('clienteCNPJ').textContent.replace('CNPJ: ', '');
+    document.getElementById('editClienteCodigoGI').value = document.getElementById('clienteCodigoGI').textContent.replace('Código GI: ', '');
+    document.getElementById('editClienteRazaoSocial').value = document.getElementById('clienteRazaoSocial').textContent;
+    document.getElementById('editClienteContato').value = document.getElementById('clienteContato').textContent;
+    document.getElementById('editClienteEmail').value = document.getElementById('clienteEmail').textContent;
+    document.getElementById('editClienteTelefone').value = document.getElementById('clienteTelefone').textContent;
+    document.getElementById('editClienteEndereco').value = document.getElementById('clienteEndereco').textContent;
+    document.getElementById('editClienteInscricaoEstadual').value = document.getElementById('clienteInscricaoEstadual').textContent;
+    
+    // Informações complementares
+    document.getElementById('editClienteSupervisor').value = document.getElementById('clienteSupervisor').textContent;
+    document.getElementById('editClientePonto').value = document.getElementById('clientePonto').textContent;
+    document.getElementById('editClienteFechFolha').value = document.getElementById('clienteFechFolha').textContent;
+    document.getElementById('editClienteIntManha').value = document.getElementById('clienteIntManha').textContent;
+    document.getElementById('editClienteIntTarde').value = document.getElementById('clienteIntTarde').textContent;
+    document.getElementById('editClienteIntNoite').value = document.getElementById('clienteIntNoite').textContent;
+    
+    // Faturamento
+    document.getElementById('editClienteEmiFat').value = document.getElementById('clienteEmiFat').textContent;
+    document.getElementById('editClienteVencFat').value = document.getElementById('clienteVencFat').textContent;
+    
+    // Pagamentos
+    document.getElementById('editClienteAdiantData').value = document.getElementById('clienteAdiantData').textContent;
+    document.getElementById('editClientePagData').value = document.getElementById('clientePagData').textContent;
+    document.getElementById('editClienteBenAdiant').value = document.getElementById('clienteBenAdiant').textContent;
+    document.getElementById('editClienteBenPag').value = document.getElementById('clienteBenPag').textContent;
+    
+    document.getElementById('editarClienteModal').style.display = 'flex';
+}
+
+function fecharModalEditarCliente() {
+    document.getElementById('editarClienteModal').style.display = 'none';
+}
+
+async function salvarEdicaoCliente(event) {
+    event.preventDefault();
+    
+    if (!podeEditarCliente) {
+        alert('Você não tem permissão para editar este cliente.');
+        return;
+    }
+    
+    const clienteData = {
+        nome: document.getElementById('editClienteNome').value.trim(),
+        cnpj: document.getElementById('editClienteCNPJ').value.trim(),
+        codigogi: document.getElementById('editClienteCodigoGI').value.trim(),
+        rsocial: document.getElementById('editClienteRazaoSocial').value.trim(),
+        contato: document.getElementById('editClienteContato').value.trim(),
+        email: document.getElementById('editClienteEmail').value.trim(),
+        telefone: document.getElementById('editClienteTelefone').value.trim(),
+        endereco: document.getElementById('editClienteEndereco').value.trim(),
+        iestadual: document.getElementById('editClienteInscricaoEstadual').value.trim(),
+        supervisor: document.getElementById('editClienteSupervisor').value.trim(),
+        ponto: document.getElementById('editClientePonto').value.trim(),
+        fechfolha: document.getElementById('editClienteFechFolha').value.trim(),
+        intmanha: document.getElementById('editClienteIntManha').value.trim(),
+        inttarde: document.getElementById('editClienteIntTarde').value.trim(),
+        intnoite: document.getElementById('editClienteIntNoite').value.trim(),
+        emifat: document.getElementById('editClienteEmiFat').value.trim(),
+        vencfat: document.getElementById('editClienteVencFat').value.trim(),
+        adiantdata: document.getElementById('editClienteAdiantData').value.trim(),
+        pagdata: document.getElementById('editClientePagData').value.trim(),
+        beneadiant: document.getElementById('editClienteBenAdiant').value.trim(),
+        benepag: document.getElementById('editClienteBenPag').value.trim()
+    };
+    
+    if (!clienteData.nome) {
+        alert('O nome do cliente é obrigatório.');
+        return;
+    }
+    
+    try {
+        await db.collection('clientes').doc(clienteId).update(clienteData);
+        fecharModalEditarCliente();
+        
+        // Recarregar os dados na tela
+        await carregarCliente();
+        
+    } catch (error) {
+        console.error("Erro ao salvar cliente:", error);
+        alert('Erro ao salvar as alterações. Verifique suas permissões.');
+    }
+}
+
 // ========== FUNÇÕES PARA CONTROLE DE EDIÇÃO DO CARGO ==========
 function habilitarEdicaoCargo(habilitar) {
     modoEdicaoCargo = habilitar;
     
     // Campos de texto
     const nomeInput = document.getElementById('fichaCargoNome');
-    nomeInput.readOnly = !habilitar;
+    if (nomeInput) nomeInput.readOnly = !habilitar;
     
     // Container de seleção de escala
     const escalaSelecaoContainer = document.getElementById('escalaSelecaoContainer');
@@ -209,6 +347,12 @@ function habilitarEdicaoCargo(habilitar) {
     const examesSelecao = document.getElementById('examesSelecaoContainer');
     if (examesSelecao) {
         examesSelecao.style.display = habilitar ? 'flex' : 'none';
+    }
+    
+    // Container de seleção de contratos
+    const contratoSelecao = document.getElementById('contratoSelecaoContainer');
+    if (contratoSelecao) {
+        contratoSelecao.style.display = habilitar ? 'flex' : 'none';
     }
     
     // Botões de dias da semana
@@ -240,12 +384,6 @@ function habilitarEdicaoCargo(habilitar) {
     if (btnAddJornada) {
         btnAddJornada.style.display = habilitar ? 'inline-flex' : 'none';
     }
-
-    // Dentro de habilitarEdicaoCargo, adicione:
-    const contratoSelecao = document.getElementById('contratoSelecaoContainer');
-    if (contratoSelecao) {
-        contratoSelecao.style.display = habilitar ? 'flex' : 'none';
-    }
     
     // Botões do modal
     const btnEditar = document.getElementById('btnEditarCargo');
@@ -257,9 +395,10 @@ function habilitarEdicaoCargo(habilitar) {
     if (btnCancelar) btnCancelar.textContent = habilitar ? 'Cancelar' : 'Fechar';
     
     // Renderizar listas no modo apropriado
-    renderizarJornadas();
-    renderizarUniformes();
-    renderizarExames();
+    if (typeof renderizarJornadas === 'function') renderizarJornadas();
+    if (typeof renderizarUniformes === 'function') renderizarUniformes();
+    if (typeof renderizarExames === 'function') renderizarExames();
+    if (typeof renderizarContratos === 'function') renderizarContratos();
 }
 
 function entrarModoEdicao() {
@@ -268,7 +407,6 @@ function entrarModoEdicao() {
 
 function sairModoEdicao() {
     habilitarEdicaoCargo(false);
-    // Recarregar os dados originais do cargo
     if (cargoEditandoIndex !== null) {
         const cargo = cargosList[cargoEditandoIndex];
         carregarDadosCargoNoModal(cargo);
@@ -411,7 +549,6 @@ function renderizarJornadas() {
     container.innerHTML = '';
     
     if (modoEdicaoCargo) {
-        // Modo edição: mostrar campos editáveis
         jornadas.forEach((jornada, idx) => {
             const jornadaDiv = document.createElement('div');
             jornadaDiv.className = 'jornada-item';
@@ -435,7 +572,6 @@ function renderizarJornadas() {
             container.appendChild(jornadaDiv);
         });
     } else {
-        // Modo visualização: mostrar texto
         if (!jornadas || jornadas.length === 0 || (jornadas.length === 1 && !jornadas[0].entrada && !jornadas[0].saida)) {
             container.innerHTML = '<div class="no-item">Nenhuma jornada cadastrada</div>';
         } else {
@@ -456,9 +592,7 @@ function renderizarJornadas() {
 
 function formatarHorario(horario) {
     if (!horario) return '--:--';
-    // Se já estiver no formato HH:MM, retorna assim
     if (horario.includes(':')) return horario;
-    // Se for número, converte (ex: 8 -> 08:00)
     const hora = parseInt(horario);
     if (!isNaN(hora)) {
         return `${hora.toString().padStart(2, '0')}:00`;
@@ -525,11 +659,9 @@ function abrirModalAddCargo() {
     renderizarEscalasLista();
     limparSelecaoDias();
     
-    // Inicializar jornadas vazias
     window.jornadasTemp = [{ entrada: '', saida: '' }];
     renderizarJornadas();
     
-    // Em modo de adição, já começar em modo edição
     habilitarEdicaoCargo(true);
 }
 
@@ -543,13 +675,8 @@ function abrirModalEditarCargo(index) {
     
     modal.style.display = 'flex';
     
-    // Salvar jornadas originais para referência
     window.jornadasTemp = cargo.jornadas ? [...cargo.jornadas] : [{ entrada: '08:00', saida: '17:00' }];
-    
-    // Carregar os dados no modal
     carregarDadosCargoNoModal(cargo);
-    
-    // Iniciar em modo visualização (não edição)
     habilitarEdicaoCargo(false);
 }
 
@@ -763,7 +890,6 @@ function adicionarUniforme() {
         return;
     }
     
-    // Verificar se já existe
     const existe = uniformesTemp.some(u => u.nome === nome);
     if (existe) {
         alert('Este uniforme já foi adicionado.');
@@ -773,7 +899,6 @@ function adicionarUniforme() {
     uniformesTemp.push({ nome, quantidade: qtd });
     renderizarUniformes();
     
-    // Resetar campos
     select.value = '';
     quantidade.value = '';
 }
@@ -821,7 +946,6 @@ function adicionarExame() {
         return;
     }
     
-    // Verificar se já existe
     if (examesTemp.includes(nome)) {
         alert('Este exame já foi adicionado.');
         return;
@@ -829,8 +953,6 @@ function adicionarExame() {
     
     examesTemp.push(nome);
     renderizarExames();
-    
-    // Resetar campo
     select.value = '';
 }
 
@@ -1071,31 +1193,47 @@ async function carregarCliente() {
         
         const data = doc.data();
         
+        // Dados básicos
         document.getElementById('clienteNome').textContent = data.nome || 'Nome não informado';
-        document.getElementById('clienteCNPJ').innerHTML = `<i class='bx bx-receipt'></i> CNPJ: ${formatarCNPJ(data.cnpj)}`;
+        document.getElementById('clienteCNPJ').innerHTML = `<i class='bx bx-receipt'></i> CNPJ: ${formatarCNPJ(data.cnpj || '')}`;
         document.getElementById('clienteRazaoSocial').textContent = data.rsocial || data.razao_social || 'Não informado';
         document.getElementById('clienteContato').textContent = data.contato || 'Não informado';
         document.getElementById('clienteEmail').textContent = data.email || 'Não informado';
-        document.getElementById('clienteTelefone').textContent = formatarTelefone(data.telefone);
+        document.getElementById('clienteTelefone').textContent = formatarTelefone(data.telefone || '');
         document.getElementById('clienteEndereco').textContent = data.endereco || 'Não informado';
         document.getElementById('clienteInscricaoEstadual').textContent = data.iestadual || data.inscricao_estadual || 'Não informado';
         document.getElementById('clienteCodigoGI').innerHTML = `<i class='bx bx-barcode'></i> Código GI: ${data.codigogi || 'Não informado'}`;
+        
         // Informações adicionais
         document.getElementById('clienteSupervisor').textContent = data.supervisor || 'Não informado';
         document.getElementById('clientePonto').textContent = data.ponto || 'Não informado';
         document.getElementById('clienteFechFolha').textContent = data.fechfolha || 'Não informado';
+        
+        // Integrações
         document.getElementById('clienteIntManha').textContent = data.intmanha || 'Não informado';
         document.getElementById('clienteIntTarde').textContent = data.inttarde || 'Não informado';
         document.getElementById('clienteIntNoite').textContent = data.intnoite || 'Não informado';
+        
+        // Faturamento
         document.getElementById('clienteEmiFat').textContent = data.emifat || 'Não informado';
         document.getElementById('clienteVencFat').textContent = data.vencfat || 'Não informado';
+        
+        // Pagamentos
         document.getElementById('clienteAdiantData').textContent = data.adiantdata || 'Não informado';
         document.getElementById('clientePagData').textContent = data.pagdata || 'Não informado';
+        
+        // Benefícios
         document.getElementById('clienteBenAdiant').textContent = data.beneadiant || 'Não informado';
         document.getElementById('clienteBenPag').textContent = data.benepag || 'Não informado';
         
         loadingIndicator.style.display = 'none';
         clienteContent.style.display = 'block';
+        
+        // Mostrar botão de editar se tiver permissão
+        const btnEditarCliente = document.getElementById('btnEditarCliente');
+        if (btnEditarCliente) {
+            btnEditarCliente.style.display = podeEditarCliente ? 'flex' : 'none';
+        }
         
         await carregarFotos();
         await carregarCargos();
@@ -1106,20 +1244,12 @@ async function carregarCliente() {
     }
 }
 
-function mostrarErro() {
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const clienteContent = document.getElementById('clienteContent');
-    const errorMessage = document.getElementById('errorMessage');
-    
-    loadingIndicator.style.display = 'none';
-    clienteContent.style.display = 'none';
-    errorMessage.style.display = 'block';
-}
-
 // ========== AUTENTICAÇÃO ==========
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
     if (user) {
         let acessoPermitido = verificarAcesso(user);
+        
+        await verificarPermissaoEdicaoCliente(user);
         
         if (acessoPermitido === true) {
             carregarDadosUsuario(user);
@@ -1276,13 +1406,11 @@ if (btnAbrirAddCargo) {
     btnAbrirAddCargo.addEventListener('click', abrirModalAddCargo);
 }
 
-// Botão de editar cargo
 const btnEditarCargo = document.getElementById('btnEditarCargo');
 if (btnEditarCargo) {
     btnEditarCargo.addEventListener('click', entrarModoEdicao);
 }
 
-// Botão cancelar/fechar
 const btnCancelarFicha = document.getElementById('btnCancelarFicha');
 if (btnCancelarFicha) {
     btnCancelarFicha.addEventListener('click', () => {
@@ -1294,62 +1422,50 @@ if (btnCancelarFicha) {
     });
 }
 
-// Eventos para contratos
 const btnAdicionarContrato = document.getElementById('btnAdicionarContrato');
 if (btnAdicionarContrato) {
     btnAdicionarContrato.addEventListener('click', adicionarContrato);
 }
 
-// Eventos para uniformes
 const btnAdicionarUniforme = document.getElementById('btnAdicionarUniforme');
 if (btnAdicionarUniforme) {
     btnAdicionarUniforme.addEventListener('click', adicionarUniforme);
 }
 
-// Eventos para exames
 const btnAdicionarExame = document.getElementById('btnAdicionarExame');
 if (btnAdicionarExame) {
     btnAdicionarExame.addEventListener('click', adicionarExame);
 }
 
-// ========== BOTÃO DE TEMA STICKY (PARA NO RODAPÉ) ==========
-function ajustarBotaoTema() {
-    const themeBtn = document.getElementById('themeToggle');
-    const footer = document.querySelector('footer');
-    
-    if (!themeBtn || !footer) return;
-    
-    const footerTop = footer.getBoundingClientRect().top;
-    const windowHeight = window.innerHeight;
-    const themeBtnHeight = themeBtn.offsetHeight;
-    
-    // Se o rodapé está visível ou próximo
-    if (footerTop < windowHeight - 50) {
-        // Calcula a posição para o botão parar acima do rodapé
-        const stopPosition = footerTop - themeBtnHeight - 20;
-        if (stopPosition < windowHeight - themeBtnHeight - 20) {
-            themeBtn.style.position = 'absolute';
-            themeBtn.style.bottom = 'auto';
-            themeBtn.style.top = `${footer.offsetTop - themeBtnHeight - 20}px`;
-            themeBtn.style.right = '20px';
-        }
-    } else {
-        // Volta para posição fixa
-        themeBtn.style.position = 'fixed';
-        themeBtn.style.bottom = '20px';
-        themeBtn.style.top = 'auto';
-        themeBtn.style.right = '20px';
-    }
+// ========== EVENTOS PARA EDITAR CLIENTE ==========
+const btnEditarCliente = document.getElementById('btnEditarCliente');
+if (btnEditarCliente) {
+    btnEditarCliente.addEventListener('click', abrirModalEditarCliente);
 }
 
-// Adicionar event listeners para scroll e resize
-window.addEventListener('scroll', ajustarBotaoTema);
-window.addEventListener('resize', ajustarBotaoTema);
+const modalCloseEditar = document.querySelector('.modal-close-editar-cliente');
+if (modalCloseEditar) {
+    modalCloseEditar.addEventListener('click', fecharModalEditarCliente);
+}
 
-// Chamar uma vez para inicializar
-setTimeout(ajustarBotaoTema, 100);
+const btnCancelarEdicao = document.getElementById('btnCancelarEdicao');
+if (btnCancelarEdicao) {
+    btnCancelarEdicao.addEventListener('click', fecharModalEditarCliente);
+}
 
-// Eventos do modal da ficha do cargo
+const editarClienteForm = document.getElementById('editarClienteForm');
+if (editarClienteForm) {
+    editarClienteForm.addEventListener('submit', salvarEdicaoCliente);
+}
+
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('editarClienteModal');
+    if (e.target === modal) {
+        fecharModalEditarCliente();
+    }
+});
+
+// ========== EVENTOS DO MODAL DA FICHA DO CARGO ==========
 const fichaModal = document.getElementById('fichaCargoModal');
 const modalCloseFicha = document.querySelector('.modal-close-ficha');
 const btnSalvarFicha = document.getElementById('btnSalvarFicha');

@@ -203,17 +203,6 @@ function formatarCNPJ(cnpj) {
     return cnpj;
 }
 
-function formatarTelefone(telefone) {
-    const numeros = telefone.replace(/\D/g, '');
-    if (numeros.length === 10) {
-        return numeros.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
-    }
-    if (numeros.length === 11) {
-        return numeros.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
-    }
-    return telefone;
-}
-
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -231,6 +220,16 @@ function performSearch() {
 function showError(message) {
     const grid = document.getElementById('clientesGrid');
     grid.innerHTML = `<div class="no-results" style="color: var(--accent-color);">${message}</div>`;
+}
+
+// ========== FUNÇÃO PARA SANITIZAR NOME (usar como ID) ==========
+function sanitizarNome(nome) {
+    return nome
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w\s]/g, '')
+        .replace(/\s+/g, '_')
+        .toLowerCase();
 }
 
 // ========== FUNÇÕES DO MODAL DE CLIENTE ==========
@@ -260,8 +259,15 @@ async function salvarCliente(event) {
         return;
     }
     
+    const nomeCliente = document.getElementById('clienteNome').value.trim();
+    
+    if (!nomeCliente) {
+        alert('O nome do cliente é obrigatório.');
+        return;
+    }
+    
     const clienteData = {
-        nome: document.getElementById('clienteNome').value.trim(),
+        nome: nomeCliente,
         cnpj: document.getElementById('clienteCNPJ').value.trim(),
         codigogi: document.getElementById('clienteCodigoGI').value.trim(),
         rsocial: document.getElementById('clienteRazaoSocial').value.trim(),
@@ -272,16 +278,35 @@ async function salvarCliente(event) {
         iestadual: document.getElementById('clienteInscricaoEstadual').value.trim()
     };
     
-    if (!clienteData.nome) {
-        alert('O nome do cliente é obrigatório.');
-        return;
-    }
-    
     try {
         if (window.editandoClienteId) {
             await db.collection('clientes').doc(window.editandoClienteId).update(clienteData);
         } else {
-            await db.collection('clientes').add(clienteData);
+            const clienteId = sanitizarNome(nomeCliente);
+            const docRef = db.collection('clientes').doc(clienteId);
+            const doc = await docRef.get();
+            
+            if (doc.exists) {
+                const resposta = confirm(`Já existe um cliente com o nome "${nomeCliente}". Deseja sobrescrever? Clique em Cancelar para criar com um sufixo.`);
+                
+                if (resposta) {
+                    await docRef.set(clienteData);
+                } else {
+                    let novoId = clienteId;
+                    let contador = 1;
+                    let docExistente = await db.collection('clientes').doc(novoId).get();
+                    
+                    while (docExistente.exists) {
+                        contador++;
+                        novoId = `${clienteId}_${contador}`;
+                        docExistente = await db.collection('clientes').doc(novoId).get();
+                    }
+                    
+                    await db.collection('clientes').doc(novoId).set(clienteData);
+                }
+            } else {
+                await docRef.set(clienteData);
+            }
         }
         
         fecharModalCliente();
@@ -340,12 +365,19 @@ document.getElementById('logoHome').addEventListener('click', () => {
 });
 
 // ========== EVENTOS DE BUSCA ==========
-document.getElementById('searchButton').addEventListener('click', performSearch);
-document.getElementById('searchInput').addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
-        performSearch();
-    }
-});
+const searchButton = document.getElementById('searchButton');
+if (searchButton) {
+    searchButton.addEventListener('click', performSearch);
+}
+
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+    searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+}
 
 // ========== EVENTOS DO MODAL DE CLIENTE ==========
 const btnNovoCliente = document.getElementById('btnNovoCliente');
@@ -375,7 +407,7 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// ========== FORMATAÇÃO AUTOMÁTICA (com verificação de existência) ==========
+// ========== FORMATAÇÃO AUTOMÁTICA ==========
 const cnpjInput = document.getElementById('clienteCNPJ');
 if (cnpjInput) {
     cnpjInput.addEventListener('input', (e) => {
@@ -402,7 +434,7 @@ if (telefoneInput) {
     });
 }
 
-// ========== BOTÃO DE TEMA STICKY (PARA NO RODAPÉ) ==========
+// ========== BOTÃO DE TEMA STICKY ==========
 function ajustarBotaoTema() {
     const themeBtn = document.getElementById('themeToggle');
     const footer = document.querySelector('footer');
@@ -413,9 +445,7 @@ function ajustarBotaoTema() {
     const windowHeight = window.innerHeight;
     const themeBtnHeight = themeBtn.offsetHeight;
     
-    // Se o rodapé está visível ou próximo
     if (footerTop < windowHeight - 50) {
-        // Calcula a posição para o botão parar acima do rodapé
         const stopPosition = footerTop - themeBtnHeight - 20;
         if (stopPosition < windowHeight - themeBtnHeight - 20) {
             themeBtn.style.position = 'absolute';
@@ -424,7 +454,6 @@ function ajustarBotaoTema() {
             themeBtn.style.right = '20px';
         }
     } else {
-        // Volta para posição fixa
         themeBtn.style.position = 'fixed';
         themeBtn.style.bottom = '20px';
         themeBtn.style.top = 'auto';
@@ -432,23 +461,6 @@ function ajustarBotaoTema() {
     }
 }
 
-// Adicionar event listeners para scroll e resize
 window.addEventListener('scroll', ajustarBotaoTema);
 window.addEventListener('resize', ajustarBotaoTema);
-
-// Chamar uma vez para inicializar
 setTimeout(ajustarBotaoTema, 100);
-
-const telefoneInput = document.getElementById('clienteTelefone');
-if (telefoneInput) {
-    telefoneInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 11) value = value.slice(0, 11);
-        if (value.length === 10) {
-            value = value.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
-        } else if (value.length === 11) {
-            value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
-        }
-        e.target.value = value;
-    });
-}

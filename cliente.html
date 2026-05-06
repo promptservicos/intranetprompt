@@ -89,6 +89,9 @@
                     </div>
                 </div>
                 <div class="cliente-header-right">
+                    <button id="btnEditarCliente" class="btn-editar-cliente" style="display: none;">
+                        <i class='bx bx-edit'></i> Editar
+                    </button>
                     <button id="btnVoltar" class="btn-voltar-cliente">
                         <i class='bx bx-arrow-back'></i> Voltar
                     </button>
@@ -372,6 +375,147 @@
             <div class="modal-footer">
                 <button id="modalRemover" class="modal-remover"><i class='bx bx-trash'></i> Remover foto</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal para edição de dados do cliente -->
+    <div id="editarClienteModal" class="editar-cliente-modal" style="display: none;">
+        <div class="modal-content-editar">
+            <div class="modal-header-editar">
+                <h3><i class='bx bx-edit-alt'></i> Editar Dados do Cliente</h3>
+                <span class="modal-close-editar-cliente">&times;</span>
+            </div>
+            
+            <form id="editarClienteForm">
+                <!-- Dados Básicos -->
+                <div class="edit-form-section">
+                    <div class="edit-section-title">
+                        <i class='bx bx-building'></i>
+                        <span>Dados Básicos</span>
+                    </div>
+                    <div class="edit-form-grid">
+                        <div class="edit-form-group">
+                            <label>Nome do Cliente *</label>
+                            <input type="text" id="editClienteNome" required>
+                        </div>
+                        <div class="edit-form-group">
+                            <label>CNPJ</label>
+                            <input type="text" id="editClienteCNPJ" placeholder="00.000.000/0000-00">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Código GI</label>
+                            <input type="text" id="editClienteCodigoGI">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Razão Social</label>
+                            <input type="text" id="editClienteRazaoSocial">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Contato / Responsável</label>
+                            <input type="text" id="editClienteContato">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="editClienteEmail">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Telefone</label>
+                            <input type="text" id="editClienteTelefone" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Inscrição Estadual</label>
+                            <input type="text" id="editClienteInscricaoEstadual">
+                        </div>
+                        <div class="edit-form-group full-width">
+                            <label>Endereço</label>
+                            <input type="text" id="editClienteEndereco" placeholder="Endereço completo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informações Complementares -->
+                <div class="edit-form-section">
+                    <div class="edit-section-title">
+                        <i class='bx bx-info-circle'></i>
+                        <span>Informações Complementares</span>
+                    </div>
+                    <div class="edit-form-grid">
+                        <div class="edit-form-group">
+                            <label>Supervisor</label>
+                            <input type="text" id="editClienteSupervisor">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Ponto</label>
+                            <input type="text" id="editClientePonto">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Fechamento de Folha</label>
+                            <input type="text" id="editClienteFechFolha" placeholder="Dia do mês">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Integração Manhã</label>
+                            <input type="text" id="editClienteIntManha">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Integração Tarde</label>
+                            <input type="text" id="editClienteIntTarde">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Integração Noite</label>
+                            <input type="text" id="editClienteIntNoite">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faturamento -->
+                <div class="edit-form-section">
+                    <div class="edit-section-title">
+                        <i class='bx bx-line-chart'></i>
+                        <span>Faturamento</span>
+                    </div>
+                    <div class="edit-form-grid">
+                        <div class="edit-form-group">
+                            <label>Data de Emissão</label>
+                            <input type="text" id="editClienteEmiFat" placeholder="dd/mm/aaaa">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Data de Vencimento</label>
+                            <input type="text" id="editClienteVencFat" placeholder="dd/mm/aaaa">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagamentos -->
+                <div class="edit-form-section">
+                    <div class="edit-section-title">
+                        <i class='bx bx-credit-card'></i>
+                        <span>Pagamentos</span>
+                    </div>
+                    <div class="edit-form-grid">
+                        <div class="edit-form-group">
+                            <label>Adiantamento</label>
+                            <input type="text" id="editClienteAdiantData" placeholder="dd/mm/aaaa">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Pagamento</label>
+                            <input type="text" id="editClientePagData" placeholder="dd/mm/aaaa">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Adiantamento de Benefícios</label>
+                            <input type="text" id="editClienteBenAdiant" placeholder="dd/mm/aaaa">
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Pagamento de Benefícios</label>
+                            <input type="text" id="editClienteBenPag" placeholder="dd/mm/aaaa">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-buttons-editar">
+                    <button type="button" id="btnCancelarEdicao" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" id="btnSalvarEdicao" class="btn-salvar">Salvar Alterações</button>
+                </div>
+            </form>
         </div>
     </div>
 
