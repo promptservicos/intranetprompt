@@ -1009,6 +1009,22 @@ function adicionarContrato() {
     select.value = '';
 }
 
+// ========== FUNÇÃO PARA INDICAR SCROLL NAS LISTAS ==========
+function verificarScrollNasListas() {
+    const listas = document.querySelectorAll('.uniformes-list, .exames-list, .contrato-list, .escalas-list, .jornadas-container');
+    
+    listas.forEach(lista => {
+        if (lista.scrollHeight > lista.clientHeight) {
+            lista.style.borderRight = `3px solid var(--accent-color)`;
+        } else {
+            lista.style.borderRight = 'none';
+        }
+    });
+}
+
+// Chamar a função após renderizar cada lista
+// Adicione no final de renderizarUniformes(), renderizarExames(), renderizarContratos(), renderizarEscalasLista(), renderizarJornadas()
+
 // ========== FUNÇÕES PARA FOTOS ==========
 async function compactarImagem(file, maxSizeKB = 200) {
     return new Promise((resolve, reject) => {

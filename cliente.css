@@ -975,7 +975,7 @@ footer {
     margin-top: 4px;
 }
 
-/* ===== MODAL DA FICHA DO CARGO - LAYOUT EM GRID ===== */
+/* ===== MODAL DA FICHA DO CARGO - REFINADO ===== */
 .ficha-cargo-modal {
     position: fixed;
     top: 0;
@@ -993,25 +993,47 @@ footer {
     background: var(--container-bg);
     border: 1px solid var(--container-border);
     border-radius: 24px;
-    padding: 1.5rem;
-    width: 900px;
+    padding: 2rem;
+    width: 1000px;
     max-width: 95%;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: 90vh;    overflow-y: auto;
     box-shadow: var(--shadow);
 }
 
-/* Grid de duas colunas */
+/* Header do modal */
+.modal-header-ficha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--container-border);
+}
+
+.modal-header-ficha h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header-ficha h3 i {
+    color: var(--accent-color);
+}
+
+/* Grid de duas colunas com mais espaço */
 .ficha-cargo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .ficha-coluna {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.5rem;
 }
 
 /* Header do modal */
@@ -1075,20 +1097,29 @@ footer {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.form-group label i {
+    font-size: 1rem;
 }
 
 .input-ficha {
-    padding: 0.7rem 1rem;
+    padding: 0.8rem 1rem;
     border: 1px solid var(--input-border);
     border-radius: 12px;
     background: var(--bg-color);
     color: var(--text-color);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     outline: none;
+    transition: 0.2s;
 }
 
 .input-ficha:focus {
     border-color: var(--input-focus);
+    box-shadow: 0 0 0 2px rgba(193, 4, 4, 0.1);
 }
 
 .input-ficha[readonly] {
@@ -1102,8 +1133,13 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-height: 150px;
+    max-height: 180px;
     overflow-y: auto;
+    padding: 0.3rem;
+}
+
+.escalas-list::-webkit-scrollbar {
+    width: 4px;
 }
 
 .escala-item {
@@ -1112,26 +1148,28 @@ footer {
     justify-content: space-between;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 0.5rem 0.8rem;
+    border-radius: 12px;
+    padding: 0.6rem 0.8rem;
 }
 
 .escala-item-text {
     font-size: 0.85rem;
     color: var(--text-color);
+    font-weight: 500;
 }
 
 .btn-remover-escala-item {
     background-color: rgba(193, 4, 4, 0.1);
     border: none;
     border-radius: 20px;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     cursor: pointer;
     color: var(--text-color);
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.2s;
 }
 
 .btn-remover-escala-item:hover {
@@ -1167,7 +1205,7 @@ footer {
     background-color: var(--card-bg);
     border: 1px solid var(--input-border);
     border-radius: 30px;
-    padding: 0.45rem 0.9rem;
+    padding: 0.5rem 1rem;
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 500;
@@ -1175,6 +1213,11 @@ footer {
     transition: 0.2s;
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+.dia-btn:hover {
+    border-color: var(--accent-color);
+    background-color: rgba(193, 4, 4, 0.05);
 }
 
 .dia-btn.selected {
@@ -1197,6 +1240,7 @@ footer {
     background: var(--card-bg);
     padding: 0.8rem;
     border-radius: 12px;
+    margin-top: 0.5rem;
 }
 
 .escala-preview {
@@ -1209,8 +1253,8 @@ footer {
     background-color: rgba(193, 4, 4, 0.1);
     border: 1px solid var(--container-border);
     color: var(--text-color);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -1234,49 +1278,56 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-height: 150px;
+    max-height: 180px;
     overflow-y: auto;
 }
 
 .jornada-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     background: var(--card-bg);
-    padding: 0.5rem;
-    border-radius: 10px;
+    padding: 0.6rem;
+    border-radius: 12px;
     border: 1px solid var(--card-border);
 }
 
 .jornada-visualizacao {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
     background: var(--card-bg);
-    padding: 0.5rem 0.8rem;
-    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
     border: 1px solid var(--card-border);
 }
 
 .jornada-visualizacao i {
     color: var(--accent-color);
+    font-size: 1.2rem;
 }
 
 .jornada-visualizacao-texto {
     font-size: 0.85rem;
     color: var(--text-color);
     flex: 1;
+    font-weight: 500;
 }
 
 .input-horario {
     flex: 1;
-    padding: 0.5rem 0.8rem;
+    padding: 0.6rem 0.8rem;
     border: 1px solid var(--input-border);
-    border-radius: 8px;
+    border-radius: 10px;
     background: var(--bg-color);
     color: var(--text-color);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     text-align: center;
+}
+
+.input-horario:focus {
+    border-color: var(--input-focus);
+    outline: none;
 }
 
 .input-horario[readonly] {
@@ -1296,6 +1347,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.2s;
 }
 
 .btn-remover-jornada:hover {
@@ -1307,8 +1359,8 @@ footer {
     background-color: rgba(193, 4, 4, 0.1);
     border: 1px solid var(--container-border);
     color: var(--text-color);
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -1316,6 +1368,7 @@ footer {
     font-size: 0.8rem;
     transition: 0.2s;
     width: fit-content;
+    margin-top: 0.5rem;
 }
 
 .btn-add-jornada:hover {
@@ -1323,34 +1376,36 @@ footer {
     color: white;
 }
 
-.btn-add-jornada:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Uniformes */
-.uniformes-list {
+/* Uniformes, Exames e Contratos - Listas */
+.uniformes-list, .exames-list, .contrato-list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     max-height: 150px;
     overflow-y: auto;
+    padding: 0.3rem;
 }
 
-.uniforme-item {
+.uniformes-list::-webkit-scrollbar,
+.exames-list::-webkit-scrollbar,
+.contrato-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.uniforme-item, .exame-item, .contrato-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 0.5rem 0.8rem;
 }
 
 .uniforme-info {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 
@@ -1363,71 +1418,37 @@ footer {
     font-size: 0.75rem;
     color: var(--accent-color);
     background: rgba(193, 4, 4, 0.1);
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 20px;
 }
 
-.btn-remover-uniforme {
-    background-color: rgba(193, 4, 4, 0.1);
-    border: none;
-    border-radius: 20px;
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-    color: var(--text-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-remover-uniforme:hover {
-    background-color: var(--accent-color);
-    color: white;
-}
-
-/* Exames */
-.exames-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-height: 150px;
-    overflow-y: auto;
-}
-
-.exame-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 0.5rem 0.8rem;
-}
-
-.exame-nome {
+.exame-nome, .contrato-nome {
     font-size: 0.85rem;
 }
 
-.btn-remover-exame {
+.btn-remover-uniforme, .btn-remover-exame, .btn-remover-contrato {
     background-color: rgba(193, 4, 4, 0.1);
     border: none;
     border-radius: 20px;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     cursor: pointer;
     color: var(--text-color);
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.2s;
 }
 
-.btn-remover-exame:hover {
+.btn-remover-uniforme:hover, 
+.btn-remover-exame:hover, 
+.btn-remover-contrato:hover {
     background-color: var(--accent-color);
     color: white;
 }
 
-/* Seleção de uniformes e exames */
-.uniformes-selecao, .exames-selecao {
+/* Seleção de uniformes, exames e contratos */
+.uniformes-selecao, .exames-selecao, .contrato-selecao {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -1437,44 +1458,62 @@ footer {
     border-top: 1px solid var(--card-border);
 }
 
-.select-uniformes, .select-exames {
+.select-uniformes, .select-exames, .select-contrato {
     flex: 2;
-    min-width: 140px;
-    padding: 0.5rem 0.8rem;
+    min-width: 160px;
+    padding: 0.6rem 1rem;
     border: 1px solid var(--input-border);
-    border-radius: 10px;
+    border-radius: 12px;
     background: var(--bg-color);
     color: var(--text-color);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     outline: none;
-}
-
-.input-quantidade {
-    width: 70px;
-    padding: 0.5rem 0.8rem;
-    border: 1px solid var(--input-border);
-    border-radius: 10px;
-    background: var(--bg-color);
-    color: var(--text-color);
-    font-size: 0.8rem;
-    text-align: center;
-}
-
-.select-uniformes:focus, .select-exames:focus, .input-quantidade:focus {
-    border-color: var(--input-focus);
-}
-
-.btn-add-uniforme, .btn-add-exame {
-    background-color: rgba(193, 4, 4, 0.1);
-    border: 1px solid var(--container-border);
-    color: var(--text-color);
-    padding: 0.5rem 0.8rem;
-    border-radius: 30px;
     cursor: pointer;
     transition: 0.2s;
 }
 
-.btn-add-uniforme:hover, .btn-add-exame:hover {
+.select-uniformes:hover, .select-exames:hover, .select-contrato:hover {
+    border-color: var(--accent-color);
+}
+
+.select-uniformes:focus, .select-exames:focus, .select-contrato:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 2px rgba(193, 4, 4, 0.1);
+}
+
+.input-quantidade {
+    width: 80px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.85rem;
+    text-align: center;
+    outline: none;
+}
+
+.input-quantidade:focus {
+    border-color: var(--input-focus);
+}
+
+.btn-add-uniforme, .btn-add-exame, .btn-add-contrato {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-add-uniforme:hover, 
+.btn-add-exame:hover, 
+.btn-add-contrato:hover {
     background-color: var(--accent-color);
     color: white;
 }
@@ -1484,17 +1523,18 @@ footer {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     padding-top: 1rem;
     border-top: 1px solid var(--container-border);
 }
 
 .btn-cancelar, .btn-salvar {
-    padding: 0.6rem 1.2rem;
+    padding: 0.7rem 1.5rem;
     border-radius: 30px;
     border: none;
     cursor: pointer;
     font-size: 0.9rem;
+    font-weight: 500;
     transition: 0.2s;
 }
 
@@ -1505,6 +1545,7 @@ footer {
 
 .btn-cancelar:hover {
     background-color: rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
 }
 
 .btn-salvar {
@@ -1515,6 +1556,27 @@ footer {
 .btn-salvar:hover {
     background-color: var(--button-hover);
     transform: translateY(-1px);
+}
+
+.btn-editar-cargo-modal {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: 1px solid var(--container-border);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    transition: 0.2s;
+    font-weight: 500;
+}
+
+.btn-editar-cargo-modal:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
 }
 
 /* Scroll personalizado do modal */
@@ -1539,7 +1601,7 @@ footer {
 .cargo-escala-preview {
     font-size: 0.7rem;
     color: var(--accent-color);
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 .no-item {
@@ -1563,6 +1625,10 @@ footer {
     
     .modal-header-ficha h3 {
         font-size: 1.1rem;
+    }
+    
+    .edit-form-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -1909,4 +1975,127 @@ footer {
     .modal-content-editar {
         padding: 1rem;
     }
+}
+
+/* Estilos para todas as listas com scroll */
+.uniformes-list, 
+.exames-list, 
+.contrato-list,
+.escalas-list,
+.jornadas-container {
+    max-height: 180px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    scrollbar-width: thin;
+}
+
+/* Scroll personalizado para todas as listas */
+.uniformes-list::-webkit-scrollbar,
+.exames-list::-webkit-scrollbar,
+.contrato-list::-webkit-scrollbar,
+.escalas-list::-webkit-scrollbar,
+.jornadas-container::-webkit-scrollbar,
+.cargos-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.uniformes-list::-webkit-scrollbar-track,
+.exames-list::-webkit-scrollbar-track,
+.contrato-list::-webkit-scrollbar-track,
+.escalas-list::-webkit-scrollbar-track,
+.jornadas-container::-webkit-scrollbar-track,
+.cargos-list::-webkit-scrollbar-track {
+    background: var(--card-border);
+    border-radius: 3px;
+}
+
+.uniformes-list::-webkit-scrollbar-thumb,
+.exames-list::-webkit-scrollbar-thumb,
+.contrato-list::-webkit-scrollbar-thumb,
+.escalas-list::-webkit-scrollbar-thumb,
+.jornadas-container::-webkit-scrollbar-thumb,
+.cargos-list::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+}
+
+.uniformes-list::-webkit-scrollbar-thumb:hover,
+.exames-list::-webkit-scrollbar-thumb:hover,
+.contrato-list::-webkit-scrollbar-thumb:hover,
+.escalas-list::-webkit-scrollbar-thumb:hover,
+.jornadas-container::-webkit-scrollbar-thumb:hover,
+.cargos-list::-webkit-scrollbar-thumb:hover {
+    background: var(--button-hover);
+}
+
+/* Garantir que as listas tenham altura definida mesmo quando vazias */
+.uniformes-list, 
+.exames-list, 
+.contrato-list,
+.escalas-list {
+    min-height: 50px;
+}
+
+/* Indicador visual de que a área é rolável */
+.has-scroll {
+    position: relative;
+}
+
+.has-scroll::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, transparent 50%, var(--accent-color) 50%);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Garantir scroll visível */
+.uniformes-list, 
+.exames-list, 
+.contrato-list,
+.escalas-list,
+.jornadas-container {
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--card-border);
+}
+
+/* Para navegadores WebKit (Chrome, Edge, Safari) */
+.uniformes-list::-webkit-scrollbar,
+.exames-list::-webkit-scrollbar,
+.contrato-list::-webkit-scrollbar,
+.escalas-list::-webkit-scrollbar,
+.jornadas-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.uniformes-list::-webkit-scrollbar-track,
+.exames-list::-webkit-scrollbar-track,
+.contrato-list::-webkit-scrollbar-track,
+.escalas-list::-webkit-scrollbar-track,
+.jornadas-container::-webkit-scrollbar-track {
+    background: var(--card-border);
+    border-radius: 4px;
+}
+
+.uniformes-list::-webkit-scrollbar-thumb,
+.exames-list::-webkit-scrollbar-thumb,
+.contrato-list::-webkit-scrollbar-thumb,
+.escalas-list::-webkit-scrollbar-thumb,
+.jornadas-container::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+.uniformes-list::-webkit-scrollbar-thumb:hover,
+.exames-list::-webkit-scrollbar-thumb:hover,
+.contrato-list::-webkit-scrollbar-thumb:hover,
+.escalas-list::-webkit-scrollbar-thumb:hover,
+.jornadas-container::-webkit-scrollbar-thumb:hover {
+    background: var(--button-hover);
 }
