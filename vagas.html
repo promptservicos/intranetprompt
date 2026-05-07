@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kanban de Vagas | Controle de Contratações</title>
+    
+    <link rel="icon" type="image/png" href="img/icon1.png">
+    
+    <!-- Boxicons CDN -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="vagas.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header moderno -->
+        <header class="kanban-header">
+            <div class="logo-area">
+                <i class='bx bxs-grid-alt'></i>
+                <h1>Kanban de Vagas</h1>
+            </div>
+            <div class="header-actions">
+                <button id="addVagaBtn" class="btn-primary-glass">
+                    <i class='bx bx-plus-circle'></i>
+                    Nova Vaga
+                </button>
+                <button id="exportExcelBtn" class="btn-secondary-glass">
+                    <i class='bx bxs-file-export'></i>
+                    Exportar
+                </button>
+                <button id="logoutBtn" class="btn-secondary-glass">
+                    <i class='bx bx-arrow-back'></i>
+                    Voltar
+                </button>
+            </div>
+        </header>
+
+        <!-- Barra de ferramentas -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" id="globalSearch" placeholder="Buscar por cargo, código ou cliente...">
+            </div>
+            <div class="sort-box">
+                <i class='bx bx-sort'></i>
+                <select id="globalSort">
+                    <option value="cargo_asc">Cargo A-Z</option>
+                    <option value="cargo_desc">Cargo Z-A</option>
+                    <option value="data_asc">Data abertura ↑</option>
+                    <option value="data_desc">Data abertura ↓</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="kanban-board" id="kanbanBoard"></div>
+    </div>
+
+    <!-- Botão de alternar tema (canto inferior direito) -->
+    <button id="themeToggle" class="theme-toggle-bottom" aria-label="Alternar tema">
+        <i class='bx bx-moon'></i>
+    </button>
+
+    <!-- Modal de adicionar/editar vaga -->
+    <div id="vagaModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nova Vaga</h3>
+                <button class="modal-close-btn"><i class='bx bx-x'></i></button>
+            </div>
+            <form id="vagaForm">
+                <div class="input-box">
+                    <i class='bx bx-briefcase'></i>
+                    <input type="text" id="vagaCargo" required placeholder="Cargo *">
+                </div>
+                <div class="input-box">
+                    <i class='bx bx-barcode'></i>
+                    <input type="text" id="vagaCodigo" placeholder="Código da vaga (opcional)">
+                </div>
+                <div class="input-box">
+                    <i class='bx bx-building'></i>
+                    <input type="text" id="vagaCliente" required placeholder="Cliente *">
+                </div>
+                <div class="input-box">
+                    <i class='bx bx-user'></i>
+                    <input type="text" id="vagaRecrutador" placeholder="Recrutador responsável">
+                </div>
+                <div class="input-box">
+                    <i class='bx bx-file'></i>
+                    <select id="vagaTipoContrato" class="select-input">
+                        <option value="">Selecione o tipo de contrato</option>
+                        <option value="Efetivo">Efetivo</option>
+                        <option value="Terceirizado">Terceirizado</option>
+                        <option value="Temporário">Temporário</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <i class='bx bx-calendar'></i>
+                    <input type="datetime-local" id="vagaDataAbertura" required>
+                </div>
+                <input type="hidden" id="editId" value="">
+                <div class="modal-actions">
+                    <button type="button" id="cancelModalBtn" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação -->
+    <div id="confirmModal" class="modal" style="display: none;">
+        <div class="modal-content confirm-modal">
+            <div class="confirm-icon">
+                <i class='bx bx-question-mark'></i>
+            </div>
+            <p id="confirmMessage">Confirmar ação?</p>
+            <div class="confirm-actions">
+                <button id="confirmNo" class="btn-secondary">Não</button>
+                <button id="confirmYes" class="btn-primary">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <div class="loading-text">Carregando...</div>
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="vagas.js"></script>
+</body>
+
+</html>
