@@ -22,7 +22,6 @@
     --footer-bg: rgba(255, 255, 255, 0.95);
     --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
     --accent-color: #C10404;
-    --carousel-bg: rgba(0, 0, 0, 0.03);
 }
 
 /* ===== TEMA ESCURO ===== */
@@ -46,7 +45,6 @@ body.dark {
     --card-border: rgba(255, 255, 255, 0.1);
     --footer-bg: rgba(20, 20, 28, 0.95);
     --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-    --carousel-bg: rgba(255, 255, 255, 0.05);
 }
 
 * {
@@ -67,7 +65,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Botão de alternar tema - controlado por JS */
+/* Botão de alternar tema */
 .theme-toggle {
     position: fixed;
     bottom: 20px;
@@ -86,34 +84,12 @@ body {
     color: var(--text-color);
     box-shadow: var(--shadow);
     z-index: 1000;
-    transition: 0.2s;
-    transition: bottom 0.1s ease;
+    transition: all 0.2s ease;
 }
 
 .theme-toggle:hover {
     transform: scale(1.05);
     border-color: var(--input-focus);
-}
-
-/* Ajuste para mobile */
-@media (max-width: 768px) {
-    .theme-toggle {
-        width: 42px;
-        height: 42px;
-        font-size: 20px;
-        bottom: 16px;
-        right: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .theme-toggle {
-        width: 38px;
-        height: 38px;
-        font-size: 18px;
-        bottom: 16px;
-        right: 16px;
-    }
 }
 
 /* Header */
@@ -154,7 +130,7 @@ header {
     color: transparent;
 }
 
-/* Perfil clicável com borda sempre visível */
+/* Perfil clicável */
 .user-info {
     display: flex;
     align-items: center;
@@ -249,7 +225,7 @@ header {
     position: absolute;
     background: var(--container-bg);
     backdrop-filter: blur(10px);
-    min-width: 200px;
+    min-width: 220px;
     border-radius: 12px;
     box-shadow: var(--shadow);
     border: 1px solid var(--container-border);
@@ -277,11 +253,12 @@ header {
 main {
     flex: 1;
     padding: 2rem;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     width: 100%;
 }
 
+/* Welcome Section */
 .welcome-section {
     text-align: center;
     margin-bottom: 2rem;
@@ -298,51 +275,186 @@ main {
     font-size: 1rem;
 }
 
-/* Espaço central vazio */
-.center-space {
-    min-height: 200px;
+/* Seção de Atalhos Rápidos */
+.shortcuts-section {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 1.2rem;
+    margin-bottom: 2rem;
 }
 
-/* Carrossel de aniversariantes (um por vez) - MAIS SINGELO */
-.birthdays-carousel-container {
-    background: var(--carousel-bg);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--container-border);
+.shortcuts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--container-border);
-    padding: 1rem 2rem;
-    margin: 1rem 0;
 }
 
-.carousel-title {
+.shortcuts-header h3 {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
-    margin-bottom: 1rem;
-    color: var(--accent-color);
-    font-weight: 600;
     font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
 }
 
-.carousel-title i {
-    font-size: 1.2rem;
+.shortcuts-header h3 i {
+    color: var(--accent-color);
+}
+
+.btn-editar-atalhos {
+    background: linear-gradient(135deg, var(--accent-color), var(--button-hover));
+    border: none;
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-editar-atalhos:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(193, 4, 4, 0.3);
+}
+
+/* Grid de atalhos - máximo 6 por linha */
+.atalhos-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+}
+
+.atalho-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1rem 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.atalho-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow);
+}
+
+.atalho-icon {
+    font-size: 1.8rem;
+    color: var(--accent-color);
+}
+
+.atalho-nome {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.empty-atalhos {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px dashed var(--card-border);
+    font-size: 0.85rem;
+    grid-column: 1 / -1;
+}
+
+/* Grid de duas colunas - ajustado */
+.content-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+}
+
+.content-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.content-right {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    min-height: 300px;
+}
+
+.placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    gap: 1rem;
+}
+
+.placeholder-content i {
+    font-size: 3rem;
+    color: var(--accent-color);
+    opacity: 0.5;
+}
+
+.placeholder-content p {
+    font-size: 0.9rem;
+}
+
+/* Bloco de Aniversariantes - mais legível */
+.birthdays-section-fixed {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 20px;
+    padding: 1rem;
+}
+
+.birthdays-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--container-border);
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.birthdays-header i {
+    font-size: 1.1rem;
+}
+
+.birthdays-carousel-container {
+    padding: 0.5rem;
 }
 
 .carousel-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-    max-width: 500px;
-    margin: 0 auto;
+    gap: 0.5rem;
 }
 
 .carousel-prev, .carousel-next {
-    background: var(--container-bg);
+    background: var(--card-bg);
     border: 1px solid var(--container-border);
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -355,55 +467,34 @@ main {
 .carousel-prev:hover, .carousel-next:hover {
     background-color: var(--accent-color);
     color: white;
-    border-color: var(--accent-color);
 }
 
 .carousel-single {
     flex: 1;
     overflow: hidden;
-    min-width: 0;
 }
 
 .birthday-card-single {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    padding: 0.6rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    transition: 0.3s;
+    gap: 0.6rem;
     animation: fadeIn 0.5s ease;
-    width: 100%;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateX(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.birthday-card-single:hover {
-    transform: scale(1.02);
-    border-color: var(--accent-color);
-    box-shadow: var(--shadow);
 }
 
 .birthday-avatar-single {
-    width: 50px;
-    height: 50px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background-color: var(--accent-color);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1rem;
     flex-shrink: 0;
 }
 
@@ -414,24 +505,24 @@ main {
 
 .birthday-name-single {
     font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 4px;
+    font-size: 0.85rem;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .birthday-dept-single {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-light);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .birthday-date-single {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: var(--accent-color);
     display: flex;
     align-items: center;
@@ -440,10 +531,99 @@ main {
 }
 
 .birthday-date-single i {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
-/* Footer - Suporte à ESQUERDA e Copyright à DIREITA */
+/* Responsivo */
+@media (max-width: 1200px) {
+    .atalhos-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .atalhos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .header-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    .user-details {
+        text-align: center;
+    }
+    .main-nav {
+        top: 140px;
+    }
+    .nav-menu {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    .dropdown-content {
+        position: static;
+        box-shadow: none;
+        background: transparent;
+        padding-left: 1rem;
+    }
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .atalhos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .theme-toggle {
+        bottom: 16px;
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-section {
+        text-align: center;
+    }
+    .footer-bottom {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 1rem;
+    }
+    .atalhos-grid {
+        grid-template-columns: 1fr;
+    }
+    .birthday-card-single {
+        padding: 0.3rem;
+    }
+    .birthday-avatar-single {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+}
+
+/* Footer */
 footer {
     background: var(--footer-bg);
     backdrop-filter: blur(10px);
@@ -494,31 +674,230 @@ footer {
     margin-bottom: 0.2rem;
 }
 
-/* Responsivo para mobile */
-@media (max-width: 768px) {
-    .footer-container {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .footer-section {
-        text-align: center;
-    }
-    
-    .footer-bottom {
-        text-align: center;
-    }
+/* Modal de atalhos */
+.modal-atalhos {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
 }
 
-/* Responsivo */
-@media (max-width: 768px) {
-    .footer-main {
-        justify-content: center;
-    }
-    .footer-section {
-        text-align: center;
-    }
+.modal-content-atalhos {
+    background: var(--container-bg);
+    border: 1px solid var(--container-border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    width: 950px;
+    max-width: 95%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+}
+
+.modal-header-atalhos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--container-border);
+}
+
+.modal-header-atalhos h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.modal-header-atalhos h3 i {
+    color: var(--accent-color);
+}
+
+.modal-close-atalhos {
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: 0.2s;
+}
+
+.modal-close-atalhos:hover {
+    color: var(--accent-color);
+}
+
+.atalhos-editor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Categorias */
+.categoria-item {
+    margin-bottom: 1.5rem;
+}
+
+.categoria-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.categoria-titulo i {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+}
+
+.categoria-titulo span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--accent-color);
+}
+
+.lista-atalhos-categoria {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.atalhos-disponiveis {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.atalhos-disponiveis h4 {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.atalhos-selecionados {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.atalhos-selecionados h4 {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.atalho-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.7rem;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+    transition: 0.2s;
+}
+
+.atalho-item:hover {
+    background-color: rgba(193, 4, 4, 0.05);
+    border-color: var(--accent-color);
+}
+
+.atalho-item i {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+}
+
+.atalho-item span {
+    flex: 1;
+    font-size: 0.85rem;
+}
+
+.btn-adicionar, .btn-remover-atalho {
+    background-color: rgba(193, 4, 4, 0.1);
+    border: none;
+    border-radius: 20px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    font-size: 1rem;
+}
+
+.btn-adicionar:hover, .btn-remover-atalho:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.lista-atalhos.selecionados .atalho-item {
+    cursor: move;
+}
+
+.info-dica {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.8rem;
+    text-align: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.modal-buttons-atalhos {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--container-border);
+}
+
+.btn-cancelar-atalhos, .btn-salvar-atalhos {
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-cancelar-atalhos {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+}
+
+.btn-cancelar-atalhos:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+.btn-salvar-atalhos {
+    background: linear-gradient(135deg, var(--accent-color), var(--button-hover));
+    color: white;
+}
+
+.btn-salvar-atalhos:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(193, 4, 4, 0.3);
 }
 
 /* Responsivo */
@@ -549,27 +928,16 @@ footer {
         background: transparent;
         padding-left: 1rem;
     }
-    .carousel-wrapper {
-        max-width: 100%;
-        padding: 0 0.5rem;
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
-    .birthday-card-single {
-        flex-direction: row;
-        text-align: left;
-        padding: 0.7rem 1rem;
+    .atalhos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     }
-    .birthday-avatar-single {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-    }
-    .birthday-name-single {
-        font-size: 0.9rem;
-        white-space: normal;
-    }
-    .birthday-dept-single {
-        font-size: 0.7rem;
-        white-space: normal;
+    .atalhos-editor {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
     .theme-toggle {
         bottom: 16px;
@@ -578,6 +946,17 @@ footer {
         height: 42px;
         font-size: 20px;
     }
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-section {
+        text-align: center;
+    }
+    .footer-bottom {
+        text-align: center;
+    }
 }
 
 @media (max-width: 480px) {
@@ -585,16 +964,16 @@ footer {
         padding: 1rem;
     }
     .birthday-card-single {
-        padding: 0.6rem 0.8rem;
-        gap: 0.8rem;
-    }
-    .carousel-prev, .carousel-next {
-        width: 28px;
-        height: 28px;
+        padding: 0.4rem;
     }
     .birthday-avatar-single {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
+        width: 25px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
     }
 }

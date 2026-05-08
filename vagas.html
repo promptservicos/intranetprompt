@@ -10,6 +10,9 @@
     
     <!-- Boxicons CDN -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -36,6 +39,10 @@
                     <i class='bx bx-plus-circle'></i>
                     Nova Vaga
                 </button>
+                <button id="syncNowBtn" class="btn-secondary-glass">
+                    <i class='bx bx-refresh'></i>
+                    Sincronizar
+                </button>
                 <button id="exportExcelBtn" class="btn-secondary-glass">
                     <i class='bx bxs-file-export'></i>
                     Exportar
@@ -53,14 +60,26 @@
                 <i class='bx bx-search'></i>
                 <input type="text" id="globalSearch" placeholder="Buscar por cargo, código ou cliente...">
             </div>
-            <div class="sort-box">
-                <i class='bx bx-sort'></i>
-                <select id="globalSort">
-                    <option value="cargo_asc">Cargo A-Z</option>
-                    <option value="cargo_desc">Cargo Z-A</option>
-                    <option value="data_asc">Data abertura ↑</option>
-                    <option value="data_desc">Data abertura ↓</option>
-                </select>
+            
+            <div class="filter-group">
+                <button id="sortOrderBtn" class="btn-order asc" title="Ordenar crescente/decrescente">
+                    <i class='bx bx-up-arrow-alt'></i>
+                </button>
+                
+                <div class="filter-select">
+                    <i class='bx bx-filter'></i>
+                    <select id="filterType">
+                        <option value="data">Data de Abertura</option>
+                        <option value="cargo">Cargo (A-Z)</option>
+                        <option value="cliente">Cliente (A-Z)</option>
+                        <option value="status">Status</option>
+                    </select>
+                </div>
+                
+                <button id="filterCanceledBtn" class="btn-filter">
+                    <i class='bx bx-filter-alt'></i>
+                    Canceladas
+                </button>
             </div>
         </div>
 

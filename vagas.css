@@ -778,3 +778,256 @@ body {
         font-size: 20px;
     }
 }
+
+/* ===== TOAST MESSAGES (notificações) ===== */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast-message {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: var(--container-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--link-color);
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.toast-success i {
+    color: #4caf50;
+}
+
+.toast-error i {
+    color: #f44336;
+}
+
+.toast-info i {
+    color: var(--link-color);
+}
+
+/* Botão de sincronizar com rotação */
+.btn-secondary-glass.syncing i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Botão de filtro */
+.btn-filter {
+    background: transparent;
+    border: 1px solid var(--input-border);
+    border-radius: 40px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    color: var(--text-color);
+}
+
+.btn-filter:hover {
+    border-color: var(--link-color);
+    transform: translateY(-1px);
+}
+
+.btn-filter.active {
+    background: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+}
+
+/* Card cancelado - tom avermelhado */
+.card.canceled {
+    background: rgba(193, 4, 4, 0.15);
+    border-left: 3px solid #C10404;
+    backdrop-filter: blur(10px);
+}
+
+body.dark .card.canceled {
+    background: rgba(193, 4, 4, 0.25);
+}
+
+.card.canceled .card-cargo {
+    color: #ff6b6b;
+}
+
+.card.canceled .card-cliente {
+    color: #ff9999;
+}
+
+/* Badge de cancelado */
+.canceled-badge {
+    display: inline-block;
+    background: #C10404;
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+/* Grupo de filtros */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+}
+
+.filter-select {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filter-select i {
+    position: absolute;
+    left: 14px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.filter-select select {
+    padding: 0.6rem 2rem 0.6rem 2.2rem;
+    background: transparent;
+    border: 1px solid var(--input-border);
+    border-radius: 40px;
+    color: var(--text-color);
+    font-size: 0.85rem;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    min-width: 160px;
+}
+
+.filter-select select:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 2px rgba(193, 4, 4, 0.1);
+}
+
+/* Botão de ordenação (crescente/decrescente) */
+.btn-order {
+    background: transparent;
+    border: 1px solid var(--input-border);
+    border-radius: 40px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: var(--text-color);
+}
+
+.btn-order i {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-order.asc i {
+    transform: rotate(0deg);
+}
+
+.btn-order.desc i {
+    transform: rotate(360deg);
+}
+
+/* Botão de filtro de canceladas */
+.btn-filter {
+    background: transparent;
+    border: 1px solid var(--input-border);
+    border-radius: 40px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
+.btn-filter:hover {
+    border-color: var(--link-color);
+    transform: translateY(-1px);
+    background: rgba(193, 4, 4, 0.1);
+}
+
+.btn-filter.active {
+    background: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+}
+
+.btn-filter.active i {
+    color: white;
+}
+
+/* Responsivo para mobile */
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
+    
+    .filter-group {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    
+    .filter-select select {
+        min-width: 140px;
+    }
+    
+    .btn-order {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}

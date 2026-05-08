@@ -18,6 +18,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <!-- SortableJS para drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <!-- Botão de alternar tema (canto inferior direito) -->
@@ -62,13 +65,21 @@
                 </li>
                 <li><a href="colaboradores.html"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
                 <li><a href="clientes.html"><i class='bx bx-briefcase'></i> Clientes</a></li>
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-board'></i> Kanbans <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="vagas.html"><i class='bx bx-briefcase-alt-2'></i> Vagas</a>
+                        <a href="https://ctzkb.vercel.app/kanban.html" target="_blank"><i class='bx bx-customize'></i> Customiza</a>
+                        <a href="https://itaiquara-kb.vercel.app/" target="_blank"><i class='bx bx-building-house'></i> Itaiquara</a>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main>
-        <!-- Welcome Section (centralizado) -->
+        <!-- Welcome Section -->
         <section class="welcome-section">
             <div class="welcome-message">
                 <h2 id="welcomeText">Bem-vindo, Usuário!</h2>
@@ -76,46 +87,69 @@
             </div>
         </section>
 
-        <!-- Espaço central vazio (será usado depois) -->
-        <div class="center-space"></div>
-    </main>
-
-    <!-- Carrossel de aniversariantes (um por vez) -->
-    <div class="birthdays-carousel-container">
-        <div class="carousel-title">
-            <i class='bx bx-gift'></i>
-            <span>Próximos Aniversariantes</span>
+        <!-- Seção de Atalhos Rápidos (Ocupa toda largura) -->
+        <div class="shortcuts-section">
+            <div class="shortcuts-header">
+                <h3><i class='bx bx-link-alt'></i> Meus Atalhos Rápidos</h3>
+                <button id="btnEditarAtalhos" class="btn-editar-atalhos">
+                    <i class='bx bx-edit'></i> Editar Atalhos
+                </button>
+            </div>
+            <div id="atalhosGrid" class="atalhos-grid">
+                <div class="empty-atalhos">Nenhum atalho adicionado. Clique em "Editar Atalhos" para personalizar.</div>
+            </div>
         </div>
-        <div class="carousel-wrapper">
-            <button class="carousel-prev" id="carouselPrev"><i class='bx bx-chevron-left'></i></button>
-            <div class="carousel-single" id="carouselSingle">
-                <div class="birthday-card-single">
-                    <div class="birthday-avatar-single">
-                        <i class='bx bx-user'></i>
+
+        <!-- Grid de duas colunas para conteúdo abaixo -->
+        <div class="content-grid">
+            <!-- Coluna Esquerda: Aniversariantes -->
+            <div class="content-left">
+                <div class="birthdays-section-fixed">
+                    <div class="birthdays-header">
+                        <i class='bx bx-gift'></i>
+                        <span>Próximos Aniversariantes</span>
                     </div>
-                    <div class="birthday-info-single">
-                        <div class="birthday-name-single" id="birthdayName">Carregando...</div>
-                        <div class="birthday-dept-single" id="birthdayDept">Departamento</div>
-                        <div class="birthday-date-single" id="birthdayDate">
-                            <i class='bx bx-calendar'></i> Data
+                    <div class="birthdays-carousel-container">
+                        <div class="carousel-wrapper">
+                            <button class="carousel-prev" id="carouselPrev"><i class='bx bx-chevron-left'></i></button>
+                            <div class="carousel-single" id="carouselSingle">
+                                <div class="birthday-card-single">
+                                    <div class="birthday-avatar-single">
+                                        <i class='bx bx-user'></i>
+                                    </div>
+                                    <div class="birthday-info-single">
+                                        <div class="birthday-name-single" id="birthdayName">Carregando...</div>
+                                        <div class="birthday-dept-single" id="birthdayDept">Departamento</div>
+                                        <div class="birthday-date-single" id="birthdayDate">
+                                            <i class='bx bx-calendar'></i> Data
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="carousel-next" id="carouselNext"><i class='bx bx-chevron-right'></i></button>
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="carousel-next" id="carouselNext"><i class='bx bx-chevron-right'></i></button>
-        </div>
-    </div>
 
-    <!-- Footer simplificado (Suporte alinhado à esquerda) -->
+            <!-- Coluna Direita (espaço reservado para futuro) -->
+            <div class="content-right">
+                <div class="placeholder-content">
+                    <i class='bx bx-grid-alt'></i>
+                    <p>Espaço reservado</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
     <footer>
         <div class="footer-container">
-            <div class="footer-main">
-                <div class="footer-section">
-                    <h3>Suporte</h3>
-                    <p><i class='bx bx-phone'></i> Ramal: indisponível</p>
-                    <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
-                    <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
-                </div>
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <p><i class='bx bx-phone'></i> Ramal: indisponível</p>
+                <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
             </div>
             <div class="footer-bottom">
                 <p>Intranet Prompt v0.2</p>
@@ -124,6 +158,33 @@
             </div>
         </div>
     </footer>
+
+    <!-- Modal de edição de atalhos -->
+    <div id="modalAtalhos" class="modal-atalhos" style="display: none;">
+        <div class="modal-content-atalhos">
+            <div class="modal-header-atalhos">
+                <h3><i class='bx bx-edit'></i> Editar Meus Atalhos</h3>
+                <span class="modal-close-atalhos">&times;</span>
+            </div>
+            
+            <div class="atalhos-editor">
+                <div class="atalhos-disponiveis">
+                    <h4>Atalhos Disponíveis</h4>
+                    <div id="listaDisponiveis" class="lista-atalhos"></div>
+                </div>
+                <div class="atalhos-selecionados">
+                    <h4>Meus Atalhos (arraste para ordenar)</h4>
+                    <div id="listaSelecionados" class="lista-atalhos selecionados"></div>
+                    <p class="info-dica"><i class='bx bx-info-circle'></i> Arraste os itens para reordenar</p>
+                </div>
+            </div>
+            
+            <div class="modal-buttons-atalhos">
+                <button id="btnCancelarAtalhos" class="btn-cancelar-atalhos">Cancelar</button>
+                <button id="btnSalvarAtalhos" class="btn-salvar-atalhos">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript principal -->
     <script src="intranet.js"></script>
