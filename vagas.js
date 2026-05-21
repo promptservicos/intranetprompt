@@ -1,5 +1,5 @@
 // ========== CONFIGURAÇÃO DA PLANILHA ==========
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyFMuWy1mB0RRYvhYDSz_dRLlyrVqgox6wj4uB5K1xr9ti4KtWtjRUs9y5RgA0axEXY/exec";
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyZUVXWwWVGuYhBWbj1JJkTcKGsS-28wvJJxTcHrqTcFZop5axVFn8qrMqqPeTJ_IKH/exec";
 
 // ========== CONFIGURAÇÃO DAS ETAPAS ==========
 const stages = [
