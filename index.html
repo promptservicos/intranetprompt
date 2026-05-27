@@ -28,49 +28,70 @@
 
     <main class="container">
         <form id="loginForm">
+            <div class="logo-area">
+                <img src="logo.png" alt="Prompt Serviços" class="logo" onerror="this.style.display='none'">
+            </div>
             <h1>Intranet Prompt</h1>
             <div id="alertBox"></div>
 
             <div class="input-box">
                 <label for="email" class="sr-only">E-mail</label>
+                <i class='bx bxs-envelope input-icon-left'></i>
                 <input id="email" placeholder="E-mail corporativo" type="email" required>
-                <i class="bx bxs-user"></i>
             </div>
 
             <div class="input-box">
                 <label for="senha" class="sr-only">Senha</label>
+                <i class='bx bxs-lock-alt input-icon-left'></i>
                 <input id="senha" placeholder="Senha" type="password" required>
-                <i class="bx bxs-lock-alt"></i>
+                <button type="button" class="toggle-password" id="togglePassword">
+                    <i class='bx bx-show'></i>
+                </button>
             </div>
 
             <div class="remember-forgot">
                 <label class="custom-checkbox">
                     <input type="checkbox" id="rememberMe">
                     <span class="checkmark"></span>
-                    Lembrar senha
+                    <span class="checkbox-text">Lembrar</span>
                 </label>
-                <a href="#" id="forgotPasswordLink">Esqueci a senha</a>
+                <a href="#" id="forgotPasswordLink">Esqueci minha senha</a>
             </div>
 
-            <button type="submit" class="login">Acessar Intranet</button>
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span>Acessar Intranet</span>
+                <i class='bx bx-log-in'></i>
+            </button>
 
-            <div class="register-link">
-                <p>Problemas para acessar? <a href="mailto:marketing@promptservicos.com.br">Contate o suporte</a></p>
+            <div class="support-link">
+                <p>Problemas para acessar? <a href="#" id="supportLink" class="support-link-highlight">Contate o suporte</a></p>
             </div>
         </form>
     </main>
 
-    <!-- Modal para recuperação de senha (mesmo HTML) -->
+    <!-- Modal para recuperação de senha -->
     <div id="passwordResetModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
+            <i class='bx bx-mail-send modal-icon'></i>
             <h2>Recuperar Senha</h2>
             <p>Informe seu e-mail corporativo para receber instruções de redefinição de senha.</p>
             <div class="input-box">
+                <i class='bx bxs-envelope input-icon-left'></i>
                 <input type="email" id="resetEmail" placeholder="Seu e-mail corporativo">
             </div>
-            <button id="sendResetEmail" class="login">Enviar instruções</button>
+            <button id="sendResetEmail" class="login-btn">Enviar instruções</button>
             <div id="resetAlertBox"></div>
+        </div>
+    </div>
+
+    <!-- Modal de mensagem -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeMessageModal">&times;</span>
+            <i class='bx bx-error-circle modal-icon' id="messageIcon"></i>
+            <p id="messageText" class="modal-message"></p>
+            <button id="messageOkBtn" class="login-btn">Entendi</button>
         </div>
     </div>
 
