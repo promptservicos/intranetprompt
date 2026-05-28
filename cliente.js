@@ -100,6 +100,32 @@ const diasMap = {
 
 const ordemDias = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
 
+// ========== FUNÇÃO PARA MOSTRAR TOAST ==========
+function showToast(message, isError = false) {
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    if (isError) toast.classList.add('error');
+    
+    const icon = document.createElement('i');
+    icon.className = isError ? 'bx bx-error-circle' : 'bx bx-check-circle';
+    
+    const text = document.createElement('span');
+    text.textContent = message;
+    
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // ========== FUNÇÃO PARA VERIFICAR ACESSO ==========
 function verificarAcesso(usuario) {
     if (USUARIOS_AUTORIZADOS_IDS.includes(usuario.uid)) {
@@ -230,7 +256,7 @@ function formatarEscala(dias) {
     return diasExtenso.join(', ');
 }
 
-// ========== FUNÇÕES PARA EDITAR CLIENTE ==========
+// ========== FUNÇÕES PARA EDITAR CLIENTE (COM CRIPTOGRAFIA) ==========
 function abrirModalEditarCliente() {
     if (!podeEditarCliente) {
         alert('Você não tem permissão para editar este cliente.');
@@ -302,7 +328,9 @@ async function salvarEdicaoCliente(event) {
         adiantdata: document.getElementById('editClienteAdiantData').value.trim(),
         pagdata: document.getElementById('editClientePagData').value.trim(),
         beneadiant: document.getElementById('editClienteBenAdiant').value.trim(),
-        benepag: document.getElementById('editClienteBenPag').value.trim()
+        benepag: document.getElementById('editClienteBenPag').value.trim(),
+        cargos: cargosList,
+        fotos: fotosBase64
     };
     
     if (!clienteData.nome) {
@@ -311,8 +339,17 @@ async function salvarEdicaoCliente(event) {
     }
     
     try {
-        await db.collection('clientes').doc(clienteId).update(clienteData);
+        // USAR CRIPTOGRAFIA
+        const dadosCriptografados = prepareClienteForSave(clienteData);
+        
+        await db.collection('clientes').doc(clienteId).set({
+            dadosPublicos: dadosCriptografados.dadosPublicos,
+            dadosCriptografados: dadosCriptografados.dadosCriptografados,
+            atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
         fecharModalEditarCliente();
+        showToast('Cliente atualizado com sucesso!', false);
         
         // Recarregar os dados na tela
         await carregarCliente();
@@ -395,10 +432,10 @@ function habilitarEdicaoCargo(habilitar) {
     if (btnCancelar) btnCancelar.textContent = habilitar ? 'Cancelar' : 'Fechar';
     
     // Renderizar listas no modo apropriado
-    if (typeof renderizarJornadas === 'function') renderizarJornadas();
-    if (typeof renderizarUniformes === 'function') renderizarUniformes();
-    if (typeof renderizarExames === 'function') renderizarExames();
-    if (typeof renderizarContratos === 'function') renderizarContratos();
+    renderizarJornadas();
+    renderizarUniformes();
+    renderizarExames();
+    renderizarContratos();
 }
 
 function entrarModoEdicao() {
@@ -729,6 +766,7 @@ async function salvarCargoFicha() {
     await salvarCargos();
     renderizarCargos();
     fecharModalFicha();
+    showToast('Cargo salvo com sucesso!', false);
 }
 
 async function removerCargo(index) {
@@ -736,6 +774,7 @@ async function removerCargo(index) {
         cargosList.splice(index, 1);
         await salvarCargos();
         renderizarCargos();
+        showToast('Cargo removido com sucesso!', false);
     }
 }
 
@@ -792,21 +831,57 @@ function renderizarCargos() {
 
 async function salvarCargos() {
     if (!clienteId) return;
-    await db.collection('clientes').doc(clienteId).update({
-        cargos: cargosList
-    }).catch(error => {
-        console.error("Erro ao salvar cargos:", error);
-        alert('Erro ao salvar cargos. Verifique as permissões.');
-    });
+    
+    // Buscar dados atuais do cliente para preservar outros campos
+    const doc = await db.collection('clientes').doc(clienteId).get();
+    const data = doc.data();
+    
+    let dadosCompletos;
+    
+    if (data.dadosCriptografados) {
+        // Formato criptografado
+        const clienteDecriptografado = recoverClienteFromSave({ id: doc.id, ...data });
+        if (clienteDecriptografado) {
+            dadosCompletos = clienteDecriptografado;
+            dadosCompletos.cargos = cargosList;
+            
+            // Re-criptografar
+            const novosDadosCriptografados = prepareClienteForSave(dadosCompletos);
+            await db.collection('clientes').doc(clienteId).set({
+                dadosPublicos: novosDadosCriptografados.dadosPublicos,
+                dadosCriptografados: novosDadosCriptografados.dadosCriptografados,
+                atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+    } else {
+        // Formato antigo (sem criptografia)
+        dadosCompletos = { ...data, cargos: cargosList };
+        await db.collection('clientes').doc(clienteId).update({
+            cargos: cargosList
+        });
+    }
 }
 
 async function carregarCargos() {
     if (!clienteId) return;
     try {
         const doc = await db.collection('clientes').doc(clienteId).get();
-        if (doc.exists && doc.data().cargos) {
-            cargosList = doc.data().cargos;
-            cargosList = cargosList.map(cargo => {
+        if (doc.exists) {
+            const data = doc.data();
+            let cargos = [];
+            
+            if (data.dadosCriptografados) {
+                // Formato criptografado
+                const clienteDecriptografado = recoverClienteFromSave({ id: doc.id, ...data });
+                if (clienteDecriptografado && clienteDecriptografado.cargos) {
+                    cargos = clienteDecriptografado.cargos;
+                }
+            } else {
+                // Formato antigo
+                cargos = data.cargos || [];
+            }
+            
+            cargosList = cargos.map(cargo => {
                 if (typeof cargo === 'string') {
                     return {
                         nome: cargo,
@@ -1009,22 +1084,6 @@ function adicionarContrato() {
     select.value = '';
 }
 
-// ========== FUNÇÃO PARA INDICAR SCROLL NAS LISTAS ==========
-function verificarScrollNasListas() {
-    const listas = document.querySelectorAll('.uniformes-list, .exames-list, .contrato-list, .escalas-list, .jornadas-container');
-    
-    listas.forEach(lista => {
-        if (lista.scrollHeight > lista.clientHeight) {
-            lista.style.borderRight = `3px solid var(--accent-color)`;
-        } else {
-            lista.style.borderRight = 'none';
-        }
-    });
-}
-
-// Chamar a função após renderizar cada lista
-// Adicione no final de renderizarUniformes(), renderizarExames(), renderizarContratos(), renderizarEscalasLista(), renderizarJornadas()
-
 // ========== FUNÇÕES PARA FOTOS ==========
 async function compactarImagem(file, maxSizeKB = 200) {
     return new Promise((resolve, reject) => {
@@ -1160,19 +1219,52 @@ async function renderizarFotos() {
 
 async function salvarFotos() {
     if (!clienteId) return;
-    await db.collection('clientes').doc(clienteId).update({
-        fotos: fotosBase64
-    }).catch(error => {
-        console.error("Erro ao salvar fotos:", error);
-    });
+    
+    // Buscar dados atuais do cliente para preservar outros campos
+    const doc = await db.collection('clientes').doc(clienteId).get();
+    const data = doc.data();
+    
+    if (data.dadosCriptografados) {
+        // Formato criptografado
+        const clienteDecriptografado = recoverClienteFromSave({ id: doc.id, ...data });
+        if (clienteDecriptografado) {
+            clienteDecriptografado.fotos = fotosBase64;
+            
+            // Re-criptografar
+            const novosDadosCriptografados = prepareClienteForSave(clienteDecriptografado);
+            await db.collection('clientes').doc(clienteId).set({
+                dadosPublicos: novosDadosCriptografados.dadosPublicos,
+                dadosCriptografados: novosDadosCriptografados.dadosCriptografados,
+                atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+    } else {
+        // Formato antigo
+        await db.collection('clientes').doc(clienteId).update({
+            fotos: fotosBase64
+        });
+    }
 }
 
 async function carregarFotos() {
     if (!clienteId) return;
     try {
         const doc = await db.collection('clientes').doc(clienteId).get();
-        if (doc.exists && doc.data().fotos) {
-            fotosBase64 = doc.data().fotos;
+        if (doc.exists) {
+            const data = doc.data();
+            
+            if (data.dadosCriptografados) {
+                // Formato criptografado
+                const clienteDecriptografado = recoverClienteFromSave({ id: doc.id, ...data });
+                if (clienteDecriptografado && clienteDecriptografado.fotos) {
+                    fotosBase64 = clienteDecriptografado.fotos;
+                } else {
+                    fotosBase64 = [];
+                }
+            } else {
+                // Formato antigo
+                fotosBase64 = data.fotos || [];
+            }
         } else {
             fotosBase64 = [];
         }
@@ -1184,7 +1276,7 @@ async function carregarFotos() {
     }
 }
 
-// ========== CARREGAR DADOS DO CLIENTE ==========
+// ========== CARREGAR DADOS DO CLIENTE (COM DESCRIPTOGRAFIA) ==========
 async function carregarCliente() {
     clienteId = getClienteId();
     
@@ -1208,39 +1300,53 @@ async function carregarCliente() {
         }
         
         const data = doc.data();
+        let clienteData;
+        
+        // VERIFICAR SE ESTÁ CRIPTOGRAFADO
+        if (data.dadosCriptografados) {
+            // USAR DESCRIPTOGRAFIA
+            const clienteDecriptografado = recoverClienteFromSave({ id: doc.id, ...data });
+            if (!clienteDecriptografado) {
+                throw new Error('Falha ao descriptografar dados do cliente');
+            }
+            clienteData = clienteDecriptografado;
+        } else {
+            // Formato antigo (sem criptografia) - para compatibilidade
+            clienteData = data;
+        }
         
         // Dados básicos
-        document.getElementById('clienteNome').textContent = data.nome || 'Nome não informado';
-        document.getElementById('clienteCNPJ').innerHTML = `<i class='bx bx-receipt'></i> CNPJ: ${formatarCNPJ(data.cnpj || '')}`;
-        document.getElementById('clienteRazaoSocial').textContent = data.rsocial || data.razao_social || 'Não informado';
-        document.getElementById('clienteContato').textContent = data.contato || 'Não informado';
-        document.getElementById('clienteEmail').textContent = data.email || 'Não informado';
-        document.getElementById('clienteTelefone').textContent = formatarTelefone(data.telefone || '');
-        document.getElementById('clienteEndereco').textContent = data.endereco || 'Não informado';
-        document.getElementById('clienteInscricaoEstadual').textContent = data.iestadual || data.inscricao_estadual || 'Não informado';
-        document.getElementById('clienteCodigoGI').innerHTML = `<i class='bx bx-barcode'></i> Código GI: ${data.codigogi || 'Não informado'}`;
+        document.getElementById('clienteNome').textContent = clienteData.nome || 'Nome não informado';
+        document.getElementById('clienteCNPJ').innerHTML = `<i class='bx bx-receipt'></i> CNPJ: ${formatarCNPJ(clienteData.cnpj || '')}`;
+        document.getElementById('clienteRazaoSocial').textContent = clienteData.rsocial || clienteData.razao_social || 'Não informado';
+        document.getElementById('clienteContato').textContent = clienteData.contato || 'Não informado';
+        document.getElementById('clienteEmail').textContent = clienteData.email || 'Não informado';
+        document.getElementById('clienteTelefone').textContent = formatarTelefone(clienteData.telefone || '');
+        document.getElementById('clienteEndereco').textContent = clienteData.endereco || 'Não informado';
+        document.getElementById('clienteInscricaoEstadual').textContent = clienteData.iestadual || clienteData.inscricao_estadual || 'Não informado';
+        document.getElementById('clienteCodigoGI').innerHTML = `<i class='bx bx-barcode'></i> Código GI: ${clienteData.codigogi || 'Não informado'}`;
         
         // Informações adicionais
-        document.getElementById('clienteSupervisor').textContent = data.supervisor || 'Não informado';
-        document.getElementById('clientePonto').textContent = data.ponto || 'Não informado';
-        document.getElementById('clienteFechFolha').textContent = data.fechfolha || 'Não informado';
+        document.getElementById('clienteSupervisor').textContent = clienteData.supervisor || 'Não informado';
+        document.getElementById('clientePonto').textContent = clienteData.ponto || 'Não informado';
+        document.getElementById('clienteFechFolha').textContent = clienteData.fechfolha || 'Não informado';
         
         // Integrações
-        document.getElementById('clienteIntManha').textContent = data.intmanha || 'Não informado';
-        document.getElementById('clienteIntTarde').textContent = data.inttarde || 'Não informado';
-        document.getElementById('clienteIntNoite').textContent = data.intnoite || 'Não informado';
+        document.getElementById('clienteIntManha').textContent = clienteData.intmanha || 'Não informado';
+        document.getElementById('clienteIntTarde').textContent = clienteData.inttarde || 'Não informado';
+        document.getElementById('clienteIntNoite').textContent = clienteData.intnoite || 'Não informado';
         
         // Faturamento
-        document.getElementById('clienteEmiFat').textContent = data.emifat || 'Não informado';
-        document.getElementById('clienteVencFat').textContent = data.vencfat || 'Não informado';
+        document.getElementById('clienteEmiFat').textContent = clienteData.emifat || 'Não informado';
+        document.getElementById('clienteVencFat').textContent = clienteData.vencfat || 'Não informado';
         
         // Pagamentos
-        document.getElementById('clienteAdiantData').textContent = data.adiantdata || 'Não informado';
-        document.getElementById('clientePagData').textContent = data.pagdata || 'Não informado';
+        document.getElementById('clienteAdiantData').textContent = clienteData.adiantdata || 'Não informado';
+        document.getElementById('clientePagData').textContent = clienteData.pagdata || 'Não informado';
         
         // Benefícios
-        document.getElementById('clienteBenAdiant').textContent = data.beneadiant || 'Não informado';
-        document.getElementById('clienteBenPag').textContent = data.benepag || 'Não informado';
+        document.getElementById('clienteBenAdiant').textContent = clienteData.beneadiant || 'Não informado';
+        document.getElementById('clienteBenPag').textContent = clienteData.benepag || 'Não informado';
         
         loadingIndicator.style.display = 'none';
         clienteContent.style.display = 'block';
@@ -1251,8 +1357,31 @@ async function carregarCliente() {
             btnEditarCliente.style.display = podeEditarCliente ? 'flex' : 'none';
         }
         
-        await carregarFotos();
-        await carregarCargos();
+        // Carregar fotos e cargos do objeto descriptografado
+        fotosBase64 = clienteData.fotos || [];
+        renderizarFotos();
+        
+        cargosList = clienteData.cargos || [];
+        cargosList = cargosList.map(cargo => {
+            if (typeof cargo === 'string') {
+                return {
+                    nome: cargo,
+                    escalas: ['seg,ter,qua,qui,sex'],
+                    jornadas: [{ entrada: '08:00', saida: '17:00' }]
+                };
+            }
+            if (!cargo.escalas) {
+                cargo.escalas = ['seg,ter,qua,qui,sex'];
+            }
+            cargo.escalas = cargo.escalas.map(escala => {
+                if (Array.isArray(escala)) {
+                    return escala.join(',');
+                }
+                return escala;
+            });
+            return cargo;
+        });
+        renderizarCargos();
         
     } catch (error) {
         console.error("Erro ao carregar cliente:", error);
@@ -1381,6 +1510,7 @@ if (uploadFoto) {
             await salvarFotos();
             renderizarFotos();
             uploadFoto.value = '';
+            showToast('Foto adicionada com sucesso!', false);
         } catch (error) {
             console.error("Erro ao processar imagem:", error);
             alert('Erro ao processar a imagem. Tente novamente.');
@@ -1508,9 +1638,7 @@ function ajustarBotaoTema() {
     const windowHeight = window.innerHeight;
     const themeBtnHeight = themeBtn.offsetHeight;
     
-    // Se o topo do footer está visível ou próximo do viewport
     if (footerRect.top <= windowHeight - 50) {
-        // Botão fica absoluto em relação ao body
         const scrollY = window.scrollY;
         const footerOffsetTop = footer.offsetTop;
         const newTop = footerOffsetTop - themeBtnHeight - 20;
@@ -1520,7 +1648,6 @@ function ajustarBotaoTema() {
         themeBtn.style.top = newTop + 'px';
         themeBtn.style.right = '20px';
     } else {
-        // Botão volta para posição fixa
         themeBtn.style.position = 'fixed';
         themeBtn.style.bottom = '20px';
         themeBtn.style.top = 'auto';
@@ -1528,14 +1655,10 @@ function ajustarBotaoTema() {
     }
 }
 
-// Garantir que o body tem position relative para o absolute funcionar
 document.body.style.position = 'relative';
 document.body.style.minHeight = '100vh';
 
-// Adicionar event listeners
 window.addEventListener('scroll', ajustarBotaoTema);
 window.addEventListener('resize', ajustarBotaoTema);
 window.addEventListener('load', ajustarBotaoTema);
-
-// Chamar uma vez para inicializar
 setTimeout(ajustarBotaoTema, 100);

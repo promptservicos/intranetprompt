@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Intranet Prompt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/icon1.png">
+    
+    <!-- Boxicons CDN -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="perfil.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <!-- CRIPTOGRAFIA -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="crypto.js"></script>
+</head>
+<body>
+    <!-- Botão de alternar tema -->
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
+        <i class='bx bx-moon'></i>
+    </button>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="header-top">
+                <div class="logo" id="logoHome">
+                    <img id="logoImg" src="img/logo1b.png" alt="Logo Prompt">
+                    <h1>Intranet Prompt</h1>
+                </div>
+                <div class="user-info" id="userInfoPanel">
+                    <div class="user-avatar" id="userAvatar">
+                        <span id="userAvatarText">US</span>
+                    </div>
+                    <div class="user-details">
+                        <p id="userName">Usuário</p>
+                        <small id="userRole">Colaborador</small>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class='bx bx-log-out'></i> Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="intranet.html"><i class='bx bx-home'></i> Início</a></li>
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-building'></i> Departamentos <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="departamentos/financeiro.html"><i class='bx bx-money'></i> Financeiro</a>
+                        <a href="departamentos/comercial.html"><i class='bx bx-store'></i> Comercial</a>
+                        <a href="departamentos/recrutamento.html"><i class='bx bx-user-plus'></i> Recrutamento</a>
+                        <a href="departamentos/dp.html"><i class='bx bx-group'></i> Departamento Pessoal</a>
+                    </div>
+                </li>
+                <li><a href="colaboradores.html"><i class='bx bx-user-circle'></i> Colaboradores</a></li>
+                <li><a href="clientes.html"><i class='bx bx-briefcase'></i> Clientes</a></li>
+                <li class="dropdown">
+                    <a href="#"><i class='bx bx-board'></i> Kanbans <i class='bx bx-chevron-down'></i></a>
+                    <div class="dropdown-content">
+                        <a href="vagas.html"><i class='bx bx-briefcase-alt-2'></i> Vagas</a>
+                        <a href="https://ctzkb.vercel.app/kanban.html" target="_blank"><i class='bx bx-customize'></i> Customiza</a>
+                        <a href="https://itaiquara-kb.vercel.app/" target="_blank"><i class='bx bx-building-house'></i> Itaiquara</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="perfil-container">
+            <!-- Cabeçalho do Perfil -->
+            <div class="perfil-header">
+                <div class="perfil-avatar-large">
+                    <div class="avatar-initials" id="perfilAvatarText">US</div>
+                </div>
+                <div class="perfil-header-info">
+                    <h1 id="perfilNome">Carregando...</h1>
+                    <p class="perfil-cargo" id="perfilCargo">--</p>
+                    <p class="perfil-departamento" id="perfilDepartamento">--</p>
+                </div>
+                <div class="perfil-header-actions">
+                    <button id="btnEditarPerfil" class="btn-editar-perfil">
+                        <i class='bx bx-edit'></i> Editar Perfil
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid de Informações -->
+            <div class="perfil-grid">
+                <!-- Card: Informações Pessoais -->
+                <div class="perfil-card">
+                    <div class="card-header">
+                        <i class='bx bx-user-circle'></i>
+                        <h3>Informações Pessoais</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-item">
+                            <span class="info-label">Nome Completo</span>
+                            <span class="info-value" id="infoNome">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">E-mail Pessoal</span>
+                            <span class="info-value" id="infoEmailPessoal">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Telefone 1</span>
+                            <span class="info-value" id="infoTelefone">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Telefone 2</span>
+                            <span class="info-value" id="infoTelefone2">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Data de Aniversário</span>
+                            <span class="info-value" id="infoAniversario">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Informações Profissionais -->
+                <div class="perfil-card">
+                    <div class="card-header">
+                        <i class='bx bx-briefcase'></i>
+                        <h3>Informações Profissionais</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-item">
+                            <span class="info-label">Cargo</span>
+                            <span class="info-value" id="infoCargo">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Departamento</span>
+                            <span class="info-value" id="infoDepartamento">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ramal</span>
+                            <span class="info-value" id="infoRamal">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">E-mail Corporativo</span>
+                            <span class="info-value" id="infoEmailCorp">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Data de Admissão</span>
+                            <span class="info-value" id="infoAdmissao">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Endereço -->
+                <div class="perfil-card">
+                    <div class="card-header">
+                        <i class='bx bx-map'></i>
+                        <h3>Endereço</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-item">
+                            <span class="info-label">Endereço</span>
+                            <span class="info-value" id="infoEndereco">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Bairro</span>
+                            <span class="info-value" id="infoBairro">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Cidade/UF</span>
+                            <span class="info-value" id="infoCidadeUf">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">CEP</span>
+                            <span class="info-value" id="infoCep">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Edição de Perfil -->
+    <div id="editarPerfilModal" class="editar-perfil-modal" style="display: none;">
+        <div class="modal-content-editar-perfil">
+            <div class="modal-header-editar">
+                <h3><i class='bx bx-edit-alt'></i> Editar Meu Perfil</h3>
+                <span class="modal-close-editar">&times;</span>
+            </div>
+            
+            <form id="editarPerfilForm">
+                <div class="edit-form-scroll">
+                    <!-- Informações Pessoais -->
+                    <div class="edit-form-section">
+                        <div class="edit-section-title">
+                            <i class='bx bx-user'></i>
+                            <span>Informações Pessoais</span>
+                        </div>
+                        <div class="edit-form-grid">
+                            <div class="edit-form-group full-width">
+                                <label>Nome Completo *</label>
+                                <input type="text" id="editNome" required>
+                            </div>
+                            <div class="edit-form-group">
+                                <label>E-mail Pessoal</label>
+                                <input type="email" id="editEmailPessoal" placeholder="seu@email.com">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Telefone 1</label>
+                                <input type="text" id="editTelefone" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Telefone 2</label>
+                                <input type="text" id="editTelefone2" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Data de Aniversário</label>
+                                <input type="text" id="editAniversario" placeholder="DD/MM">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações Profissionais -->
+                    <div class="edit-form-section">
+                        <div class="edit-section-title">
+                            <i class='bx bx-briefcase'></i>
+                            <span>Informações Profissionais</span>
+                        </div>
+                        <div class="edit-form-grid">
+                            <div class="edit-form-group">
+                                <label>Cargo</label>
+                                <input type="text" id="editCargo" readonly disabled>
+                                <small>Altere com o RH</small>
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Departamento</label>
+                                <input type="text" id="editDepartamento" readonly disabled>
+                                <small>Altere com o RH</small>
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Ramal</label>
+                                <input type="text" id="editRamal" placeholder="Ramal">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>E-mail Corporativo</label>
+                                <input type="email" id="editEmail" readonly disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="edit-form-section">
+                        <div class="edit-section-title">
+                            <i class='bx bx-map'></i>
+                            <span>Endereço</span>
+                        </div>
+                        <div class="edit-form-grid">
+                            <div class="edit-form-group full-width">
+                                <label>Endereço</label>
+                                <input type="text" id="editEndereco" placeholder="Rua, número, complemento">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Bairro</label>
+                                <input type="text" id="editBairro" placeholder="Bairro">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Cidade</label>
+                                <input type="text" id="editCidade">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>UF</label>
+                                <input type="text" id="editUf" maxlength="2" placeholder="SP">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>CEP</label>
+                                <input type="text" id="editCep" placeholder="00000-000">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-buttons-editar">
+                    <button type="button" id="btnCancelarEdicao" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" id="btnSalvarEdicao" class="btn-salvar">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <p><i class='bx bx-phone'></i> Ramal: indisponível</p>
+                <p><i class='bx bx-envelope'></i> marketing@promptservicos.com.br</p>
+                <p><i class='bx bx-time'></i> Seg à Sex: 9h às 17h</p>
+            </div>
+            <div class="footer-bottom">
+                <p>Intranet Prompt v0.2</p>
+                <p>©2025 Todos os direitos reservados</p>
+                <p>Desenvolvido por departamento de Marketing</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript principal -->
+    <script src="perfil.js"></script>
+</body>
+</html>

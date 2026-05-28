@@ -59,6 +59,32 @@ let currentUserData = {};
 let userAtalhos = [];
 let sortableInstance = null;
 
+// ========== FUNÇÃO PARA MOSTRAR TOAST ==========
+function showToast(message, isError = false) {
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    if (isError) toast.classList.add('error');
+    
+    const icon = document.createElement('i');
+    icon.className = isError ? 'bx bx-error-circle' : 'bx bx-check-circle';
+    
+    const text = document.createElement('span');
+    text.textContent = message;
+    
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // ========== CATÁLOGO DE ATALHOS DISPONÍVEIS ==========
 const catalogoAtalhos = [
     // Dentro da Intranet
@@ -127,14 +153,27 @@ function verificarPermissaoUsuario(permissoesRequeridas) {
     return false;
 }
 
-// ========== CARREGAR ATALHOS DO USUÁRIO ==========
+// ========== CARREGAR ATALHOS DO USUÁRIO (COM CRIPTOGRAFIA) ==========
 async function carregarAtalhosUsuario() {
     if (!currentUserData.uid) return;
     
     try {
         const doc = await db.collection('usuarios').doc(currentUserData.uid).get();
-        if (doc.exists && doc.data().atalhos) {
-            userAtalhos = doc.data().atalhos;
+        if (doc.exists) {
+            const data = doc.data();
+            
+            // Verificar se os dados estão criptografados
+            if (data.dadosCriptografados) {
+                const usuarioDecriptografado = recoverUserFromSave({ id: doc.id, ...data });
+                if (usuarioDecriptografado && usuarioDecriptografado.atalhos) {
+                    userAtalhos = usuarioDecriptografado.atalhos;
+                } else {
+                    userAtalhos = [];
+                }
+            } else {
+                // Formato antigo (sem criptografia)
+                userAtalhos = data.atalhos || [];
+            }
         } else {
             userAtalhos = [];
         }
@@ -146,14 +185,34 @@ async function carregarAtalhosUsuario() {
     }
 }
 
-// ========== SALVAR ATALHOS DO USUÁRIO ==========
+// ========== SALVAR ATALHOS DO USUÁRIO (COM CRIPTOGRAFIA) ==========
 async function salvarAtalhosUsuario() {
     if (!currentUserData.uid) return;
     
     try {
-        await db.collection('usuarios').doc(currentUserData.uid).update({
-            atalhos: userAtalhos
-        });
+        const docRef = db.collection('usuarios').doc(currentUserData.uid);
+        const doc = await docRef.get();
+        
+        if (doc.exists) {
+            const data = doc.data();
+            let dadosAtualizados;
+            
+            if (data.dadosCriptografados) {
+                // Formato criptografado - preservar outros dados
+                const usuarioDecriptografado = recoverUserFromSave({ id: doc.id, ...data });
+                if (usuarioDecriptografado) {
+                    usuarioDecriptografado.atalhos = userAtalhos;
+                    const novosDadosCriptografados = prepareUserForSave(usuarioDecriptografado);
+                    await docRef.set(novosDadosCriptografados);
+                } else {
+                    // Fallback
+                    await docRef.update({ atalhos: userAtalhos });
+                }
+            } else {
+                // Formato antigo
+                await docRef.update({ atalhos: userAtalhos });
+            }
+        }
     } catch (error) {
         console.error("Erro ao salvar atalhos:", error);
     }
@@ -343,23 +402,46 @@ async function salvarAlteracoesAtalhos() {
     await salvarAtalhosUsuario();
     renderizarAtalhos();
     fecharModalAtalhos();
+    showToast('Atalhos salvos com sucesso!', false);
 }
 
-// ========== AUTENTICAÇÃO E DADOS DO USUÁRIO ==========
+// ========== AUTENTICAÇÃO E DADOS DO USUÁRIO (COM CRIPTOGRAFIA) ==========
 auth.onAuthStateChanged(async (user) => {
     if (user) {
         try {
             const doc = await db.collection('usuarios').doc(user.uid).get();
             if (doc.exists) {
-                currentUserData = doc.data();
-                currentUserData.uid = user.uid;
-                currentUserData.email = user.email;
+                const data = doc.data();
                 
-                document.getElementById('userName').textContent = currentUserData.nome;
+                // VERIFICAR SE OS DADOS ESTÃO CRIPTOGRAFADOS
+                if (data.dadosCriptografados) {
+                    // USAR DESCRIPTOGRAFIA
+                    const usuarioDecriptografado = recoverUserFromSave({ id: doc.id, ...data });
+                    if (usuarioDecriptografado) {
+                        currentUserData = usuarioDecriptografado;
+                        currentUserData.uid = user.uid;
+                        currentUserData.email = user.email;
+                    } else {
+                        // Fallback para dados não criptografados
+                        currentUserData = data;
+                        currentUserData.uid = user.uid;
+                        currentUserData.email = user.email;
+                    }
+                } else {
+                    // Formato antigo (sem criptografia) - para compatibilidade
+                    currentUserData = data;
+                    currentUserData.uid = user.uid;
+                    currentUserData.email = user.email;
+                    
+                    // Opcional: Migrar para o formato criptografado
+                    migrarUsuarioParaCriptografia(user.uid, currentUserData);
+                }
+                
+                document.getElementById('userName').textContent = currentUserData.nome || 'Usuário';
                 document.getElementById('userRole').textContent = currentUserData.cargo || 'Colaborador';
-                document.getElementById('welcomeText').textContent = `Bem-vindo, ${currentUserData.nome}!`;
+                document.getElementById('welcomeText').textContent = `Bem-vindo, ${currentUserData.nome || 'Usuário'}!`;
                 
-                const names = currentUserData.nome.split(' ');
+                const names = (currentUserData.nome || 'Usuário').split(' ');
                 const initials = names[0].charAt(0) + (names.length > 1 ? names[names.length-1].charAt(0) : '');
                 document.getElementById('userAvatar').textContent = initials;
                 
@@ -374,6 +456,23 @@ auth.onAuthStateChanged(async (user) => {
         window.location.href = 'index.html';
     }
 });
+
+// ========== FUNÇÃO PARA MIGRAR USUÁRIO PARA CRIPTOGRAFIA ==========
+async function migrarUsuarioParaCriptografia(uid, userData) {
+    // Verificar se já está criptografado
+    const doc = await db.collection('usuarios').doc(uid).get();
+    if (doc.exists && doc.data().dadosCriptografados) {
+        return; // Já está criptografado
+    }
+    
+    try {
+        const dadosCriptografados = prepareUserForSave(userData);
+        await db.collection('usuarios').doc(uid).set(dadosCriptografados);
+        console.log(`✅ Usuário ${uid} migrado para criptografia`);
+    } catch (error) {
+        console.error(`❌ Erro ao migrar usuário ${uid}:`, error);
+    }
+}
 
 // ========== LOGOUT ==========
 document.getElementById('logoutBtn').addEventListener('click', (e) => {
@@ -442,16 +541,30 @@ async function carregarAniversariantes() {
     try {
         const snapshot = await db.collection('usuarios').get();
         const aniversarios = [];
-        snapshot.forEach(doc => {
+        
+        for (const doc of snapshot.docs) {
             const data = doc.data();
-            if (data.aniversario) {
+            let aniversario = null;
+            
+            // Verificar se os dados estão criptografados
+            if (data.dadosCriptografados) {
+                const usuarioDecriptografado = recoverUserFromSave({ id: doc.id, ...data });
+                if (usuarioDecriptografado && usuarioDecriptografado.aniversario) {
+                    aniversario = usuarioDecriptografado.aniversario;
+                }
+            } else {
+                // Formato antigo
+                aniversario = data.aniversario;
+            }
+            
+            if (aniversario) {
                 aniversarios.push({
-                    nome: data.nome,
-                    departamento: data.cargo || data.departamento || 'Funcionário',
-                    aniversario: data.aniversario
+                    nome: data.nome || (usuarioDecriptografado ? usuarioDecriptografado.nome : 'Usuário'),
+                    departamento: data.cargo || data.departamento || (usuarioDecriptografado ? usuarioDecriptografado.cargo : 'Funcionário'),
+                    aniversario: aniversario
                 });
             }
-        });
+        }
         
         aniversariantesList = calcularProximosAniversariantes(aniversarios);
         

@@ -110,7 +110,7 @@ async function verificarPermissaoEdicao(user) {
     return false;
 }
 
-// ========== CARREGAR CLIENTES DO FIRESTORE ==========
+// ========== CARREGAR CLIENTES DO FIRESTORE (COM DESCRIPTOGRAFIA) ==========
 async function carregarClientes() {
     const loadingIndicator = document.getElementById('loadingIndicator');
     loadingIndicator.classList.add('active');
@@ -119,21 +119,50 @@ async function carregarClientes() {
         const snapshot = await db.collection('clientes').get();
         todosClientes = [];
         
-        snapshot.forEach(doc => {
+        for (const doc of snapshot.docs) {
             const data = doc.data();
-            todosClientes.push({
-                id: doc.id,
-                nome: data.nome || doc.id,
-                cnpj: data.cnpj || '',
-                codigogi: data.codigogi || '',
-                rsocial: data.rsocial || data.razao_social || '',
-                contato: data.contato || '',
-                email: data.email || '',
-                telefone: data.telefone || '',
-                endereco: data.endereco || '',
-                iestadual: data.iestadual || ''
-            });
-        });
+            
+            let cliente;
+            
+            // Verificar se os dados estão criptografados (novo formato)
+            if (data.dadosCriptografados) {
+                // Usar a descriptografia do crypto.js
+                const clienteDecriptografado = recoverClienteFromSave({ id: doc.id, ...data });
+                if (clienteDecriptografado) {
+                    cliente = clienteDecriptografado;
+                } else {
+                    // Fallback para dados não criptografados (legado)
+                    cliente = {
+                        id: doc.id,
+                        nome: data.nome || doc.id,
+                        cnpj: data.cnpj || '',
+                        codigogi: data.codigogi || '',
+                        rsocial: data.rsocial || '',
+                        contato: data.contato || '',
+                        email: data.email || '',
+                        telefone: data.telefone || '',
+                        endereco: data.endereco || '',
+                        iestadual: data.iestadual || ''
+                    };
+                }
+            } else {
+                // Formato antigo (sem criptografia)
+                cliente = {
+                    id: doc.id,
+                    nome: data.nome || doc.id,
+                    cnpj: data.cnpj || '',
+                    codigogi: data.codigogi || '',
+                    rsocial: data.rsocial || data.razao_social || '',
+                    contato: data.contato || '',
+                    email: data.email || '',
+                    telefone: data.telefone || '',
+                    endereco: data.endereco || '',
+                    iestadual: data.iestadual || ''
+                };
+            }
+            
+            todosClientes.push(cliente);
+        }
         
         todosClientes.sort((a, b) => a.nome.localeCompare(b.nome));
         
@@ -232,6 +261,32 @@ function sanitizarNome(nome) {
         .toLowerCase();
 }
 
+// ========== FUNÇÃO PARA MOSTRAR TOAST ==========
+function showToast(message, isError = false) {
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    if (isError) toast.classList.add('error');
+    
+    const icon = document.createElement('i');
+    icon.className = isError ? 'bx bx-error-circle' : 'bx bx-check-circle';
+    
+    const text = document.createElement('span');
+    text.textContent = message;
+    
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // ========== FUNÇÕES DO MODAL DE CLIENTE ==========
 function abrirModalNovoCliente() {
     if (!podeEditarClientes) {
@@ -251,6 +306,7 @@ function fecharModalCliente() {
     window.editandoClienteId = null;
 }
 
+// ========== SALVAR CLIENTE COM CRIPTOGRAFIA ==========
 async function salvarCliente(event) {
     event.preventDefault();
     
@@ -266,6 +322,7 @@ async function salvarCliente(event) {
         return;
     }
     
+    // Coletar todos os dados do formulário
     const clienteData = {
         nome: nomeCliente,
         cnpj: document.getElementById('clienteCNPJ').value.trim(),
@@ -275,46 +332,144 @@ async function salvarCliente(event) {
         email: document.getElementById('clienteEmail').value.trim(),
         telefone: document.getElementById('clienteTelefone').value.trim(),
         endereco: document.getElementById('clienteEndereco').value.trim(),
-        iestadual: document.getElementById('clienteInscricaoEstadual').value.trim()
+        iestadual: document.getElementById('clienteInscricaoEstadual').value.trim(),
+        // Campos adicionais que podem existir
+        supervisor: '',
+        ponto: '',
+        fechfolha: '',
+        intmanha: '',
+        inttarde: '',
+        intnoite: '',
+        emifat: '',
+        vencfat: '',
+        adiantdata: '',
+        pagdata: '',
+        beneadiant: '',
+        benepag: '',
+        cargos: [],
+        fotos: []
     };
     
     try {
-        if (window.editandoClienteId) {
-            await db.collection('clientes').doc(window.editandoClienteId).update(clienteData);
-        } else {
-            const clienteId = sanitizarNome(nomeCliente);
-            const docRef = db.collection('clientes').doc(clienteId);
-            const doc = await docRef.get();
-            
-            if (doc.exists) {
-                const resposta = confirm(`Já existe um cliente com o nome "${nomeCliente}". Deseja sobrescrever? Clique em Cancelar para criar com um sufixo.`);
-                
-                if (resposta) {
-                    await docRef.set(clienteData);
-                } else {
-                    let novoId = clienteId;
-                    let contador = 1;
-                    let docExistente = await db.collection('clientes').doc(novoId).get();
-                    
-                    while (docExistente.exists) {
-                        contador++;
-                        novoId = `${clienteId}_${contador}`;
-                        docExistente = await db.collection('clientes').doc(novoId).get();
-                    }
-                    
-                    await db.collection('clientes').doc(novoId).set(clienteData);
-                }
-            } else {
-                await docRef.set(clienteData);
+        // USAR A CRIPTOGRAFIA do crypto.js
+        const dadosCriptografados = prepareClienteForSave(clienteData);
+        
+        let id = window.editandoClienteId;
+        
+        if (!id) {
+            id = sanitizarNome(nomeCliente);
+            // Verificar se já existe
+            const docExistente = await db.collection('clientes').doc(id).get();
+            if (docExistente.exists) {
+                id = `${id}_${Date.now()}`;
             }
         }
+        
+        // Salvar no Firestore com os dados criptografados
+        await db.collection('clientes').doc(id).set({
+            dadosPublicos: dadosCriptografados.dadosPublicos,
+            dadosCriptografados: dadosCriptografados.dadosCriptografados,
+            atualizadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+            criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+        });
         
         fecharModalCliente();
         await carregarClientes();
         
+        showToast('Cliente salvo com sucesso!', false);
+        
     } catch (error) {
         console.error("Erro ao salvar cliente:", error);
         alert('Erro ao salvar cliente. Verifique suas permissões.');
+    }
+}
+
+// ========== FUNÇÃO PARA MIGRAR CLIENTES EXISTENTES (OPCIONAL) ==========
+async function migrarClientesParaCriptografia() {
+    if (!podeEditarClientes) {
+        console.log('Sem permissão para migrar');
+        return;
+    }
+    
+    const confirmar = confirm('Deseja migrar todos os clientes para o formato criptografado? Esta ação é irreversível.');
+    if (!confirmar) return;
+    
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    loadingIndicator.classList.add('active');
+    
+    let migrados = 0;
+    let erros = 0;
+    
+    try {
+        const snapshot = await db.collection('clientes').get();
+        
+        for (const doc of snapshot.docs) {
+            const data = doc.data();
+            
+            // Pular se já estiver no formato criptografado
+            if (data.dadosCriptografados) {
+                console.log(`Cliente ${doc.id} já está criptografado, pulando...`);
+                continue;
+            }
+            
+            try {
+                // Coletar dados do formato antigo
+                const clienteData = {
+                    nome: data.nome || doc.id,
+                    cnpj: data.cnpj || '',
+                    codigogi: data.codigogi || '',
+                    rsocial: data.rsocial || data.razao_social || '',
+                    contato: data.contato || '',
+                    email: data.email || '',
+                    telefone: data.telefone || '',
+                    endereco: data.endereco || '',
+                    iestadual: data.iestadual || '',
+                    supervisor: data.supervisor || '',
+                    ponto: data.ponto || '',
+                    fechfolha: data.fechfolha || '',
+                    intmanha: data.intmanha || '',
+                    inttarde: data.inttarde || '',
+                    intnoite: data.intnoite || '',
+                    emifat: data.emifat || '',
+                    vencfat: data.vencfat || '',
+                    adiantdata: data.adiantdata || '',
+                    pagdata: data.pagdata || '',
+                    beneadiant: data.beneadiant || '',
+                    benepag: data.benepag || '',
+                    cargos: data.cargos || [],
+                    fotos: data.fotos || []
+                };
+                
+                // Criptografar
+                const dadosCriptografados = prepareClienteForSave(clienteData);
+                
+                // Atualizar documento
+                await db.collection('clientes').doc(doc.id).set({
+                    dadosPublicos: dadosCriptografados.dadosPublicos,
+                    dadosCriptografados: dadosCriptografados.dadosCriptografados,
+                    atualizadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+                    criadoEm: data.criadoEm || firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                migrados++;
+                console.log(`✅ Cliente ${doc.id} migrado com sucesso`);
+                
+            } catch (error) {
+                erros++;
+                console.error(`❌ Erro ao migrar ${doc.id}:`, error);
+            }
+        }
+        
+        showToast(`Migração concluída: ${migrados} migrados, ${erros} erros`, migrados === 0);
+        
+        // Recarregar clientes
+        await carregarClientes();
+        
+    } catch (error) {
+        console.error('Erro na migração:', error);
+        showToast('Erro durante a migração', true);
+    } finally {
+        loadingIndicator.classList.remove('active');
     }
 }
 
@@ -338,6 +493,10 @@ auth.onAuthStateChanged(async (user) => {
             .catch(error => console.error("Erro ao buscar usuário:", error));
         
         await carregarClientes();
+        
+        // Opcional: Descomente a linha abaixo para migrar clientes existentes
+        // setTimeout(() => migrarClientesParaCriptografia(), 2000);
+        
     } else {
         window.location.href = 'index.html';
     }
